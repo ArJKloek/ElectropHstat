@@ -711,7 +711,8 @@ class horizontalToggleSwitch(QCheckBox):
         # the handle will move along this line
         trailLength = contRect.width()*self._h_scale - 2 * handleRadius
         xLeft = contRect.center().x() - (trailLength + handleRadius)/2 
-        xPos = xLeft + handleRadius + trailLength * self._handle_position
+        #xPos = xLeft + handleRadius + trailLength * self._handle_position
+        xPos = barRect.left() + handleRadius + (barRect.width() - 2 * handleRadius) * self._handle_position
 
         if self.isChecked():
             p.setBrush(self._bar_checked_brush)
