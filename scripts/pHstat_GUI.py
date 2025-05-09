@@ -9,7 +9,7 @@ if 'XDG_RUNTIME_DIR' not in os.environ:
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QGridLayout, 
                              QLabel, QMenuBar, QAction, QStatusBar, 
                              QComboBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, 
-                             QPushButton, QTabWidget, QFrame, QMenu, QMessageBox, QActionGroup, QDial, QToolTip, QCheckBox)
+                             QPushButton, QTabWidget, QFrame, QMenu, QMessageBox, QActionGroup, QDial, QToolTip, QCheckBox, QSizePolicy)
 from PyQt5.QtGui import QFont, QColor, QIcon, QPen, QTransform, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint
 from scripts.LedIndicatorWidget import LedIndicator
