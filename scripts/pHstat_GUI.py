@@ -672,6 +672,7 @@ class MainWindow(QMainWindow):
 
         #self.powerButton = QPushButton("Power ON")
         self.powerButton = MySwitch()
+        self.powerButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.powerButton.setCheckable(True)
         #self.powerButton.setStyleSheet("""
         #    QPushButton {
