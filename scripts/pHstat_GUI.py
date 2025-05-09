@@ -946,9 +946,10 @@ class MainWindow(QMainWindow):
     def updateCoulombs(self):
         dt = self.coulombClock.lap()  # Time since last update
         amps = getattr(self, 'latest_current', 0)
+        print(amps)
         self.coulombs += amps * dt
         print(f"Coulombs: {self.coulombs:.2f}")
-        self.coulombLabel.setText(f"Coulombs: {self.coulombs:.2f}")
+        #self.coulombLabel.setText(f"Coulombs: {self.coulombs:.2f}")
 
     def onTabChanged(self, index):
         self.currentActiveTabIndex = index
