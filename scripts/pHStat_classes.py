@@ -660,8 +660,14 @@ class MySwitch(QPushButton):
         label = "ON" if self.isChecked() else "OFF"
         bg_color = Qt.green if self.isChecked() else Qt.red
 
-        radius = 10
-        width = 32
+        
+        w = self.width()
+        h = self.height()
+        radius = h // 2
+        switch_width = int(w * 0.6)  # make the toggle span ~60% of width
+
+        #radius = 10
+        #width = 32
         center = self.rect().center()
 
         painter = QPainter(self)
@@ -673,10 +679,17 @@ class MySwitch(QPushButton):
         pen.setWidth(2)
         painter.setPen(pen)
 
-        painter.drawRoundedRect(QRect(-width, -radius, 2*width, 2*radius), radius, radius)
-        painter.setBrush(QBrush(bg_color))
-        sw_rect = QRect(-radius, -radius, width + radius, 2*radius)
+        painter.drawRoundedRect(QRect(-switch_width//2, -radius, switch_width, h), radius, radius)
+        
+        handle_rect = QRect(-radius, -radius, switch_width // 2 + radius, h)
         if not self.isChecked():
-            sw_rect.moveLeft(-width)
-        painter.drawRoundedRect(sw_rect, radius, radius)
-        painter.drawText(sw_rect, Qt.AlignCenter, label)
+            handle_rect.moveLeft(-switch_width // 2)
+        painter.setBrush(QBrush(bg_color))
+        painter.drawRoundedRect(handle_rect, radius, radius)
+
+        # Draw label
+        painter.setPen(Qt.white)
+        font = painter.font()
+        font.setPointSize(int(h * 0.4))  # scale font with height
+        painter.setFont(font)
+        painter.drawText(handle_rect, Qt.AlignCenter, label)
