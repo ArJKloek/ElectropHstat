@@ -321,7 +321,7 @@ class MainWindow(QMainWindow):
         self.addtime = 0
         #self.pHvalue = 0
         #self.RTDvalue = 0
-        self.valueData = [0,0,0]
+        self.valueData = [0,0,0,0,0,0]
         self.cooldown = 0
         self.currentActiveTabIndex = 0  # Track the current tab index
         self.graphTabs = []
