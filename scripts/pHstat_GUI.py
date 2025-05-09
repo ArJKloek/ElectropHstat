@@ -1004,7 +1004,12 @@ class MainWindow(QMainWindow):
         self.logtimer = QTimer(self)
         self.logtimer.setInterval(int(self.log_interval))  # Timer interval set to 5000ms (5 seconds)
         self.logtimer.timeout.connect(self.timerFunction)
-    
+
+        # Coulomb integration timer
+        self.coulombTimer = QTimer(self)
+        self.coulombTimer.setInterval(1000)  # 1 second updates
+        self.coulombTimer.timeout.connect(self.updateCoulombs)
+
     def startTimer(self):
         self.logtimer.start()  # Start the timer
 
