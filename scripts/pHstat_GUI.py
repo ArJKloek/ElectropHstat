@@ -337,8 +337,10 @@ class MainWindow(QMainWindow):
         self.highpH = 0.0
         self.copy_path = ""
         #self.log_interval = 500
+        self.viewBoxes = {}  # In __init__ or setupVariables()
 
         ConfigReader(self)
+    
     def setupMenu(self):
         """Setup the menu bar."""
         menu_bar = self.menuBar()  # Get the menu bar
@@ -896,7 +898,15 @@ class MainWindow(QMainWindow):
         self.addGraphTab("Pump Plot", ("Time (s)", "Added (ml)"))
 
         # Add Dual pH+Temperature plot
-        self.plot_manager.addDualGraphTab("pH + Temp Plot")
+        #self.plot_manager.addDualGraphTab("pH + Temp Plot")
+        self.plot_manager.addGraphTab(
+            title="pH + Temp Plot",
+            plot_index=1,
+            left_label="pH",
+            right_label="Temperature",
+            right_units="°C"
+        )
+        
         self.plot_manager.addPowerGraphTab("Power Plot")
         self.plot_manager.addCoulombGraphTab("Coulomb Plot")
 

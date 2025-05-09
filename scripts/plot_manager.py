@@ -11,6 +11,73 @@ class PlotManager:
         self.labelStyle = {'color': 'black', 'font-size': '11pt'}
         self.plotColors = ['r', 'g', 'b']
     
+    def addGraphTab(
+        self,
+        title,
+        plot_index,
+        left_label="Value",
+        right_label=None,  # None disables right Y-axis
+        left_units="",
+        right_units=""
+    ):
+        tab = QWidget()
+        tab.plot_index = plot_index
+        layout = QVBoxLayout(tab)
+        backgroundColor = self.main.palette().color(self.main.backgroundRole())
+
+        # Create main PlotWidget
+        plotWidget = pg.PlotWidget()
+        plotWidget.setBackground(backgroundColor)
+        layout.addWidget(plotWidget)
+
+        self.main.graphWidgets.append(plotWidget)
+        self.main.graphTabs.append(tab)
+
+        # Optional curve handles (naming is up to you)
+        #if plot_index == 1:
+        #    self.main.pH_curve = None
+        #    self.main.temp_curve = None
+
+        # Setup main view (left axis)
+        plotWidget.showGrid(x=True, y=True)
+        plotWidget.setLabel('left', f'{left_label} {left_units}', color='black', size='11pt')
+        plotWidget.setLabel('bottom', 'Time (s)', color='black', size='11pt')
+        plotWidget.getAxis('left').setTextPen(QPen(QColor('black')))
+        plotWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))
+
+        # Optionally setup right axis (e.g., for temperature)
+        if right_label:
+            right_viewbox = pg.ViewBox()
+            plotWidget.scene().addItem(right_viewbox)
+            plotWidget.getAxis('right').linkToView(right_viewbox)
+            plotWidget.showAxis('right')
+            plotWidget.setLabel('right', f'{right_label} {right_units}', color='black', size='11pt')
+            plotWidget.getAxis('right').setTextPen(QPen(QColor('black')))
+            right_viewbox.setXLink(plotWidget)
+            self.main.tempViewBox = right_viewbox  # You can store with a more dynamic name if needed
+
+        # Store the primary view box if needed
+        #if plot_index == 1:
+        #    self.main.pHViewBox = plotWidget.getViewBox()
+        
+        self.main.viewBoxes[plot_index] = plotWidget.getViewBox()
+
+        #plotWidget.getViewBox().sigResized.connect(self.updateDualViews)
+        
+        vb = plotWidget.getViewBox()
+        self.main.viewBoxes[plot_index] = vb
+        self.main.tabWidget.addTab(tab, title)
+
+        # Optional tab styling
+        self.main.tabWidget.setStyleSheet("""
+            QTabBar::tab {
+                font-size: 10pt;
+                height: 20px;
+                width: 110px;
+                padding: 5px;
+            }
+        """)
+
     def addDualGraphTab(self, title):
         tab = QWidget()
         tab.plot_index = 1 
