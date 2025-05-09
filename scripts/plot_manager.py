@@ -46,7 +46,7 @@ class PlotManager:
         self.main.tempViewBox.setXLink(plotWidget)
 
         # Connect resizing
-        plotWidget.getViewBox().sigResized.connect(self.main.updateDualViews)
+        plotWidget.getViewBox().sigResized.connect(self.updateDualViews)
 
         # Save special dual-plot references
         self.main.pHViewBox = plotWidget.getViewBox()
@@ -108,7 +108,11 @@ class PlotManager:
 
         self.coulomb_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('black'), width=2), name="Coulombs")
 
-        self.main.tabWidget.addTab(tab, title)
+        self.main.updateDualViewstabWidget.addTab(tab, title)
+
+    def updateDualViews(self):
+        self.main.tempViewBox.setGeometry(self.main.pHViewBox.sceneBoundingRect())
+        self.main.tempViewBox.linkedViewChanged(self.main.pHViewBox, self.main.tempViewBox.XAxis)
 
     def _is_number(self, value):
         try:
