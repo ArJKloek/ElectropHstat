@@ -118,7 +118,7 @@ class MainWindow(QMainWindow):
         self.initWorkerTimer()
         self.initCalcTimer()
         self.logging_timer = monoTimer()
-        self.coulombTimer.start()
+        self.coulombTimer = monoTimer()
         QTimer.singleShot(0, self.option3.trigger)
         #self.toggle_pHStat(False)
         self.toggle_pH_control.trigger()
@@ -338,7 +338,6 @@ class MainWindow(QMainWindow):
         self.highpH = 0.0
         self.copy_path = ""
         #self.log_interval = 500
-        self.coulombs = 0.0
 
         ConfigReader(self)
     def setupMenu(self):
@@ -1019,8 +1018,9 @@ class MainWindow(QMainWindow):
     def start_pHStat(self):
         create_csv(self, self.valueData, self.plotindex, self.headerindex)
         self.logtimer.start()  # Start the timer
+        self.coulombTimer.start()
+        self.coulombs = 0.0
         self.logging_timer.start()
-
         self.pHstatLabel.setEnabled(True)
         self.pumpLabel.setEnabled(True)
         self.trigger_processing()
@@ -1028,7 +1028,8 @@ class MainWindow(QMainWindow):
         self.stopbutton.setEnabled(True)
 
     def stop_pHStat(self):
-        self.logtimer.stop()  # Start the timer
+        self.logtimer.stop()  # stop the timer
+        self.coulombTimer.stop()
         self.logging_timer.stop()
         self.trigger_processing()
         self.startbutton.setEnabled(True)
