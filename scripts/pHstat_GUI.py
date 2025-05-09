@@ -169,8 +169,8 @@ class MainWindow(QMainWindow):
         self.currentDial.setFixedSize(dial_size, dial_size)
         
 
-        self.powerButton.setH_scale(0.55*scale)
-        self.powerButton.setV_scale(0.55*scale)
+        self.powerButton.setH_scale(1*scale)
+        self.powerButton.setV_scale(1*scale)
         self.powerButton.setFontSize(9*scale)
         
         self.modeToggle.setH_scale(0.55*scale)
