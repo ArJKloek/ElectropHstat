@@ -85,7 +85,7 @@ class PlotManager:
         self.curr_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('red'), width=2), name="Current")
         #self.coulomb_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('green'), width=2), name="Coulombs")
 
-        self.tabWidget.addTab(tab, title)
+        self.main.tabWidget.addTab(tab, title)
 
 
     def _is_number(self, value):
