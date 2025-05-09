@@ -93,7 +93,7 @@ class MainWindow(QMainWindow):
         self.pH_calibrate_window.calibrate_changed.connect(self.handle_calibrate)
         
         self.initializeUI()
-        self.delayed_show_fullscreen()
+        #self.delayed_show_fullscreen()
 
     def initializeUI(self):
         
