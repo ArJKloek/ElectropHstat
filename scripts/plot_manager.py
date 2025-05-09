@@ -56,11 +56,6 @@ class PlotManager:
             plotWidget.setLabel('right', f'{right_label} {right_units}', color='black', size='11pt')
             plotWidget.getAxis('right').setTextPen(QPen(QColor('black')))
             right_viewbox.setXLink(plotWidget)
-            #self.main.ViewBox = right_viewbox  # You can store with a more dynamic name if needed
-
-        # Store the primary view box if needed
-        #if plot_index == 1:
-        #    self.main.pHViewBox = plotWidget.getViewBox()
         
         # Store ViewBoxes for alignment
         self.main.viewBoxes[plot_index] = plotWidget.getViewBox()
@@ -73,10 +68,6 @@ class PlotManager:
                 lambda vb=plotWidget.getViewBox(), ri=plot_index: self.updateLinkedViews(ri)
             )
 
-        #plotWidget.getViewBox().sigResized.connect(self.updateDualViews)
-        
-        #vb = plotWidget.getViewBox()
-        #self.main.viewBoxes[plot_index] = vb
         self.main.tabWidget.addTab(tab, title)
 
         # Optional tab styling
@@ -97,111 +88,6 @@ class PlotManager:
 
         right_vb.setGeometry(left_vb.sceneBoundingRect())
         right_vb.linkedViewChanged(left_vb, right_vb.XAxis)
-
-    def addDualGraphTab(self, title):
-        tab = QWidget()
-        tab.plot_index = 1 
-        layout = QVBoxLayout(tab)
-        #backgroundColor = self.palette().color(self.backgroundRole())
-        backgroundColor = self.main.palette().color(self.main.backgroundRole())
-
-        # Main PlotWidget
-        plotWidget = pg.PlotWidget()
-        plotWidget.setBackground(backgroundColor)
-        layout.addWidget(plotWidget)
-
-        self.main.graphWidgets.append(plotWidget)
-        self.main.graphTabs.append(tab)
-        self.main.pH_curve = None
-        self.main.temp_curve = None
-
-        # Setup main view (left axis)
-        plotWidget.showGrid(x=True, y=True)
-        plotWidget.setLabel('left', 'pH', color='black', size='11pt')
-        plotWidget.setLabel('bottom', 'Time (s)', color='black', size='11pt')
-        plotWidget.getAxis('left').setTextPen(QPen(QColor('black')))
-        plotWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))
-
-        # Create a second view for Temperature (right axis)
-        self.main.tempViewBox = pg.ViewBox()
-        plotWidget.scene().addItem(self.main.tempViewBox)
-        plotWidget.getAxis('right').linkToView(self.main.tempViewBox)
-        plotWidget.showAxis('right')
-        plotWidget.setLabel('right', 'Temperature (°C)', color='black', size='11pt')
-        plotWidget.getAxis('right').setTextPen(QPen(QColor('black')))
-
-        self.main.tempViewBox.setXLink(plotWidget)
-
-        # Connect resizing
-        plotWidget.getViewBox().sigResized.connect(self.updateDualViews)
-
-        # Save special dual-plot references
-        self.main.pHViewBox = plotWidget.getViewBox()
-
-        self.main.tabWidget.addTab(tab, title)
-        self.main.tabWidget.setStyleSheet("""
-            QTabBar::tab {
-                font-size: 10pt;
-                height: 20px;
-                width: 110px;
-                padding: 5px;
-            }
-        """)
-
-    def addPowerGraphTab(self, title):
-        tab = QWidget()
-        tab.plot_index = 2  # Assign a new index for tracking
-        layout = QVBoxLayout(tab)
-        #backgroundColor = self.palette().color(self.backgroundRole())
-        backgroundColor = self.main.palette().color(self.main.backgroundRole())
-
-        plotWidget = pg.PlotWidget()
-        plotWidget.setBackground(backgroundColor)
-        layout.addWidget(plotWidget)
-
-        self.main.graphWidgets.append(plotWidget)
-        self.main.graphTabs.append(tab)
-
-        plotWidget.showGrid(x=True, y=True)
-        plotWidget.setLabel('left', 'Value', color='black', size='11pt')
-        plotWidget.setLabel('bottom', 'Time (s)', color='black', size='11pt')
-        plotWidget.getAxis('left').setTextPen(QPen(QColor('black')))
-        plotWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))
-
-        self.volt_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('black'), width=2), name="Voltage")
-        self.curr_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('red'), width=2), name="Current")
-        #self.coulomb_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('green'), width=2), name="Coulombs")
-
-        self.main.tabWidget.addTab(tab, title)
-
-    def addCoulombGraphTab(self, title):
-        tab = QWidget()
-        tab.plot_index = 3  # Assign a new index for tracking
-        layout = QVBoxLayout(tab)
-        backgroundColor = self.main.palette().color(self.main.backgroundRole())
-
-        plotWidget = pg.PlotWidget()
-        plotWidget.setBackground(backgroundColor)
-        layout.addWidget(plotWidget)
-
-        self.main.graphWidgets.append(plotWidget)
-        self.main.graphTabs.append(tab)
-
-        plotWidget.showGrid(x=True, y=True)
-        plotWidget.setLabel('left', 'Value', color='black', size='11pt')
-        plotWidget.setLabel('bottom', 'Time (s)', color='black', size='11pt')
-        plotWidget.getAxis('left').setTextPen(QPen(QColor('black')))
-        plotWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))
-
-        self.coulomb_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('black'), width=2), name="Coulombs")
-
-        self.main.tabWidget.addTab(tab, title)
-
-        #self.main.updateDualViewstabWidget.addTab(tab, title)
-
-    #def updateDualViews(self):
-    #    self.main.tempViewBox.setGeometry(self.main.pHViewBox.sceneBoundingRect())
-    #    self.main.tempViewBox.linkedViewChanged(self.main.pHViewBox, self.main.tempViewBox.XAxis)
 
     def _is_number(self, value):
         try:
@@ -288,6 +174,18 @@ class PlotManager:
             widget.showAxis('right')
         else:
             widget.hideAxis('right')
+
+    def update_pump_plot(self):
+        curve_configs = [
+            {
+                "log_index": 0,
+                "curve_attr": "pump_curve",
+                "pen": "r",
+                "use_right_axis": False
+            }
+        ]
+        self.update_plot_from_log(plot_index=0, curve_configs=curve_configs, show_right_axis=False)
+
 
     def update_dual_plot(self):
         curve_configs = [
