@@ -923,7 +923,15 @@ class MainWindow(QMainWindow):
             right_units="°C"
         )
         
-        self.plot_manager.addPowerGraphTab("Power Plot")
+        self.plot_manager.addGraphTab(
+            title="Power Plot",
+            plot_index=2,
+            left_label="Voltage (V)",
+            right_label="Amperage",
+            right_units="A"
+        )
+        
+        #self.plot_manager.addPowerGraphTab("Power Plot")
         self.plot_manager.addCoulombGraphTab("Coulomb Plot")
 
         # (Optional) Add RTD plot separately if you still want individual
