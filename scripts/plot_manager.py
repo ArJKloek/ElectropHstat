@@ -199,9 +199,9 @@ class PlotManager:
 
         #self.main.updateDualViewstabWidget.addTab(tab, title)
 
-    def updateDualViews(self):
-        self.main.tempViewBox.setGeometry(self.main.pHViewBox.sceneBoundingRect())
-        self.main.tempViewBox.linkedViewChanged(self.main.pHViewBox, self.main.tempViewBox.XAxis)
+    #def updateDualViews(self):
+    #    self.main.tempViewBox.setGeometry(self.main.pHViewBox.sceneBoundingRect())
+    #    self.main.tempViewBox.linkedViewChanged(self.main.pHViewBox, self.main.tempViewBox.XAxis)
 
     def _is_number(self, value):
         try:

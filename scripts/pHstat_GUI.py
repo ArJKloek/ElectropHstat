@@ -903,8 +903,16 @@ class MainWindow(QMainWindow):
         self.graphTabs = []
 
         # Add Pump plot
-        self.addGraphTab("Pump Plot", ("Time (s)", "Added (ml)"))
-
+        #self.addGraphTab("Pump Plot", ("Time (s)", "Added (ml)"))
+        
+        self.plot_manager.addGraphTab(
+            title="Pump Plot",
+            plot_index=0,
+            left_label="Added (ml)",
+            right_label=None,
+            right_units=None
+        )
+        
         # Add Dual pH+Temperature plot
         #self.plot_manager.addDualGraphTab("pH + Temp Plot")
         self.plot_manager.addGraphTab(
