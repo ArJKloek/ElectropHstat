@@ -43,7 +43,7 @@ class PlotManager:
         # Setup main view (left axis)
         plotWidget.showGrid(x=True, y=True)
         plotWidget.setLabel('left', f'{left_label} {left_units}', color='black', size='11pt')
-        plotWidget.setLabel('bottom', 'Time (s)', color='black', size='11pt')
+        plotWidget.setLabel('bottom', 'Time (sec)', color='black', size='11pt')
         plotWidget.getAxis('left').setTextPen(QPen(QColor('black')))
         plotWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))
 
