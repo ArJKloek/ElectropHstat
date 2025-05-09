@@ -17,7 +17,7 @@ from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2
 from scripts.PPSWorker import PPSWorker
 from scripts.pHstat_config import ConfigReader, ConfigWriter
 from scripts.pHStat_classes import (pHPickerDialog, SelectPickerDialog, pumpControl, 
-                            DatePickerDialog, CustomTextWidget, ClickableLabel, CalibratePumpDialog,CalibratepHDialog, monoTimer, ToggleSwitch)
+                            DatePickerDialog, CustomTextWidget, ClickableLabel, CalibratePumpDialog,CalibratepHDialog, monoTimer, ToggleSwitch, MySwitch)
 import pyqtgraph as pg
 #from pyqtgraph.Qt import QtGui, QtWidgets
 #import numpy as np
@@ -670,20 +670,21 @@ class MainWindow(QMainWindow):
             }
         """)
 
-        self.powerButton = QPushButton("Power ON")
+        #self.powerButton = QPushButton("Power ON")
+        self.powerButton = MySwitch()
         self.powerButton.setCheckable(True)
-        self.powerButton.setStyleSheet("""
-            QPushButton {
-                background-color: #3498db;
-                color: white;
-                font-weight: bold;
-                border-radius: 10px;
-                padding: 6px;
-            }
-            QPushButton:checked {
-                background-color: #e74c3c;
-            }
-        """)
+        #self.powerButton.setStyleSheet("""
+        #    QPushButton {
+        #        background-color: #3498db;
+        #        color: white;
+        #        font-weight: bold;
+        #        border-radius: 10px;
+        #        padding: 6px;
+        #    }
+        #    QPushButton:checked {
+        #        background-color: #e74c3c;
+        #    }
+        #""")
         self.powerButton.setToolTip("Toggle power supply output ON/OFF")
         self.powerButton.clicked.connect(self.togglePowerSupply)
 
