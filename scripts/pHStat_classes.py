@@ -648,7 +648,7 @@ class MockLib8MosInd:
         print(f"[MOCK] get_pwm(stack={stack}, mosfet={mosfet}) => {self.pwm[mosfet]}")
         return self.pwm[mosfet]
 
-class MySwitch(QtWidgets.QPushButton):
+class MySwitch():
     def __init__(self, parent = None):
         super().__init__(parent)
         print('init')
@@ -664,17 +664,17 @@ class MySwitch(QtWidgets.QPushButton):
         width = 32
         center = self.rect().center()
 
-        painter = QtGui.QPainter(self)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
         painter.translate(center)
-        painter.setBrush(QtGui.QColor(0,0,0))
+        painter.setBrush(QColor(0,0,0))
 
-        pen = QtGui.QPen(Qt.black)
+        pen = QPen(Qt.black)
         pen.setWidth(2)
         painter.setPen(pen)
 
         painter.drawRoundedRect(QRect(-width, -radius, 2*width, 2*radius), radius, radius)
-        painter.setBrush(QtGui.QBrush(bg_color))
+        painter.setBrush(QBrush(bg_color))
         sw_rect = QRect(-radius, -radius, width + radius, 2*radius)
         if not self.isChecked():
             sw_rect.moveLeft(-width)
