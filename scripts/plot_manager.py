@@ -108,7 +108,7 @@ class PlotManager:
 
         self.coulomb_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('black'), width=2), name="Coulombs")
 
-        self.main.updateDualViewstabWidget.addTab(tab, title)
+        self.updateDualViewstabWidget.addTab(tab, title)
 
     def updateDualViews(self):
         self.main.tempViewBox.setGeometry(self.main.pHViewBox.sceneBoundingRect())
