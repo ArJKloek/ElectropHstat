@@ -379,7 +379,7 @@ class MainWindow(QMainWindow):
         self.toggle_pH_control.setChecked(True)
         self.toggle_pH_control.triggered.connect(self.toggle_pHStat)
 
-        setting_menu.addAction(self.toggle_pH_control)
+        #setting_menu.addAction(self.toggle_pH_control)
         
         
         
