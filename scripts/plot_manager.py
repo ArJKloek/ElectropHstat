@@ -15,15 +15,16 @@ class PlotManager:
         tab = QWidget()
         tab.plot_index = 1 
         layout = QVBoxLayout(tab)
-        backgroundColor = self.palette().color(self.backgroundRole())
+        #backgroundColor = self.palette().color(self.backgroundRole())
+        backgroundColor = self.main.palette().color(self.main.backgroundRole())
 
         # Main PlotWidget
         plotWidget = pg.PlotWidget()
         plotWidget.setBackground(backgroundColor)
         layout.addWidget(plotWidget)
 
-        self.graphWidgets.append(plotWidget)
-        self.graphTabs.append(tab)
+        self.main.graphWidgets.append(plotWidget)
+        self.main.graphTabs.append(tab)
         self.pH_curve = None
         self.temp_curve = None
 
@@ -50,8 +51,8 @@ class PlotManager:
         # Save special dual-plot references
         self.pHViewBox = plotWidget.getViewBox()
 
-        self.tabWidget.addTab(tab, title)
-        self.tabWidget.setStyleSheet("""
+        self.main.tabWidget.addTab(tab, title)
+        self.main.tabWidget.setStyleSheet("""
             QTabBar::tab {
                 font-size: 10pt;
                 height: 20px;
