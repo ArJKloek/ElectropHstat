@@ -328,7 +328,7 @@ class MainWindow(QMainWindow):
         self.graphWidgets = []
         self.plotindex = ["Pump", "pH" , "RTD", "V", "A", "C"]
         self.headerindex = ["Pumped (ml)", "pH", "Temperature (°C)", "Voltage (V)", "Current (A)", "Coulomb (C)"]
-        self.Log_file = ["","",""]
+        self.Log_file = ["","","","","",""]
         self.Log_date = [0,0,0]
         self.is_logging = False
         self.statustext = ""
