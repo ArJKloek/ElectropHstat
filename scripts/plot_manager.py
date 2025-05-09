@@ -253,7 +253,9 @@ class PlotManager:
             curve_attr = cfg["curve_attr"]
             if hasattr(self.main, curve_attr) and getattr(self.main, curve_attr) is not None:
                 if cfg.get("use_right_axis"):
-                    self.main.tempViewBox.removeItem(getattr(self.main, curve_attr))
+                    right_vb = self.main.rightViewBoxes.get(plot_index)
+                    if right_vb:
+                        right_vb.removeItem(getattr(self.main, curve_attr))
                 else:
                     widget.removeItem(getattr(self.main, curve_attr))
                 setattr(self.main, curve_attr, None)
