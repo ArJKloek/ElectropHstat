@@ -1688,14 +1688,6 @@ class MainWindow(QMainWindow):
     
     #    event.accept()  # Accept the close event
 
-if __name__ == "__main__":
-    from PyQt5.QtWidgets import QStyleFactory
-    app = QApplication(sys.argv)
-    app.setStyle(QStyleFactory.create("Fusion"))  # ✅ This line forces a style that respects stylesheets
-    window = MainWindow()  # Create an instance of your application's main window
-    #app.aboutToQuit.connect(MainWindow.closeEvent)  # Ensure clean closure
-    sys.exit(app.exec_())  # Start your application's event loop (main loop)
-
 
 #if __name__ == "__main__":
 #    app = QApplication(sys.argv)  # Create an instance of QApplication
