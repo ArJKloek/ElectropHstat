@@ -36,14 +36,14 @@ class PlotManager:
         plotWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))
 
         # Create a second view for Temperature (right axis)
-        self.tempViewBox = pg.ViewBox()
-        plotWidget.scene().addItem(self.tempViewBox)
-        plotWidget.getAxis('right').linkToView(self.tempViewBox)
+        self.main.tempViewBox = pg.ViewBox()
+        plotWidget.scene().addItem(self.main.tempViewBox)
+        plotWidget.getAxis('right').linkToView(self.main.tempViewBox)
         plotWidget.showAxis('right')
         plotWidget.setLabel('right', 'Temperature (°C)', color='black', size='11pt')
         plotWidget.getAxis('right').setTextPen(QPen(QColor('black')))
 
-        self.tempViewBox.setXLink(plotWidget)
+        self.main.tempViewBox.setXLink(plotWidget)
 
         # Connect resizing
         plotWidget.getViewBox().sigResized.connect(self.main.updateDualViews)
