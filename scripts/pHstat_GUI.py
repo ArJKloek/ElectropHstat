@@ -668,7 +668,26 @@ class MainWindow(QMainWindow):
                 color: #888888;
                 border: 2px solid #CCCCCC;
             }
-        """)        
+        """)
+
+        self.powerButton = QPushButton("Power ON")
+        self.powerButton.setCheckable(True)
+        self.powerButton.setStyleSheet("""
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 6px;
+            }
+            QPushButton:checked {
+                background-color: #e74c3c;
+            }
+        """)
+        self.powerButton.setToolTip("Toggle power supply output ON/OFF")
+        self.powerButton.clicked.connect(self.togglePowerSupply)
+
+
         #pHLayout.addWidget(self.pHlabel,0,0,1,3,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.pHNumber,0,0,1,2, alignment=Qt.AlignLeft)
         pHLayout.addWidget(self.RTDlabel,0,3,alignment=Qt.AlignRight)
@@ -679,6 +698,7 @@ class MainWindow(QMainWindow):
         pHLayout.addWidget(self.voltagelabel,2,0,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.currentlabel,2,1,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.modelabel,2,2,alignment= Qt.AlignCenter)
+        pHLayout.addWidget(self.powerButton,2,3,alignment= Qt.AlignCenter)
         
         #USB Button
         self.usb_button = QPushButton(self)
@@ -850,7 +870,17 @@ class MainWindow(QMainWindow):
         self.handle_pH(float(self.pHSelect))
         self.handle_time(float(self.ml), float(self.addtime))
         #self.handle_pHselect(float(self.pHSelect))
-    
+   
+    def togglePowerSupply(self):
+        if self.powerButton.isChecked():
+            self.powerButton.setText("Power OFF")
+            self.ppsWorker.set_output(True)  # Replace with your actual PPS control
+            print("Power Supply ON")
+        else:
+            self.powerButton.setText("Power ON")
+            self.ppsWorker.set_output(False)
+            print("Power Supply OFF")
+
     def apply_ps_settings(self):
         # Read toggle state (assuming you're using your ToggleSwitch class)
         mode = "CC" if self.modeToggle.isChecked() else "CV"
