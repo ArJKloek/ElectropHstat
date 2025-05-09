@@ -1,3 +1,4 @@
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 import numpy as np
 import pyqtgraph as pg
 from scripts.pHStat_csv import read_log_data, scale_time_data  # if not already imported in main
