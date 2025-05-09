@@ -721,8 +721,8 @@ class horizontalToggleSwitch(QCheckBox):
 
             p.setPen(self._black_pen)
             p.setFont(QFont('Helvetica', self._fontSize, 75))
-            p.drawText(xLeft + handleRadius / 2, contRect.center().y() + 
-                       handleRadius / 2,"ON")
+            p.drawText(xLeft + handleRadius, contRect.center().y() + 
+                       handleRadius,"ON")
 
         else:
             p.setBrush(self._bar_brush)
