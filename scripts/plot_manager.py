@@ -166,7 +166,11 @@ class PlotManager:
                     #self.main.tempViewBox.addItem(curve)
                     #self.main.tempViewBox.enableAutoRange(axis=pg.ViewBox.YAxis)
                 else:
-                    widget.setLabel('bottom', f'Time ({time_label})', **self.labelStyle)
+                    axis = self.main.graphWidgets[plot_index].getAxis('bottom')
+                    axis.setLabel(f'Time ({time_label})', color='black')
+                    axis.setStyle(tickFont=QFont("Arial", 12)) 
+                    #widget.setLabel('bottom', f'Time ({time_label})',color='black')
+                    #widget.setStyle(tickFont=QFont("Arial", 12))  # Properly scaled font
                     widget.addItem(curve)
 
                 setattr(self.main, curve_attr, curve)
