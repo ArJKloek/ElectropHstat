@@ -195,7 +195,7 @@ class PlotManager:
             {
                 "log_index": 1,
                 "curve_attr": "pH_curve",
-                "pen": "g",
+                "pen": "k",
                 "use_right_axis": False
             }
         ]
@@ -220,7 +220,7 @@ class PlotManager:
             {
                 "log_index": 3,
                 "curve_attr": "Volt_curve",
-                "pen": "g",
+                "pen": "k",
                 "use_right_axis": False
             }
         ]
