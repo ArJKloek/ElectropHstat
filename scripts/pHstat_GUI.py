@@ -17,7 +17,7 @@ from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2
 from scripts.PPSWorker import PPSWorker
 from scripts.pHstat_config import ConfigReader, ConfigWriter
 from scripts.pHStat_classes import (pHPickerDialog, SelectPickerDialog, pumpControl, 
-                            DatePickerDialog, CustomTextWidget, ClickableLabel, CalibratePumpDialog,CalibratepHDialog, monoTimer, ToggleSwitch, MySwitch)
+                            DatePickerDialog, CustomTextWidget, ClickableLabel, CalibratePumpDialog,CalibratepHDialog, monoTimer, ToggleSwitch, MySwitch, horizontalToggleSwitch)
 import pyqtgraph as pg
 #from pyqtgraph.Qt import QtGui, QtWidgets
 #import numpy as np
@@ -671,8 +671,8 @@ class MainWindow(QMainWindow):
         """)
 
         #self.powerButton = QPushButton("Power ON")
-        self.powerButton = MySwitch()
-        self.powerButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.powerButton = horizontalToggleSwitch()
+        #self.powerButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.powerButton.setCheckable(True)
         #self.powerButton.setStyleSheet("""
         #    QPushButton {
