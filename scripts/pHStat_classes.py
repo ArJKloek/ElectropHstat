@@ -648,7 +648,7 @@ class MockLib8MosInd:
         print(f"[MOCK] get_pwm(stack={stack}, mosfet={mosfet}) => {self.pwm[mosfet]}")
         return self.pwm[mosfet]
 
-class MySwitch():
+class MySwitch(QPushButton):
     def __init__(self, parent = None):
         super().__init__(parent)
         print('init')
