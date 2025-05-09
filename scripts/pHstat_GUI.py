@@ -897,7 +897,7 @@ class MainWindow(QMainWindow):
 
         # Add Dual pH+Temperature plot
         self.plot_manager.addDualGraphTab("pH + Temp Plot")
-        self.addPowerGraphTab("Power Plot")
+        self.plot_manager.addPowerGraphTab("Power Plot")
         self.addCoulombGraphTab("Coulomb Plot")
 
         # (Optional) Add RTD plot separately if you still want individual
