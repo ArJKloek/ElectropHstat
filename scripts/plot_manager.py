@@ -108,16 +108,15 @@ class PlotManager:
             self.update_coulomb_plot()
 
 
-    def update_pump_plot(self):
-        time, data = read_log_data(self.main, 0)
-        if time and data:
-            x, y, time_label, scale = scale_time_data(self.main, time, data)
-            self.main.graphWidgets[0].setLabel('bottom', f'Time ({time_label})', **self.labelStyle)
-
-            if not hasattr(self.main, 'pump_curve') or self.main.pump_curve is None:
-                self.main.pump_curve = self.main.graphWidgets[0].plot(x, y, pen=pg.mkPen(self.plotColors[0], width=2))
-            else:
-                self.main.pump_curve.setData(x, y)
+    #def update_pump_plot(self):
+    #    time, data = read_log_data(self.main, 0)
+    #    if time and data:
+    #        x, y, time_label, scale = scale_time_data(self.main, time, data)
+    #        self.main.graphWidgets[0].setLabel('bottom', f'Time ({time_label})', **self.labelStyle)
+    #        if not hasattr(self.main, 'pump_curve') or self.main.pump_curve is None:
+    #            self.main.pump_curve = self.main.graphWidgets[0].plot(x, y, pen=pg.mkPen(self.plotColors[0], width=2))
+    #        else:
+    #            self.main.pump_curve.setData(x, y)
     
     def update_plot_from_log(self, plot_index, curve_configs, show_right_axis=False):
         """
