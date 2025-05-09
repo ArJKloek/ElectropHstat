@@ -129,6 +129,7 @@ class PlotManager:
                 self.main.temp_curve = pg.PlotCurveItem(x_temp, y_temp, pen=pg.mkPen('r', width=2))
                 self.main.tempViewBox.addItem(self.main.temp_curve)
                 self.main.tempViewBox.enableAutoRange(axis=pg.ViewBox.YAxis)
+                self.main.graphWidgets[1].showAxis('right')
         else:
             # Remove temp curve if it's showing
             if self.main.temp_curve:
