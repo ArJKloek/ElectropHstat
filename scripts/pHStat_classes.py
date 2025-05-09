@@ -665,11 +665,6 @@ class horizontalToggleSwitch(QCheckBox):
              
         super().__init__(parent)
         
-        # ✅ Let the widget expand as needed
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
-        # ✅ Set a reasonable minimum so it doesn't collapse
-        self.setMinimumSize(100, 40)
         # Save our properties on the object via self, so we can access them later
         # in the paintEvent.
         self._bar_brush = QBrush(bar_color)
@@ -711,10 +706,10 @@ class horizontalToggleSwitch(QCheckBox):
         #barRect = QRectF(0, 0, width - handleRadius, 0.40 * height)
         barRect.moveCenter(contRect.center())
         rounding = barRect.height() / 2
-        handleRadius = round(barRect.height() / 2)
+        handleRadius = round(0.9 * barRect.height())
 
         # the handle will move along this line
-        trailLength = contRect.width()*self._h_scale - 2 * handleRadius
+        trailLength = contRect.width() - 2 * handleRadius
         xLeft = contRect.center().x() - (trailLength + handleRadius)/2 
         #xPos = xLeft + handleRadius + trailLength * self._handle_position
         xPos = barRect.left() + handleRadius + (barRect.width() - 2 * handleRadius) * self._handle_position
