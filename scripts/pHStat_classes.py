@@ -694,15 +694,19 @@ class horizontalToggleSwitch(QCheckBox):
         contRect = self.contentsRect()
         width =  contRect.width() * self._h_scale
         height = contRect.height() * self._v_scale
-        handleRadius = round(0.24 * height)
+        #handleRadius = round(0.35 * height)
 
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
 
         p.setPen(self._transparent_pen)
-        barRect = QRectF(0, 0, width - handleRadius, 0.40 * height)
+        bar_height_ratio = 0.7  # Increase this to make the bar taller
+        bar_width = width * 0.95  # Wider bar
+        barRect = QRectF(0, 0, bar_width, bar_height_ratio * height)
+        #barRect = QRectF(0, 0, width - handleRadius, 0.40 * height)
         barRect.moveCenter(contRect.center())
         rounding = barRect.height() / 2
+        handleRadius = round(barRect.height() / 2)
 
         # the handle will move along this line
         trailLength = contRect.width()*self._h_scale - 2 * handleRadius
