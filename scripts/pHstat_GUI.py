@@ -118,7 +118,6 @@ class MainWindow(QMainWindow):
         self.initWorkerTimer()
         self.initCalcTimer()
         self.logging_timer = monoTimer()
-        self.coulombTimer = monoTimer()
         QTimer.singleShot(0, self.option3.trigger)
         #self.toggle_pHStat(False)
         self.toggle_pH_control.trigger()
@@ -945,7 +944,7 @@ class MainWindow(QMainWindow):
         # Update the plot of the current active tab
 
     def updateCoulombs(self):
-        dt = self.coulombTimer.lap()  # Time since last update
+        dt = self.coulombClock.lap()  # Time since last update
         amps = getattr(self, 'latest_current', 0)
         self.coulombs += amps * dt
         print(f"Coulombs: {self.coulombs:.2f}")
@@ -1009,6 +1008,8 @@ class MainWindow(QMainWindow):
         self.coulombTimer = QTimer(self)
         self.coulombTimer.setInterval(1000)  # 1 second updates
         self.coulombTimer.timeout.connect(self.updateCoulombs)
+        
+        self.coulombClock = monoTimer()
 
     def startTimer(self):
         self.logtimer.start()  # Start the timer
@@ -1024,8 +1025,9 @@ class MainWindow(QMainWindow):
     def start_pHStat(self):
         create_csv(self, self.valueData, self.plotindex, self.headerindex)
         self.logtimer.start()  # Start the timer
-        self.coulombTimer.start()
         self.coulombs = 0.0
+        self.coulombClock.start()
+        self.coulombTimer.start()
         self.logging_timer.start()
         self.pHstatLabel.setEnabled(True)
         self.pumpLabel.setEnabled(True)
@@ -1036,6 +1038,7 @@ class MainWindow(QMainWindow):
     def stop_pHStat(self):
         self.logtimer.stop()  # stop the timer
         self.coulombTimer.stop()
+        self.coulombClock.stop()
         self.logging_timer.stop()
         self.trigger_processing()
         self.startbutton.setEnabled(True)
