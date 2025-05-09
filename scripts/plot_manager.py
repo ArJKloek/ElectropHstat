@@ -142,8 +142,86 @@ class PlotManager:
                 self.main.pump_curve = self.main.graphWidgets[0].plot(x, y, pen=pg.mkPen(self.plotColors[0], width=2))
             else:
                 self.main.pump_curve.setData(x, y)
+    
+    def update_plot_from_log(self, plot_index, curve_configs, show_right_axis=False):
+        """
+        plot_index: index in self.main.graphWidgets
+        curve_configs: list of dicts like:
+            {
+                "log_index": 1,
+                "curve_attr": "pH_curve",
+                "pen": "g",
+                "use_right_axis": False
+            }
+        show_right_axis: whether to show the right Y-axis (optional)
+        """
+
+        widget = self.main.graphWidgets[plot_index]
+        max_points = 1000
+
+        for cfg in curve_configs:
+            data_time, data_values = read_log_data(self.main, cfg["log_index"])
+
+            # Remove old curve if exists
+            curve_attr = cfg["curve_attr"]
+            if hasattr(self.main, curve_attr) and getattr(self.main, curve_attr) is not None:
+                if cfg.get("use_right_axis"):
+                    self.main.tempViewBox.removeItem(getattr(self.main, curve_attr))
+                else:
+                    widget.removeItem(getattr(self.main, curve_attr))
+                setattr(self.main, curve_attr, None)
+
+            if data_time and data_values:
+                x_data, y_data, time_label, _ = scale_time_data(self.main, data_time, data_values)
+
+                if len(x_data) > max_points:
+                    x_data = x_data[-max_points:]
+                    y_data = y_data[-max_points:]
+
+                pen = pg.mkPen(cfg["pen"], width=2)
+                curve = pg.PlotCurveItem(x_data, y_data, pen=pen)
+
+                if cfg.get("use_right_axis"):
+                    self.main.tempViewBox.addItem(curve)
+                    self.main.tempViewBox.enableAutoRange(axis=pg.ViewBox.YAxis)
+                else:
+                    widget.setLabel('bottom', f'Time ({time_label})', **self.labelStyle)
+                    widget.addItem(curve)
+
+                setattr(self.main, curve_attr, curve)
+
+        # Optionally show or hide right axis
+        if show_right_axis:
+            widget.showAxis('right')
+        else:
+            widget.hideAxis('right')
 
     def update_dual_plot(self):
+        curve_configs = [
+            {
+                "log_index": 1,
+                "curve_attr": "pH_curve",
+                "pen": "g",
+                "use_right_axis": False
+            }
+        ]
+
+        # Only show temperature if enabled
+        if self.main.toggleTempAction.isChecked():
+            curve_configs.append({
+                "log_index": 2,
+                "curve_attr": "temp_curve",
+                "pen": "r",
+                "use_right_axis": True
+            })
+            show_temp = True
+        else:
+            show_temp = False
+
+        self.update_plot_from_log(plot_index=1, curve_configs=curve_configs, show_right_axis=show_temp)
+
+
+    def update_dual_plot_old(self):
         widget = self.main.graphWidgets[1]
         if self.main.temp_curve is not None:
             self.main.tempViewBox.removeItem(self.main.temp_curve)

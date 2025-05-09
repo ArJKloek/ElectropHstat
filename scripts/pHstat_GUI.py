@@ -1411,7 +1411,8 @@ class MainWindow(QMainWindow):
     def update_pps_current(self, value):
         self.latest_current = value
         self.currentlabel.setText(f"{value:.2f} A")
-        
+        self.update_gui(value,4)
+
     @pyqtSlot(str)
     def update_pps_mode(self, value):
         self.modelabel.setText(f"{value}")
