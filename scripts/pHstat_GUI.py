@@ -123,6 +123,8 @@ class MainWindow(QMainWindow):
         self.setupMenu()
         self.setupWidgets()
         self.setupStatusBar()
+        self.plot_manager = PlotManager(self)
+
         self.setuppHWorker()
         self.setupRTDWorker()
         self.setupStatWorker()
@@ -136,7 +138,6 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(0, self.option3.trigger)
         #self.toggle_pHStat(False)
         self.toggle_pH_control.trigger()
-        self.plot_manager = PlotManager(self)
 
         self.show()
 
