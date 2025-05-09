@@ -64,6 +64,7 @@ class PlotManager:
         
         # Store ViewBoxes for alignment
         self.main.viewBoxes[plot_index] = plotWidget.getViewBox()
+        
         if right_label:
             self.main.rightViewBoxes[plot_index] = right_viewbox
 
@@ -268,8 +269,12 @@ class PlotManager:
                 curve = pg.PlotCurveItem(x_data, y_data, pen=pen)
 
                 if cfg.get("use_right_axis"):
-                    self.main.tempViewBox.addItem(curve)
-                    self.main.tempViewBox.enableAutoRange(axis=pg.ViewBox.YAxis)
+                    right_vb = self.main.rightViewBoxes.get(plot_index)
+                    if right_vb:
+                        right_vb.addItem(curve)
+                        right_vb.enableAutoRange(axis=pg.ViewBox.YAxis)
+                    #self.main.tempViewBox.addItem(curve)
+                    #self.main.tempViewBox.enableAutoRange(axis=pg.ViewBox.YAxis)
                 else:
                     widget.setLabel('bottom', f'Time ({time_label})', **self.labelStyle)
                     widget.addItem(curve)
