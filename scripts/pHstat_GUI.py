@@ -901,30 +901,6 @@ class MainWindow(QMainWindow):
         self.plot_manager.addCoulombGraphTab("Coulomb Plot")
 
         # (Optional) Add RTD plot separately if you still want individual
-  
-   
-    def addCoulombGraphTab(self, title):
-        tab = QWidget()
-        tab.plot_index = 3  # Assign a new index for tracking
-        layout = QVBoxLayout(tab)
-        backgroundColor = self.palette().color(self.backgroundRole())
-
-        plotWidget = pg.PlotWidget()
-        plotWidget.setBackground(backgroundColor)
-        layout.addWidget(plotWidget)
-
-        self.graphWidgets.append(plotWidget)
-        self.graphTabs.append(tab)
-
-        plotWidget.showGrid(x=True, y=True)
-        plotWidget.setLabel('left', 'Value', color='black', size='11pt')
-        plotWidget.setLabel('bottom', 'Time (s)', color='black', size='11pt')
-        plotWidget.getAxis('left').setTextPen(QPen(QColor('black')))
-        plotWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))
-
-        self.coulomb_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('black'), width=2), name="Coulombs")
-
-        self.tabWidget.addTab(tab, title)
         
     def updatePlot(self, tab):
         self.plot_manager.update(tab)
