@@ -664,7 +664,7 @@ class MySwitch(QPushButton):
         w = self.width()
         h = self.height()
         radius = h // 2
-        switch_width = int(w * 0.6)  # make the toggle span ~60% of width
+        switch_width = int(w * 1)  # make the toggle span ~60% of width
 
         #radius = 10
         #width = 32
@@ -688,7 +688,7 @@ class MySwitch(QPushButton):
         painter.drawRoundedRect(handle_rect, radius, radius)
 
         # Draw label
-        painter.setPen(Qt.white)
+        painter.setPen(Qt.black)
         font = painter.font()
         font.setPointSize(int(h * 0.4))  # scale font with height
         painter.setFont(font)

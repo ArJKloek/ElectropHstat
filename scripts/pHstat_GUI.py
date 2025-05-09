@@ -686,7 +686,7 @@ class MainWindow(QMainWindow):
         #    }
         #""")
         self.powerButton.setToolTip("Toggle power supply output ON/OFF")
-        self.powerButton.clicked.connect(self.togglePowerSupply)
+        #self.powerButton.clicked.connect(self.togglePowerSupply)
 
 
         #pHLayout.addWidget(self.pHlabel,0,0,1,3,alignment= Qt.AlignCenter)
