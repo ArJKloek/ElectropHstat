@@ -1020,7 +1020,7 @@ class MainWindow(QMainWindow):
 
     def timerFunction(self):
        
-        for i in range(2):
+        for i in range(5):
             log_csv(self, self.valueData[i+1], i+1, self.headerindex[i+1])
    
     def start_pHStat(self):
