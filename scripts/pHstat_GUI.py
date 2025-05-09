@@ -909,7 +909,7 @@ class MainWindow(QMainWindow):
         self.addGraphTab("Pump Plot", ("Time (s)", "Added (ml)"))
 
         # Add Dual pH+Temperature plot
-        self.PlotManager.addDualGraphTab("pH + Temp Plot")
+        self.plot_manager.addDualGraphTab("pH + Temp Plot")
         self.addPowerGraphTab("Power Plot")
         self.addCoulombGraphTab("Coulomb Plot")
 
