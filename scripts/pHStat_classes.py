@@ -706,7 +706,7 @@ class horizontalToggleSwitch(QCheckBox):
         #barRect = QRectF(0, 0, width - handleRadius, 0.40 * height)
         barRect.moveCenter(contRect.center())
         rounding = barRect.height() / 2
-        handleRadius = round(0.9 * barRect.height())
+        handleRadius = round(0.9 * barRect.height() / 2)
 
         # the handle will move along this line
         trailLength = contRect.width() - 2 * handleRadius
