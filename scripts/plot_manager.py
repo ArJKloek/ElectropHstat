@@ -87,6 +87,28 @@ class PlotManager:
 
         self.main.tabWidget.addTab(tab, title)
 
+    def addCoulombGraphTab(self, title):
+        tab = QWidget()
+        tab.plot_index = 3  # Assign a new index for tracking
+        layout = QVBoxLayout(tab)
+        backgroundColor = self.main.palette().color(self.main.backgroundRole())
+
+        plotWidget = pg.PlotWidget()
+        plotWidget.setBackground(backgroundColor)
+        layout.addWidget(plotWidget)
+
+        self.main.graphWidgets.append(plotWidget)
+        self.main.graphTabs.append(tab)
+
+        plotWidget.showGrid(x=True, y=True)
+        plotWidget.setLabel('left', 'Value', color='black', size='11pt')
+        plotWidget.setLabel('bottom', 'Time (s)', color='black', size='11pt')
+        plotWidget.getAxis('left').setTextPen(QPen(QColor('black')))
+        plotWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))
+
+        self.coulomb_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('black'), width=2), name="Coulombs")
+
+        self.main.tabWidget.addTab(tab, title)
 
     def _is_number(self, value):
         try:

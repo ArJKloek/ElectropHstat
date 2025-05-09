@@ -898,35 +898,11 @@ class MainWindow(QMainWindow):
         # Add Dual pH+Temperature plot
         self.plot_manager.addDualGraphTab("pH + Temp Plot")
         self.plot_manager.addPowerGraphTab("Power Plot")
-        self.addCoulombGraphTab("Coulomb Plot")
+        self.plot_manager.addCoulombGraphTab("Coulomb Plot")
 
         # (Optional) Add RTD plot separately if you still want individual
   
-    def addPowerGraphTab(self, title):
-        tab = QWidget()
-        tab.plot_index = 2  # Assign a new index for tracking
-        layout = QVBoxLayout(tab)
-        backgroundColor = self.palette().color(self.backgroundRole())
-
-        plotWidget = pg.PlotWidget()
-        plotWidget.setBackground(backgroundColor)
-        layout.addWidget(plotWidget)
-
-        self.graphWidgets.append(plotWidget)
-        self.graphTabs.append(tab)
-
-        plotWidget.showGrid(x=True, y=True)
-        plotWidget.setLabel('left', 'Value', color='black', size='11pt')
-        plotWidget.setLabel('bottom', 'Time (s)', color='black', size='11pt')
-        plotWidget.getAxis('left').setTextPen(QPen(QColor('black')))
-        plotWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))
-
-        self.volt_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('black'), width=2), name="Voltage")
-        self.curr_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('red'), width=2), name="Current")
-        #self.coulomb_curve = plotWidget.plot([], [], pen=pg.mkPen(QColor('green'), width=2), name="Coulombs")
-
-        self.tabWidget.addTab(tab, title)
-
+   
     def addCoulombGraphTab(self, title):
         tab = QWidget()
         tab.plot_index = 3  # Assign a new index for tracking
