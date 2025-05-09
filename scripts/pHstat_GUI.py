@@ -22,14 +22,14 @@ import pyqtgraph as pg
 #from pyqtgraph.Qt import QtGui, QtWidgets
 #import numpy as np
 from scripts.pHStat_csv import create_csv, log_csv, read_log_data, scale_time_data
-from scripts.atlas import atlas_i2c
+#from scripts.atlas import atlas_i2c
 import datetime
 import shutil
 import re
-#import lib8mosind
+import lib8mosind
 import serial.tools.list_ports
 from voltcraft.pps import PPS
-from scripts import PlotManager
+from scripts import PlotManager, atlas_i2c
 
 def find_voltcraft_pps() -> str or None:
     ports = serial.tools.list_ports.comports()
@@ -339,7 +339,7 @@ class MainWindow(QMainWindow):
         #self.log_interval = 500
         self.viewBoxes = {}  # In __init__ or setupVariables()
         self.rightViewBoxes = {}
-        
+
         ConfigReader(self)
     
     def setupMenu(self):
