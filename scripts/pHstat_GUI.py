@@ -327,7 +327,7 @@ class MainWindow(QMainWindow):
         self.graphTabs = []
         self.graphWidgets = []
         self.plotindex = ["Pump", "pH" , "RTD"]
-        self.headerindex = ["Pumped (ml)", "pH", "Temperature (°C)"]
+        self.headerindex = ["Pumped (ml)", "pH", "Temperature (°C)", "Voltage (V)", "Current (A)", "Coulomb (C)"]
         self.Log_file = ["","",""]
         self.Log_date = [0,0,0]
         self.is_logging = False
@@ -947,7 +947,8 @@ class MainWindow(QMainWindow):
         dt = self.coulombClock.lap()  # Time since last update
         amps = getattr(self, 'latest_current', 0)
         self.coulombs += amps * dt
-        print(f"Coulombs: {self.coulombs:.2f}")
+        self.update_gui(self.coulombs,5)
+        #print(f"Coulombs: {self.coulombs:.2f}")
         #self.coulombLabel.setText(f"Coulombs: {self.coulombs:.2f}")
 
     def onTabChanged(self, index):
@@ -1472,6 +1473,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot(float)
     def update_pps_voltage(self, value):
         self.voltagelabel.setText(f"{value:.2f} V")
+        self.update_gui(value,3)
         #dial_val = int(value * 10)
         #self.voltageDial.blockSignals(True)         # Prevent feedback loop
         #self.voltageDial.setValue(dial_val)
@@ -1527,22 +1529,21 @@ class MainWindow(QMainWindow):
             self.pHNumber.setText(f'{str("pH {:.2f}".format(received_data))}')
             #self.pHvalue = received_data
             self.valueData[1] = received_data
-        else:
+        elif type == 2:
             self.temp = received_data
             if received_data < -200:
                 self.RTDlabel.setText("N/A °C")
             else:
                 self.RTDlabel.setText(f"{received_data:.2f} °C")
-            
-            #self.RTDlabel.setText(f'{str("{:.2f}".format(received_data))} °C')
-            #self.RTDvalue = received_data
             self.valueData[2] = received_data
             self.pHWorker.pH_temp = round(received_data,1)
-        #if self.is_logging:
-        #    con_csv.log_csv(self, received_data)
-        #else:
-        #    pass
-    
+        elif type == 3:   
+            self.valueData[3] = received_data 
+        elif type == 4:   
+            self.valueData[4] = received_data
+        elif type == 5:   
+            self.valueData[5] = received_data
+        
     
 
 
