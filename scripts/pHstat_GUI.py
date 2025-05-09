@@ -17,7 +17,7 @@ from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2
 from scripts.PPSWorker import PPSWorker
 from scripts.pHstat_config import ConfigReader, ConfigWriter
 from scripts.pHStat_classes import (pHPickerDialog, SelectPickerDialog, pumpControl, 
-                            DatePickerDialog, CustomTextWidget, ClickableLabel, CalibratePumpDialog,CalibratepHDialog, monoTimer, ToggleSwitch, MySwitch, horizontalToggleSwitch)
+                            DatePickerDialog, CustomTextWidget, ClickableLabel, CalibratePumpDialog,CalibratepHDialog, monoTimer, ToggleSwitch, horizontalToggleSwitch)
 import pyqtgraph as pg
 #from pyqtgraph.Qt import QtGui, QtWidgets
 #import numpy as np
@@ -168,7 +168,10 @@ class MainWindow(QMainWindow):
         self.voltageDial.setFixedSize(dial_size, dial_size)
         self.currentDial.setFixedSize(dial_size, dial_size)
         
-     
+
+        self.powerButton.setH_scale(0.55*scale)
+        self.powerButton.setV_scale(0.55*scale)
+        self.powerButton.setFontSize(9*scale)
         
         self.modeToggle.setH_scale(0.55*scale)
         self.modeToggle.setV_scale(0.55*scale)

@@ -648,53 +648,6 @@ class MockLib8MosInd:
         print(f"[MOCK] get_pwm(stack={stack}, mosfet={mosfet}) => {self.pwm[mosfet]}")
         return self.pwm[mosfet]
 
-class MySwitch(QPushButton):
-    def __init__(self, parent = None):
-        super().__init__(parent)
-        print('init')
-        self.setCheckable(True)
-        self.setMinimumWidth(66)
-        self.setMinimumHeight(22)
-
-    def paintEvent(self, event):
-        label = "ON" if self.isChecked() else "OFF"
-        bg_color = Qt.green if self.isChecked() else Qt.red
-
-        
-        w = self.width()
-        h = self.height()
-        radius = h // 2
-        switch_width = int(w * 0.9)  # make the toggle span ~60% of width
-
-        #radius = 10
-        #width = 32
-        center = self.rect().center()
-
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.translate(center)
-        painter.setBrush(QColor(0,0,0))
-
-        pen = QPen(Qt.black)
-        pen.setWidth(2)
-        painter.setPen(pen)
-
-        painter.drawRoundedRect(QRect(-switch_width//2, -radius, switch_width, h), radius, radius)
-        
-        handle_rect = QRect(-radius, -radius, switch_width // 2 + radius, h)
-        if not self.isChecked():
-            handle_rect.moveLeft(-switch_width // 2)
-        painter.setBrush(QBrush(bg_color))
-        painter.drawRoundedRect(handle_rect, radius, radius)
-
-        # Draw label
-        painter.setPen(Qt.black)
-        font = painter.font()
-        font.setPointSize(int(h * 0.4))  # scale font with height
-        painter.setFont(font)
-        painter.drawText(handle_rect, Qt.AlignCenter, label)
-
-
 class horizontalToggleSwitch(QCheckBox):
 
     _transparent_pen = QPen(Qt.transparent)
