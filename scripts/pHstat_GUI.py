@@ -376,10 +376,10 @@ class MainWindow(QMainWindow):
         self.pH_control_enabled = True  # Default: enabled
 
         self.toggle_pH_control = QAction('Enable pH Control', self, checkable=True)
-        self.toggle_pH_control.setChecked(True)
+        #self.toggle_pH_control.setChecked(True)
         self.toggle_pH_control.triggered.connect(self.toggle_pHStat)
 
-        #setting_menu.addAction(self.toggle_pH_control)
+        setting_menu.addAction(self.toggle_pH_control)
         
         
         
