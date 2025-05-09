@@ -31,6 +31,8 @@ from scripts.pHStat_classes import MockLib8MosInd
 import serial.tools.list_ports
 from voltcraft.pps import PPS
 from scripts import PlotManager, atlas_i2c
+from qtwidgets import Toggle, AnimatedToggle
+
 
 lib8mosind = MockLib8MosInd()
 
@@ -169,9 +171,9 @@ class MainWindow(QMainWindow):
         self.currentDial.setFixedSize(dial_size, dial_size)
         
 
-        self.powerButton.setH_scale(0.55*scale)
-        self.powerButton.setV_scale(0.55*scale)
-        self.powerButton.setFontSize(9*scale)
+        #self.powerButton.setH_scale(0.55*scale)
+        #self.powerButton.setV_scale(0.55*scale)
+        #self.powerButton.setFontSize(9*scale)
         
         self.modeToggle.setH_scale(0.55*scale)
         self.modeToggle.setV_scale(0.55*scale)
@@ -674,7 +676,7 @@ class MainWindow(QMainWindow):
         """)
 
         #self.powerButton = QPushButton("Power ON")
-        self.powerButton = horizontalToggleSwitch()
+        self.powerButton = Toggle()
         #self.powerButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.powerButton.setCheckable(True)
         #self.powerButton.setStyleSheet("""
