@@ -326,10 +326,10 @@ class MainWindow(QMainWindow):
         self.currentActiveTabIndex = 0  # Track the current tab index
         self.graphTabs = []
         self.graphWidgets = []
-        self.plotindex = ["Pump", "pH" , "RTD", "V", "A", "C"]
+        self.plotindex = ["Pump", "pH" , "RTD", "Volt", "Amp", "Coulomb"]
         self.headerindex = ["Pumped (ml)", "pH", "Temperature (°C)", "Voltage (V)", "Current (A)", "Coulomb (C)"]
         self.Log_file = ["","","","","",""]
-        self.Log_date = [0,0,0]
+        self.Log_date = [0,0,0,0,0,0]
         self.is_logging = False
         self.statustext = ""
         self.lowpH = 0.0
