@@ -905,9 +905,9 @@ class MainWindow(QMainWindow):
     def updatePlot(self, tab):
         self.plot_manager.update(tab)
     
-    def updateDualViews(self):
-        self.tempViewBox.setGeometry(self.pHViewBox.sceneBoundingRect())
-        self.tempViewBox.linkedViewChanged(self.pHViewBox, self.tempViewBox.XAxis)
+    #def updateDualViews(self):
+    #    self.tempViewBox.setGeometry(self.pHViewBox.sceneBoundingRect())
+    #    self.tempViewBox.linkedViewChanged(self.pHViewBox, self.tempViewBox.XAxis)
 
     def addGraphTab(self, title, axisLabels):
         tab = QWidget()
