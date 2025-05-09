@@ -104,6 +104,9 @@ class PlotManager:
             self.update_dual_plot()
         elif plot_index == 2:
             self.update_power_plot()
+        elif plot_index == 3:
+            self.update_coulomb_plot()
+
 
     def update_pump_plot(self):
         time, data = read_log_data(self.main, 0)
@@ -231,9 +234,18 @@ class PlotManager:
             "use_right_axis": True
         })
         show_amp = True
-       
 
-        self.update_plot_from_log(plot_index=2, curve_configs=curve_configs, show_right_axis=show_amp)
+    def update_coulomb_plot(self):
+        curve_configs = [
+            {
+                "log_index": 5,
+                "curve_attr": "Coulomb_curve",
+                "pen": "b",
+                "use_right_axis": False
+            }
+        ]
+       
+        self.update_plot_from_log(plot_index=3, curve_configs=curve_configs, show_right_axis=False)
 
 
         if hasattr(self.main, 'current_log') and self.main.current_log:
