@@ -684,7 +684,7 @@ class horizontalToggleSwitch(QCheckBox):
         self.stateChanged.connect(self.handle_state_change)
 
     def sizeHint(self):
-        return QSize(58, 45)
+        return QSize(100, 45)
 
     def hitButton(self, pos: QPoint):
         return self.contentsRect().contains(pos)
