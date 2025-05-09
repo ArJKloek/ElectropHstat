@@ -46,7 +46,7 @@ class PlotManager:
         self.tempViewBox.setXLink(plotWidget)
 
         # Connect resizing
-        plotWidget.getViewBox().sigResized.connect(self.updateDualViews)
+        plotWidget.getViewBox().sigResized.connect(self.main.updateDualViews)
 
         # Save special dual-plot references
         self.pHViewBox = plotWidget.getViewBox()
