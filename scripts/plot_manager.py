@@ -49,7 +49,7 @@ class PlotManager:
         plotWidget.getViewBox().sigResized.connect(self.main.updateDualViews)
 
         # Save special dual-plot references
-        self.pHViewBox = plotWidget.getViewBox()
+        self.main.pHViewBox = plotWidget.getViewBox()
 
         self.main.tabWidget.addTab(tab, title)
         self.main.tabWidget.setStyleSheet("""
