@@ -664,7 +664,7 @@ class MySwitch(QPushButton):
         w = self.width()
         h = self.height()
         radius = h // 2
-        switch_width = int(w * 1)  # make the toggle span ~60% of width
+        switch_width = int(w * 0.9)  # make the toggle span ~60% of width
 
         #radius = 10
         #width = 32
