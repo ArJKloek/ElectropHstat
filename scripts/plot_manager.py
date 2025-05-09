@@ -167,8 +167,7 @@ class PlotManager:
                     #self.main.tempViewBox.enableAutoRange(axis=pg.ViewBox.YAxis)
                 else:
                     axis = self.main.graphWidgets[plot_index].getAxis('bottom')
-                    axis.setLabel(f'Time ({time_label})', color='black')
-                    axis.setStyle(tickFont=QFont("Arial", 12)) 
+                    axis.setLabel(f'Time ({time_label})')
                     #widget.setLabel('bottom', f'Time ({time_label})',color='black')
                     #widget.setStyle(tickFont=QFont("Arial", 12))  # Properly scaled font
                     widget.addItem(curve)
