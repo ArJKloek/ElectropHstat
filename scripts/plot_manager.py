@@ -25,8 +25,8 @@ class PlotManager:
 
         self.main.graphWidgets.append(plotWidget)
         self.main.graphTabs.append(tab)
-        self.pH_curve = None
-        self.temp_curve = None
+        self.main.pH_curve = None
+        self.main.temp_curve = None
 
         # Setup main view (left axis)
         plotWidget.showGrid(x=True, y=True)
