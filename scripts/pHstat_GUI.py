@@ -1069,9 +1069,10 @@ class MainWindow(QMainWindow):
 
         if reply == QMessageBox.Yes:
             self.logging_timer.reset()
-            self.Log_file = ["","",""]
-            self.Log_date = [0,0,0]
-            self.valueData[0] = 0
+            self.Log_file = ["","","","","",""]
+            self.Log_date = [0,0,0,0,0,0]
+            #self.valueData[0] = 0
+            self.valueData = [0,0,0,0,0,0]
             self.stopbutton.setEnabled(False)
             self.resetbutton.setEnabled(False)
             self.pumpLabel.setEnabled(False)
