@@ -91,22 +91,6 @@ class MainWindow(QMainWindow):
 
         self.pH_calibrate_window = CalibratepHDialog(float(self.lowpH), float(self.midpH), float(self.highpH))
         self.pH_calibrate_window.calibrate_changed.connect(self.handle_calibrate)
-
-        #self.pump_control = pumpControl(self)
-        #self.pump_control.pumpActivated.connect(self.pump_activated)
-        #self.pump_control.pumpDeactivated.connect(self.pump_deactivated)
-        #self.pump_control.cooldownEnded.connect(self.on_cooldown_ended)
-        
-        
-        #for i in range(8):
-        #    lib8mosind.set(0,i+1,0)
-        #try:
-        #    i2c_mutex.lock()      
-        #    lib8mosind.set_all(0,0)
-        #    i2c_mutex.unlock()      
-        #except:
-        #    pass
-        
         
         self.initializeUI()
         self.delayed_show_fullscreen()
@@ -123,7 +107,6 @@ class MainWindow(QMainWindow):
         self.setupMenu()
         self.setupWidgets()
         self.setupStatusBar()
-        self.plot_manager = PlotManager(self)
 
         self.setuppHWorker()
         self.setupRTDWorker()
@@ -847,6 +830,9 @@ class MainWindow(QMainWindow):
         grid.addWidget(buttonWidget,2,0,2,1)
         grid.addWidget(selectWidget, 0, 1)
         grid.addWidget(self.tabWidget, 1,1,3,2)
+        
+        self.plot_manager = PlotManager(self)
+
         self.initializeGraphTabs()
         self.initializeTabTimer()
         #self.addGraphTab()
