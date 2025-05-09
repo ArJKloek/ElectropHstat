@@ -12,24 +12,24 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QGridLayout,
                              QPushButton, QTabWidget, QFrame, QMenu, QMessageBox, QActionGroup, QDial, QToolTip, QCheckBox)
 from PyQt5.QtGui import QFont, QColor, QIcon, QPen, QTransform, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint
-from LedIndicatorWidget import LedIndicator
-from pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2c_mutex
+from scripts.LedIndicatorWidget import LedIndicator
+from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2c_mutex
 from PPSWorker import PPSWorker
-from pHstat_config import ConfigReader, ConfigWriter
-from pHStat_classes import (pHPickerDialog, SelectPickerDialog, pumpControl, 
+from scripts.pHstat_config import ConfigReader, ConfigWriter
+from scripts.pHStat_classes import (pHPickerDialog, SelectPickerDialog, pumpControl, 
                             DatePickerDialog, CustomTextWidget, ClickableLabel, CalibratePumpDialog,CalibratepHDialog, monoTimer, ToggleSwitch)
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui, QtWidgets
 import numpy as np
-from pHStat_csv import create_csv, log_csv, read_log_data, scale_time_data
-from atlas import atlas_i2c
+from scripts.pHStat_csv import create_csv, log_csv, read_log_data, scale_time_data
+from scripts.atlas import atlas_i2c
 import datetime
 import shutil
 import re
 #import lib8mosind
 import serial.tools.list_ports
 from voltcraft.pps import PPS
-from plot_manager import PlotManager
+from scripts.plot_manager import PlotManager
 
 def find_voltcraft_pps() -> str or None:
     ports = serial.tools.list_ports.comports()
@@ -1675,22 +1675,4 @@ class MainWindow(QMainWindow):
         # Optionally, you can also use the exitApplication method here
         self.exitApplication(event)
     
-    #def closeEvent(self, event):
-    #    # Handle the close event, ensure threads are properly closed
-    #    self.pHWorker.stop()
-    #    self.pHThread.quit()
-
-    #    self.RTDWorker.stop()
-    #    self.RTDThread.quit()
-
-    #    self.StatWorker.stop()
-    #    self.StatThread.quit()
-    
-    #    event.accept()  # Accept the close event
-
-
-#if __name__ == "__main__":
-#    app = QApplication(sys.argv)  # Create an instance of QApplication
-#    window = MainWindow()  # Create an instance of your application's main window
-#    #app.aboutToQuit.connect(MainWindow.closeEvent)  # Ensure clean closure
-#    sys.exit(app.exec_())  # Start your application's event loop (main loop)
+   
