@@ -703,7 +703,7 @@ class MainWindow(QMainWindow):
         pHLayout.addWidget(self.voltagelabel,2,0,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.currentlabel,2,1,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.modelabel,2,2,alignment= Qt.AlignCenter)
-        pHLayout.addWidget(self.powerButton,2,3,alignment= Qt.AlignLeft)
+        pHLayout.addWidget(self.powerButton,2,3,1,1,alignment= Qt.AlignLeft)
         
         #USB Button
         self.usb_button = QPushButton(self)
