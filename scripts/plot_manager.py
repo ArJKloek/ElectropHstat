@@ -129,14 +129,14 @@ class PlotManager:
                 self.main.temp_curve = pg.PlotCurveItem(x_temp, y_temp, pen=pg.mkPen('r', width=2))
                 self.main.tempViewBox.addItem(self.main.temp_curve)
                 self.main.tempViewBox.enableAutoRange(axis=pg.ViewBox.YAxis)
-            else:
-                # Remove temp curve if it's showing
-                if self.main.temp_curve:
-                    self.main.tempViewBox.removeItem(self.main.temp_curve)
-                    self.main.temp_curve = None
+        else:
+            # Remove temp curve if it's showing
+            if self.main.temp_curve:
+                self.main.tempViewBox.removeItem(self.main.temp_curve)
+                self.main.temp_curve = None
 
-                # Hide the right axis
-                self.main.graphWidgets[1].hideAxis('right')
+            # Hide the right axis
+            self.main.graphWidgets[1].hideAxis('right')
 
     def update_power_plot(self):
         if hasattr(self.main, 'voltage_log') and self.main.voltage_log:
