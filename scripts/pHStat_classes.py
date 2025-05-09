@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QDateTimeEdit, QPushButton,
                              QWidget, QHBoxLayout, QSpinBox, QLabel, QComboBox, QDoubleSpinBox, QLineEdit, QCheckBox)
 from PyQt5.QtCore import QEvent, Qt, QDateTime, pyqtSignal, QObject, QTimer, QSize, QPoint, QRectF, QPointF, pyqtSlot as Slot, pyqtProperty as Property
 from PyQt5.QtGui import QPainter, QColor, QFont, QFontMetrics, QCursor, QPen, QPaintEvent, QBrush
-from pHStat_worker import StatWorker
+from scripts.pHStat_worker import StatWorker
 import os
 import math
 import time
