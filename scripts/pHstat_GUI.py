@@ -118,6 +118,7 @@ class MainWindow(QMainWindow):
         self.initWorkerTimer()
         self.initCalcTimer()
         self.logging_timer = monoTimer()
+        self.coulombTimer.start()
         QTimer.singleShot(0, self.option3.trigger)
         #self.toggle_pHStat(False)
         self.toggle_pH_control.trigger()
@@ -337,7 +338,8 @@ class MainWindow(QMainWindow):
         self.highpH = 0.0
         self.copy_path = ""
         #self.log_interval = 500
-        
+        self.coulombs = 0.0
+
         ConfigReader(self)
     def setupMenu(self):
         """Setup the menu bar."""
@@ -942,7 +944,12 @@ class MainWindow(QMainWindow):
         
    #def updateCurrentTabPlot(self):
         # Update the plot of the current active tab
-        
+
+    def updateCoulombs(self):
+        dt = self.coulombTimer.lap()  # Time since last update
+        amps = getattr(self, 'latest_current', 0)
+        self.coulombs += amps * dt
+        self.coulombLabel.setText(f"Coulombs: {self.coulombs:.2f}")
 
     def onTabChanged(self, index):
         self.currentActiveTabIndex = index
