@@ -19,6 +19,8 @@ class PlotManager:
         right_label=None,  # None disables right Y-axis
         left_units="",
         right_units=""
+        #left_curve="",
+        #right_curve=""
     ):
         tab = QWidget()
         tab.plot_index = plot_index
@@ -35,8 +37,8 @@ class PlotManager:
 
         # Optional curve handles (naming is up to you)
         #if plot_index == 1:
-        #    self.main.pH_curve = None
-        #    self.main.temp_curve = None
+        #self.main.{left_curve}_curve = None
+        #self.main.{right_curve}_curve = None
 
         # Setup main view (left axis)
         plotWidget.showGrid(x=True, y=True)
@@ -54,18 +56,26 @@ class PlotManager:
             plotWidget.setLabel('right', f'{right_label} {right_units}', color='black', size='11pt')
             plotWidget.getAxis('right').setTextPen(QPen(QColor('black')))
             right_viewbox.setXLink(plotWidget)
-            self.main.tempViewBox = right_viewbox  # You can store with a more dynamic name if needed
+            #self.main.ViewBox = right_viewbox  # You can store with a more dynamic name if needed
 
         # Store the primary view box if needed
         #if plot_index == 1:
         #    self.main.pHViewBox = plotWidget.getViewBox()
         
+        # Store ViewBoxes for alignment
         self.main.viewBoxes[plot_index] = plotWidget.getViewBox()
+        if right_label:
+            self.main.rightViewBoxes[plot_index] = right_viewbox
+
+            # Connect update signal to generalized handler
+            plotWidget.getViewBox().sigResized.connect(
+                lambda vb=plotWidget.getViewBox(), ri=plot_index: self.updateLinkedViews(ri)
+            )
 
         #plotWidget.getViewBox().sigResized.connect(self.updateDualViews)
         
-        vb = plotWidget.getViewBox()
-        self.main.viewBoxes[plot_index] = vb
+        #vb = plotWidget.getViewBox()
+        #self.main.viewBoxes[plot_index] = vb
         self.main.tabWidget.addTab(tab, title)
 
         # Optional tab styling
@@ -77,6 +87,15 @@ class PlotManager:
                 padding: 5px;
             }
         """)
+    def updateLinkedViews(self, plot_index):
+        if plot_index not in self.main.rightViewBoxes or plot_index not in self.main.viewBoxes:
+            return
+
+        right_vb = self.main.rightViewBoxes[plot_index]
+        left_vb = self.main.viewBoxes[plot_index]
+
+        right_vb.setGeometry(left_vb.sceneBoundingRect())
+        right_vb.linkedViewChanged(left_vb, right_vb.XAxis)
 
     def addDualGraphTab(self, title):
         tab = QWidget()

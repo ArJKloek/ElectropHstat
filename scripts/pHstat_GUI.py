@@ -338,7 +338,8 @@ class MainWindow(QMainWindow):
         self.copy_path = ""
         #self.log_interval = 500
         self.viewBoxes = {}  # In __init__ or setupVariables()
-
+        self.rightViewBoxes = {}
+        
         ConfigReader(self)
     
     def setupMenu(self):
