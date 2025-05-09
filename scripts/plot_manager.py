@@ -1,6 +1,6 @@
 import numpy as np
 import pyqtgraph as pg
-from pHStat_csv import read_log_data, scale_time_data  # if not already imported in main
+from scripts.pHStat_csv import read_log_data, scale_time_data  # if not already imported in main
 
 class PlotManager:
     def __init__(self, main):
