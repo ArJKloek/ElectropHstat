@@ -664,7 +664,12 @@ class horizontalToggleSwitch(QCheckBox):
                  fontSize=10):
              
         super().__init__(parent)
+        
+        # ✅ Let the widget expand as needed
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
+        # ✅ Set a reasonable minimum so it doesn't collapse
+        self.setMinimumSize(100, 40)
         # Save our properties on the object via self, so we can access them later
         # in the paintEvent.
         self._bar_brush = QBrush(bar_color)
