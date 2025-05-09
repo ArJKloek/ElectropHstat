@@ -19,8 +19,8 @@ from scripts.pHstat_config import ConfigReader, ConfigWriter
 from scripts.pHStat_classes import (pHPickerDialog, SelectPickerDialog, pumpControl, 
                             DatePickerDialog, CustomTextWidget, ClickableLabel, CalibratePumpDialog,CalibratepHDialog, monoTimer, ToggleSwitch)
 import pyqtgraph as pg
-from pyqtgraph.Qt import QtGui, QtWidgets
-import numpy as np
+#from pyqtgraph.Qt import QtGui, QtWidgets
+#import numpy as np
 from scripts.pHStat_csv import create_csv, log_csv, read_log_data, scale_time_data
 from scripts.atlas import atlas_i2c
 import datetime
@@ -905,10 +905,6 @@ class MainWindow(QMainWindow):
     def updatePlot(self, tab):
         self.plot_manager.update(tab)
     
-    #def updateDualViews(self):
-    #    self.tempViewBox.setGeometry(self.pHViewBox.sceneBoundingRect())
-    #    self.tempViewBox.linkedViewChanged(self.pHViewBox, self.tempViewBox.XAxis)
-
     def addGraphTab(self, title, axisLabels):
         tab = QWidget()
         tab.plot_index = 0
@@ -1462,10 +1458,6 @@ class MainWindow(QMainWindow):
         #self.voltageDial.blockSignals(True)         # Prevent feedback loop
         #self.voltageDial.setValue(dial_val)
         #self.voltageDial.blockSignals(False)
-    
-    
-    
-    
     
     def queryInstructions(self, calibrationType, pH):
         command = (f"Cal,{calibrationType},{pH}")
