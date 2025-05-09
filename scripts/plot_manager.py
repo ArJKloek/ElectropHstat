@@ -234,6 +234,8 @@ class PlotManager:
             "use_right_axis": True
         })
         show_amp = True
+        self.update_plot_from_log(plot_index=3, curve_configs=curve_configs, show_right_axis=show_amp)
+
 
     def update_coulomb_plot(self):
         curve_configs = [
