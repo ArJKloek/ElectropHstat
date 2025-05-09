@@ -953,55 +953,6 @@ class MainWindow(QMainWindow):
     def updatePlot(self, tab):
         self.plot_manager.update(tab)
     
-    def addDualGraphTab(self, title):
-        tab = QWidget()
-        tab.plot_index = 1 
-        layout = QVBoxLayout(tab)
-        backgroundColor = self.palette().color(self.backgroundRole())
-
-        # Main PlotWidget
-        plotWidget = pg.PlotWidget()
-        plotWidget.setBackground(backgroundColor)
-        layout.addWidget(plotWidget)
-
-        self.graphWidgets.append(plotWidget)
-        self.graphTabs.append(tab)
-        self.pH_curve = None
-        self.temp_curve = None
-
-        # Setup main view (left axis)
-        plotWidget.showGrid(x=True, y=True)
-        plotWidget.setLabel('left', 'pH', color='black', size='11pt')
-        plotWidget.setLabel('bottom', 'Time (s)', color='black', size='11pt')
-        plotWidget.getAxis('left').setTextPen(QPen(QColor('black')))
-        plotWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))
-
-        # Create a second view for Temperature (right axis)
-        self.tempViewBox = pg.ViewBox()
-        plotWidget.scene().addItem(self.tempViewBox)
-        plotWidget.getAxis('right').linkToView(self.tempViewBox)
-        plotWidget.showAxis('right')
-        plotWidget.setLabel('right', 'Temperature (°C)', color='black', size='11pt')
-        plotWidget.getAxis('right').setTextPen(QPen(QColor('black')))
-
-        self.tempViewBox.setXLink(plotWidget)
-
-        # Connect resizing
-        plotWidget.getViewBox().sigResized.connect(self.updateDualViews)
-
-        # Save special dual-plot references
-        self.pHViewBox = plotWidget.getViewBox()
-
-        self.tabWidget.addTab(tab, title)
-        self.tabWidget.setStyleSheet("""
-            QTabBar::tab {
-                font-size: 10pt;
-                height: 20px;
-                width: 110px;
-                padding: 5px;
-            }
-        """)
-
     def updateDualViews(self):
         self.tempViewBox.setGeometry(self.pHViewBox.sceneBoundingRect())
         self.tempViewBox.linkedViewChanged(self.pHViewBox, self.tempViewBox.XAxis)
