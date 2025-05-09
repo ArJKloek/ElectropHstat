@@ -931,43 +931,21 @@ class MainWindow(QMainWindow):
             right_units="A"
         )
         
+        self.plot_manager.addGraphTab(
+            title="Coulomb",
+            plot_index=3,
+            left_label="Coulomb (C)",
+            right_label=None,
+            right_units=None
+        )
+        
         #self.plot_manager.addPowerGraphTab("Power Plot")
-        self.plot_manager.addCoulombGraphTab("Coulomb Plot")
+        #self.plot_manager.addCoulombGraphTab("Coulomb Plot")
 
         # (Optional) Add RTD plot separately if you still want individual
         
     def updatePlot(self, tab):
         self.plot_manager.update(tab)
-    
-    def addGraphTab(self, title, axisLabels):
-        tab = QWidget()
-        tab.plot_index = 0
-        layout = QVBoxLayout(tab)
-        backgroundColor = self.palette().color(self.backgroundRole())
-        
-        graphWidget = pg.PlotWidget()
-        graphWidget.setBackground(backgroundColor)
-        self.graphWidgets.append(graphWidget)
-        layout.addWidget(graphWidget)
-        self.graphTabs.append(tab)
-        #Set axis labels
-        xAxisLabel, yAxisLabel = axisLabels
-        labelStyle = {'color': 'black', 'font-size': '11pt'}
-        graphWidget.setLabel('bottom', xAxisLabel, **labelStyle)
-        graphWidget.setLabel('left', yAxisLabel, **labelStyle)
-        graphWidget.getAxis('left').setTextPen(QPen(QColor('black')))  # Set tick label color to black
-        graphWidget.getAxis('bottom').setTextPen(QPen(QColor('black')))  # Set tick label color to black
-        graphWidget.showGrid(True, True, alpha=0.25)
-
-        self.tabWidget.addTab(tab, title)
-        self.tabWidget.setStyleSheet("""
-            QTabBar::tab {
-                font-size: 10pt;  /* Increase font size */
-                height: 20px;     /* Increase tab height to accommodate larger font */
-                width: 110px;     /* Optional: Adjust width as needed */
-                padding: 5px;    /* Add some padding for text alignment */
-            }
-        """)
         
     def updateCurrentTabPlot(self):
         # Get the current widget (tab)
