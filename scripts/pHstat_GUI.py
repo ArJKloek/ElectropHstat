@@ -95,6 +95,10 @@ class MainWindow(QMainWindow):
         self.pH_calibrate_window = CalibratepHDialog(float(self.lowpH), float(self.midpH), float(self.highpH))
         self.pH_calibrate_window.calibrate_changed.connect(self.handle_calibrate)
         
+        self.pump_control = pumpControl(self)
+        self.pump_control.pumpActivated.connect(self.pump_activated)
+        self.pump_control.pumpDeactivated.connect(self.pump_deactivated)
+        
         self.initializeUI()
         #self.delayed_show_fullscreen()
 
