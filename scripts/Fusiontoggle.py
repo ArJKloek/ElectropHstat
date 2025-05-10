@@ -221,6 +221,13 @@ class Round3DButton(QPushButton):
             painter.setBrush(gradient)
             painter.setPen(Qt.NoPen)
             painter.drawEllipse(center, radius, radius)
+
+            bg_color = QColor("#a6a6a6")
+            pen = QPen(bg_color, 1)
+            painter.setPen(pen)
+            inner_radius = radius-1
+            painter.drawEllipse(center, inner_radius, inner_radius)
+
             border_pen.setColor(QColor("#c8c8c8"))
             painter.setPen(border_pen)
             painter.drawArc(rect.adjusted(2, 2, -2, -2), 225 * 16, 180 * 16)
@@ -242,9 +249,9 @@ class Round3DButton(QPushButton):
             inner_radius = radius-1
             painter.drawEllipse(center, inner_radius, inner_radius)
         
-            border_pen.setColor(Qt.black)#QColor("#c8c8c8"))
+            border_pen.setColor(QColor("#c8c8c8"))
             painter.setPen(border_pen)
-            painter.drawArc(rect.adjusted(6, 6, -6, -6), 45 * 16, 180 * 16)
+            painter.drawArc(rect.adjusted(4, 4, -4, -4), 45 * 16, 180 * 16)
             
 
         #bg_color = QColor("#a6a6a6")
