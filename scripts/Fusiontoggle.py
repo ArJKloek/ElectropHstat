@@ -199,11 +199,11 @@ class Round3DButton(QPushButton):
         center = rect.center()
 
         # Background color
-        bg_color = QColor("#afafaf") if not self.isDown() else QColor("#a3a3a3")
+        #bg_color = QColor("#afafaf") if not self.isDown() else QColor("#a3a3a3")
         #painter.setBrush(bg_color)
-        pen = QPen(bg_color, 2)
-        painter.setPen(pen)
-        painter.drawEllipse(center, radius, radius)
+        #pen = QPen(bg_color, 2)
+        #painter.setPen(pen)
+        #painter.drawEllipse(center, radius, radius)
         #gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
         #gradient.setColorAt(0, Qt.white)  # top-left
         #gradient.setColorAt(1, QColor("#d3d3d3"))           # bottom-right
@@ -218,9 +218,9 @@ class Round3DButton(QPushButton):
 
         if not self.isDown():       #ecf0f1
             # Sunken: draw bottom + right highlight
-            #border_pen.setColor(QColor("#d3d3d3"))
-            #painter.setPen(border_pen)
-            #painter.drawArc(rect.adjusted(2, 2, -2, -2), 225 * 16, 180 * 16)
+            border_pen.setColor(QColor("#d3d3d3"))
+            painter.setPen(border_pen)
+            painter.drawArc(rect.adjusted(2, 2, -2, -2), 225 * 16, 180 * 16)
             gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
             gradient.setColorAt(0, QColor("#f7f7f7"))  # top-left
             gradient.setColorAt(1, QColor("#e1e1e1"))           # bottom-right
@@ -232,9 +232,9 @@ class Round3DButton(QPushButton):
         
         else:
             # Raised: draw top + left highlight
-            #border_pen.setColor(QColor("#d3d3d3"))
-            #painter.setPen(border_pen)
-            #painter.drawArc(rect.adjusted(2, 2, -2, -2), 45 * 16, 180 * 16)
+            border_pen.setColor(QColor("#d3d3d3"))
+            painter.setPen(border_pen)
+            painter.drawArc(rect.adjusted(2, 2, -2, -2), 45 * 16, 180 * 16)
             gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
             gradient.setColorAt(0, QColor("#f5f5f5"))  # top-left
             gradient.setColorAt(1, QColor("#dfdfdf"))           # bottom-right
