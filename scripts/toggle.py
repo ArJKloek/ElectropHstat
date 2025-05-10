@@ -69,7 +69,7 @@ class Toggle(QCheckBox):
         )
         barRect.moveCenter(contRect.center())
         rounding = barRect.height() / 2
-        handleRadius = round(0.9 * barRect.height())
+        handleRadius = round(0.4 * barRect.height())
 
         # the handle will move along this line
         trailLength = contRect.width() -  2 * handleRadius
