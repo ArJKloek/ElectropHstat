@@ -20,9 +20,11 @@ class Toggle(QCheckBox):
         bar_color=Qt.gray,
         checked_color="#00B0FF",
         handle_color=Qt.white,
+         h_scale=1.0,
+         w_scale=1.0,
+        fontSize=10
         ):
         super().__init__(parent)
-
         # Save our properties on the object via self, so we can access them later
         # in the paintEvent.
         self._bar_brush = QBrush(bar_color)
@@ -35,7 +37,9 @@ class Toggle(QCheckBox):
 
         self.setContentsMargins(8, 0, 8, 0)
         self._handle_position = 0
-
+        self._h_scale = h_scale
+        self._w_scale = w_scale
+        self._fontSize = fontSize
         self.stateChanged.connect(self.handle_state_change)
 
     def sizeHint(self):
@@ -45,9 +49,13 @@ class Toggle(QCheckBox):
         return self.contentsRect().contains(pos)
 
     def paintEvent(self, e: QPaintEvent):
-
+        
         contRect = self.contentsRect()
-        handleRadius = round(0.24 * contRect.height())
+        height = contRect.height() * self._h_scale
+        width = contRect.width()  * self._w_scale
+        handleRadius = round(0.4 * contRect.height())
+
+        #handleRadius = round(0.24 * contRect.height())
 
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
@@ -55,7 +63,7 @@ class Toggle(QCheckBox):
         p.setPen(self._transparent_pen)
         barRect = QRectF(
             0, 0,
-            contRect.width() - handleRadius, 0.40 * contRect.height()
+            width - handleRadius, 0.50 * height
         )
         barRect.moveCenter(contRect.center())
         rounding = barRect.height() / 2
@@ -108,7 +116,17 @@ class Toggle(QCheckBox):
         self._pulse_radius = pos
         self.update()
 
+    def setH_scale(self,value):
+        self._h_scale = value
+        self.update()
 
+    def setW_scale(self,value):
+        self._w_scale = value
+        self.update()
+    
+    def setFontSize(self,value):
+        self._fontSize = value
+        self.update()
 
 class AnimatedToggle(Toggle):
 
