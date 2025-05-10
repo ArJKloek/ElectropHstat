@@ -199,7 +199,7 @@ class Round3DButton(QPushButton):
         center = rect.center()
 
         # Background color
-        bg_color = QColor("#e0e0e0") if not self.isDown() else QColor("#d0d0d0")
+        bg_color = QColor("#afafaf") if not self.isDown() else QColor("#a3a3a3")
         #painter.setBrush(bg_color)
         pen = QPen(bg_color, 2)
         painter.setPen(pen)
