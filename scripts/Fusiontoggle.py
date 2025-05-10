@@ -236,8 +236,8 @@ class Round3DButton(QPushButton):
             #painter.setPen(border_pen)
             #painter.drawArc(rect.adjusted(2, 2, -2, -2), 45 * 16, 180 * 16)
             gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
-            gradient.setColorAt(0, QColor("#ebebeb"))  # top-left
-            gradient.setColorAt(1, QColor("#d9d9d9"))           # bottom-right
+            gradient.setColorAt(0, QColor("#f5f5f5"))  # top-left
+            gradient.setColorAt(1, QColor("#dfdfdf"))           # bottom-right
 
             painter.setBrush(gradient)
             painter.setPen(Qt.NoPen)
