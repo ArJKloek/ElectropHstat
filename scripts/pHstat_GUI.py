@@ -659,6 +659,7 @@ class MainWindow(QMainWindow):
         self.powerButton = Fusion3DToggle()
         #self.powerButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.powerButton.setCheckable(True)
+        self.powerButton.setChecked(False)
         self.powerButton.setToolTip("Toggle power supply output ON/OFF")
        
         pHLayout.addWidget(self.pHNumber,0,0,1,2, alignment=Qt.AlignLeft)
@@ -1111,7 +1112,7 @@ class MainWindow(QMainWindow):
             temp_worker = PPSWorker(port, 0.5, reset=True)
             if not temp_worker.is_connected():
                 raise RuntimeError("No PPS detected")
-            self.powerButton.setDisabled(True)
+            
             self.ppsThread = QThread()
             self.ppsWorker = temp_worker
             self.ppsWorker.moveToThread(self.ppsThread)
