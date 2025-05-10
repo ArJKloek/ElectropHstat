@@ -60,9 +60,12 @@ class Toggle(QCheckBox):
         p.setRenderHint(QPainter.Antialiasing)
 
         p.setPen(self._transparent_pen)
+        bar_height_ratio = 0.7  # Increase this to make the bar taller
+        bar_width = width * 0.95  # Wider bar
+        
         barRect = QRectF(
             0, 0,
-            width - handleRadius, 0.50 * height
+            bar_width, bar_height_ratio * height
         )
         barRect.moveCenter(contRect.center())
         rounding = barRect.height() / 2
