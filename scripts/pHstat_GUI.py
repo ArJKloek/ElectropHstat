@@ -30,7 +30,7 @@ import re
 from scripts.pHStat_classes import MockLib8MosInd
 import serial.tools.list_ports
 from voltcraft.pps import PPS
-from scripts import PlotManager, atlas_i2c, Fusion3DToggle, RoundSetButton, Push3DButton
+from scripts import PlotManager, atlas_i2c, Fusion3DToggle, RoundSetButton, Push3DButton, Round3DButton
 
 
 lib8mosind = MockLib8MosInd()
@@ -633,7 +633,7 @@ class MainWindow(QMainWindow):
         self.modeToggle.setChecked(False)  # Default to CV mode
         self.modeToggle.setMinimumSize(80, 120)
         
-        self.toolButton = Push3DButton() 
+        self.toolButton = Round3DButton() 
         self.toolButton.setFixedSize(80,80)
         
 

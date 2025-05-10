@@ -177,3 +177,55 @@ class Push3DButton(QPushButton):
 
     def sizeHint(self):
         return QSize(100, 40)
+    
+class Round3DButton(QPushButton):
+    def __init__(self, text="Set", parent=None):
+        super().__init__(text, parent)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setMinimumSize(60, 60)
+        self.setCursor(Qt.PointingHandCursor)
+        self.setFont(QFont("Arial", 11, QFont.Bold))
+
+    def sizeHint(self):
+        side = max(60, self.fontMetrics().height() * 3)
+        return QSize(side, side)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        rect = self.rect()
+        size = min(rect.width(), rect.height())
+        radius = size / 2 - 2
+        center = rect.center()
+
+        # Background color
+        bg_color = QColor("#e0e0e0") if not self.isDown() else QColor("#d0d0d0")
+        painter.setBrush(bg_color)
+        painter.setPen(Qt.NoPen)
+        painter.drawEllipse(center, radius, radius)
+
+        # 3D border effect
+        border_pen = QPen()
+        border_pen.setWidth(2)
+
+        if self.isDown():
+            # Sunken: draw bottom + right highlight
+            border_pen.setColor(QColor("gray"))
+            painter.setPen(border_pen)
+            painter.drawArc(rect.adjusted(2, 2, -2, -2), -45 * 16, 180 * 16)
+        else:
+            # Raised: draw top + left highlight
+            border_pen.setColor(QColor("white"))
+            painter.setPen(border_pen)
+            painter.drawArc(rect.adjusted(2, 2, -2, -2), 135 * 16, 180 * 16)
+
+        # Draw centered text
+        painter.setPen(Qt.black)
+        font = painter.font()
+        font.setPointSizeF(radius * 0.5)
+        painter.setFont(font)
+        painter.drawText(rect, Qt.AlignCenter, self.text())
+
+        painter.end()
+
