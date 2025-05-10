@@ -9,7 +9,7 @@ if 'XDG_RUNTIME_DIR' not in os.environ:
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QGridLayout, 
                              QLabel, QMenuBar, QAction, QStatusBar, 
                              QComboBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, 
-                             QPushButton, QTabWidget, QFrame, QMenu, QMessageBox, QActionGroup, QDial, QToolTip, QCheckBox, QSizePolicy)
+                             QPushButton, QTabWidget, QFrame, QMenu, QMessageBox, QActionGroup, QDial, QToolTip, QCheckBox, QSizePolicy, QToolButton)
 from PyQt5.QtGui import QFont, QColor, QIcon, QPen, QTransform, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint
 from scripts.LedIndicatorWidget import LedIndicator
@@ -633,6 +633,10 @@ class MainWindow(QMainWindow):
         self.modeToggle.setChecked(False)  # Default to CV mode
         self.modeToggle.setMinimumSize(80, 120)
         
+        self.toolButton = QToolButton() 
+        self.toolButton.setFixedSize(80,80)
+
+
         self.setButton = RoundSetButton("Set")
         self.setButton.clicked.connect(self.apply_ps_settings)
         self.setButton.setFixedSize(80, 80)  # Makes it a square (round via radius below)
@@ -668,7 +672,7 @@ class MainWindow(QMainWindow):
         pHLayout.addWidget(self.voltageDial, 1, 0,alignment= Qt.AlignCenter) 
         pHLayout.addWidget(self.currentDial, 1, 1,alignment= Qt.AlignCenter)  
         pHLayout.addWidget(self.modeToggle, 1, 2,alignment= Qt.AlignCenter)
-        pHLayout.addWidget(self.setButton, 1, 3,alignment= Qt.AlignCenter)
+        pHLayout.addWidget(self.toolButton, 1, 3,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.voltagelabel,2,0,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.currentlabel,2,1,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.modelabel,2,2,alignment= Qt.AlignCenter)
