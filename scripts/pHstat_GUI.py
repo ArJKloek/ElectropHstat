@@ -723,7 +723,12 @@ class MainWindow(QMainWindow):
         self.layerSelector = QComboBox()
         self.layerSelector.addItems(["Keep Above", "Keep Below"])
         #self.layerSelector.currentIndexChanged.connect(self.apply_layer_flag)
-        self.phSpin = PHSelectorWidget()
+        self.phSpin = QDoubleSpinBox()
+        self.phSpin.setRange(0.00, 14.00)
+        self.phSpin.setSingleStep(0.1)
+        self.phSpin.setDecimals(2)
+        self.phSpin.setSuffix("  pH")
+        self.phSpin.setValue(7.00)  # default
         
         pHselectLayout.addWidget(self.layerSelector,0,0)
         pHselectLayout.addWidget(self.phSpin,0,1)
