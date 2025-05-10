@@ -199,12 +199,7 @@ class Round3DButton(QPushButton):
         center = rect.center()
 
         # Background color
-        bg_color = QColor("#a6a6a6")
-        #painter.setBrush(QColor("#a6a6a6"))
-        pen = QPen(bg_color, 2)
-        painter.setPen(pen)
-        inner_radius = radius*0.9
-        painter.drawEllipse(center, inner_radius, inner_radius)
+        
         #gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
         #gradient.setColorAt(0, Qt.white)  # top-left
         #gradient.setColorAt(1, QColor("#d3d3d3"))           # bottom-right
@@ -229,7 +224,7 @@ class Round3DButton(QPushButton):
             painter.setBrush(gradient)
             painter.setPen(Qt.NoPen)
             painter.drawEllipse(center, radius, radius)
- 
+            
         
         else:
             # Raised: draw top + left highlight
@@ -243,7 +238,14 @@ class Round3DButton(QPushButton):
             painter.setBrush(gradient)
             painter.setPen(Qt.NoPen)
             painter.drawEllipse(center, radius, radius)
- 
+
+        bg_color = QColor("#a6a6a6")
+        #painter.setBrush(QColor("#a6a6a6"))
+        pen = QPen(bg_color, 2)
+        painter.setPen(pen)
+        inner_radius = radius*0.9
+        painter.drawEllipse(center, inner_radius, inner_radius)
+        
         # Draw centered text
         offset = QPointF(1.5, 1.5) if self.isDown() else QPointF(0, 0)
         # Draw text centered, but slightly shifted if pressed
