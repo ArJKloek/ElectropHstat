@@ -804,3 +804,65 @@ class PHSpinBox(QAbstractSpinBox):
             super().keyPressEvent(event)
         else:
             event.ignore()  # prevent typing unless you want to parse text
+
+class PHSegmentSpinBox(QAbstractSpinBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ph_value = 7.40
+        self._segment = 0  # 0 = whole, 1 = tenths
+        self.setAlignment(Qt.AlignCenter)
+        self.setAccelerated(True)
+        self.setKeyboardTracking(False)
+        self.setValue(self._ph_value)
+
+    def value(self):
+        return round(self._ph_value, 2)
+
+    def setValue(self, val):
+        self._ph_value = max(0.0, min(14.9, round(val, 2)))
+        self.lineEdit().setText(f"{self._ph_value:05.2f}")
+
+    def stepEnabled(self):
+        return QAbstractSpinBox.StepUpEnabled | QAbstractSpinBox.StepDownEnabled
+
+    def stepBy(self, steps):
+        whole, decimal = divmod(self._ph_value, 1)
+        if self._segment == 0:  # step whole
+            whole += steps
+        elif self._segment == 1:  # step tenths
+            decimal += steps * 0.1
+        self.setValue(whole + decimal)
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        click_x = event.pos().x()
+        text = self.lineEdit().text()
+
+        # Estimate which digit was clicked
+        fm = QFontMetrics(self.font())
+        char_widths = [fm.width(ch) for ch in text]
+
+        # Build positions
+        char_positions = []
+        x = 0
+        for w in char_widths:
+            char_positions.append((x, x + w))
+            x += w
+
+        # Find clicked segment
+        for i, (start, end) in enumerate(char_positions):
+            if start <= click_x <= end:
+                if i < 2:  # pH 07
+                    self._segment = 0
+                elif i > 2:  # after the decimal point
+                    self._segment = 1
+                break
+
+    def valueFromText(self, text):
+        try:
+            return float(text)
+        except ValueError:
+            return self._ph_value
+
+    def textFromValue(self, value):
+        return f"{value:05.2f}"  # 2-digit whole + 2-digit decimal
