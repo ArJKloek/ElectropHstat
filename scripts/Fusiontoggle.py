@@ -183,8 +183,7 @@ class Round3DButton(QPushButton):
         super().__init__(text, parent)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setMinimumSize(60, 60)
-        self.setCursor(Qt.PointingHandCursor)
-        self.setFont(QFont("Arial", 11, QFont.Bold))
+        self.setFont(QFont("Arial", 11))
 
     def sizeHint(self):
         side = max(60, self.fontMetrics().height() * 3)
@@ -209,14 +208,14 @@ class Round3DButton(QPushButton):
         border_pen = QPen()
         border_pen.setWidth(2)
 
-        if self.isDown():
+        if not self.isDown():
             # Sunken: draw bottom + right highlight
             border_pen.setColor(QColor("gray"))
             painter.setPen(border_pen)
             painter.drawArc(rect.adjusted(2, 2, -2, -2), -45 * 16, 180 * 16)
         else:
             # Raised: draw top + left highlight
-            border_pen.setColor(QColor("white"))
+            border_pen.setColor(QColor("gray"))
             painter.setPen(border_pen)
             painter.drawArc(rect.adjusted(2, 2, -2, -2), 135 * 16, 180 * 16)
 
