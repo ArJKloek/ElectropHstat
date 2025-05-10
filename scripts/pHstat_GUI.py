@@ -636,24 +636,16 @@ class MainWindow(QMainWindow):
         self.toolButton = QToolButton() 
         self.toolButton.setFixedSize(80,80)
         self.toolButton.setStyleSheet("""
-            QPushButton {
-                background-color: #e0e0e0;
-                border-left: 2px solid lightgray;
-                border-top: 2px solid lightgray;
-                border-right: none;
-                border-bottom: none;
-                padding: 6px;
-                font-weight: bold;
-            }
-
-            QPushButton:pressed {
-                border-left: none;
-                border-top: none;
-                border-right: 2px solid gray;
-                border-bottom: 2px solid gray;
-                background-color: #d0d0d0;
-            }
-        """)
+                QPushButton {
+                    background-color: #e0e0e0;
+                    border: 2px outset lightgray;
+                    padding: 6px;
+                }
+                QPushButton:pressed {
+                    border: 2px inset gray;
+                    background-color: #d0d0d0;
+                }
+            """)
 
 
 
