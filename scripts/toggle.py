@@ -54,6 +54,8 @@ class Toggle(QCheckBox):
         height = contRect.height() * self._h_scale
         width = contRect.width()  * self._w_scale
         handleRadius = round(0.4 * contRect.height())
+        print("Painting: width =", width, "height =", height)
+        print("Painting: ContRectwidth =", contRect.width(), "contRectheight =", contRect.height())
 
         #handleRadius = round(0.24 * contRect.height())
 
@@ -69,7 +71,7 @@ class Toggle(QCheckBox):
         rounding = barRect.height() / 2
 
         # the handle will move along this line
-        trailLength = contRect.width() - 2 * handleRadius
+        trailLength = contRect.width() -  2 * handleRadius
         xPos = contRect.x() + handleRadius + trailLength * self._handle_position
 
         if self.isChecked():
