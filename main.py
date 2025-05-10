@@ -5,8 +5,8 @@ from scripts.pHstat_GUI import MainWindow
 
 def main():
     app = QApplication(sys.argv)
-    print("Available styles:", QStyleFactory.keys())
-    app.setStyle(QStyleFactory.create("Fusion"))  # ✅ This line forces a style that respects stylesheets
+    #print("Available styles:", QStyleFactory.keys())
+    app.setStyle(QStyleFactory.create("Windows"))  # ✅ This line forces a style that respects stylesheets
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
