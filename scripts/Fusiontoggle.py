@@ -198,9 +198,6 @@ class Round3DButton(QPushButton):
         radius = size / 2 - 2
         center = rect.center()
 
-        painter.setBrush(QColor("#99ccff"))
-        painter.setPen(Qt.NoPen)
-        draw_half_moon(painter, center, radius, thickness_start=8, thickness_end=2)
         # Background color
         #bg_color = QColor("#e0e0e0") if not self.isDown() else QColor("#d0d0d0")
         #painter.setBrush(bg_color)
@@ -246,43 +243,14 @@ class Round3DButton(QPushButton):
             painter.drawEllipse(center, radius, radius)
  
         # Draw centered text
+        offset = QPointF(1.5, 1.5) if self.isDown() else QPointF(0, 0)
+        # Draw text centered, but slightly shifted if pressed
+        text_rect = self.rect().translated(offset.toPoint())
+        
         painter.setPen(Qt.black)
         font = painter.font()
         font.setPointSizeF(radius * 0.5)
         painter.setFont(font)
-        painter.drawText(rect, Qt.AlignCenter, self.text())
+        painter.drawText(text_rect, Qt.AlignCenter, self.text())
 
         painter.end()
-
-def draw_half_moon(painter, center, radius, thickness_start, thickness_end, angle_start_deg=135, angle_span_deg=180):
-    path = QPainterPath()
-    angle_start_rad = angle_start_deg * (3.14159 / 180)
-    angle_span_rad = angle_span_deg * (3.14159 / 180)
-    steps = 50
-
-    # Outer arc
-    for i in range(steps + 1):
-        t = i / steps
-        angle = angle_start_rad + angle_span_rad * t
-        r = radius
-        x = center.x() + r * np.cos(angle)
-        y = center.y() - r * np.sin(angle)
-        if i == 0:
-            path.moveTo(x, y)
-        else:
-            path.lineTo(x, y)
-
-    # Inner arc (thinner radius)
-    for i in range(steps, -1, -1):
-        t = i / steps
-        angle = angle_start_rad + angle_span_rad * t
-        # Linearly interpolate thickness
-        local_thickness = thickness_start * (1 - t) + thickness_end * t
-        r = radius - local_thickness
-        x = center.x() + r * np.cos(angle)
-        y = center.y() - r * np.sin(angle)
-        path.lineTo(x, y)
-
-    path.closeSubpath()
-    painter.drawPath(path)
-
