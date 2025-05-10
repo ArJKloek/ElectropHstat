@@ -768,101 +768,71 @@ class horizontalToggleSwitch(QCheckBox):
         self._fontSize = value
         self.update()
 
-class PHSpinBox(QAbstractSpinBox):
+class PHSelectorWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._ph_value = 7.00
-        self.setAlignment(Qt.AlignCenter)
-        self.setAccelerated(True)  # hold to scroll fast
-        self.setKeyboardTracking(False)
-        self.setValue(self._ph_value)
+
+        self.active_segment = 0  # 0 = whole, 1 = decimal
+
+        # Spinboxes
+        self.whole = QSpinBox()
+        self.whole.setRange(0, 14)
+        self.whole.setSuffix(".")
+
+        self.decimal = QSpinBox()
+        self.decimal.setRange(0, 9)
+
+        # Unified look
+        for box in (self.whole, self.decimal):
+            box.setButtonSymbols(QSpinBox.NoButtons)
+            box.setAlignment(Qt.AlignCenter)
+            box.setWrapping(True)
+
+        # Label
+        self.label = QLabel("pH:")
+        self.label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.label)
+        layout.addWidget(self.whole)
+        layout.addWidget(self.decimal)
+        self.setLayout(layout)
+
+        # Default active
+        self.select_segment(0)
+
+        # Mouse clicks activate segment
+        self.whole.mousePressEvent = self._make_activate_handler(0)
+        self.decimal.mousePressEvent = self._make_activate_handler(1)
+
+    def _make_activate_handler(self, segment):
+        def handler(event):
+            self.select_segment(segment)
+        return handler
+
+    def select_segment(self, segment):
+        self.active_segment = segment
+        self.whole.setStyleSheet("border: 2px solid blue;" if segment == 0 else "")
+        self.decimal.setStyleSheet("border: 2px solid blue;" if segment == 1 else "")
 
     def value(self):
-        return round(self._ph_value, 2)
-
-    def setValue(self, val):
-        self._ph_value = max(0.0, min(14.0, round(val, 2)))
-        self.lineEdit().setText(f"{self._ph_value:.2f}")
-
-    def stepEnabled(self):
-        return QAbstractSpinBox.StepUpEnabled | QAbstractSpinBox.StepDownEnabled
-
-    def stepBy(self, steps):
-        self.setValue(self._ph_value + steps * 0.1)
-
-    def textFromValue(self, value):
-        return f"{value:.2f}"
-
-    def valueFromText(self, text):
-        try:
-            return float(text)
-        except ValueError:
-            return self._ph_value
+        return float(f"{self.whole.value()}.{self.decimal.value()}")
 
     def keyPressEvent(self, event):
-        if event.key() in (Qt.Key_Up, Qt.Key_Down):
-            super().keyPressEvent(event)
+        if event.key() == Qt.Key_Up:
+            self._adjust_segment(1)
+        elif event.key() == Qt.Key_Down:
+            self._adjust_segment(-1)
         else:
-            event.ignore()  # prevent typing unless you want to parse text
+            super().keyPressEvent(event)
 
-class PHSegmentSpinBox(QAbstractSpinBox):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self._ph_value = 7.40
-        self._segment = 0  # 0 = whole, 1 = tenths
-        self.setAlignment(Qt.AlignCenter)
-        self.setAccelerated(True)
-        self.setKeyboardTracking(False)
-        self.setValue(self._ph_value)
+    def wheelEvent(self, event):
+        delta = 1 if event.angleDelta().y() > 0 else -1
+        self._adjust_segment(delta)
 
-    def value(self):
-        return round(self._ph_value, 2)
-
-    def setValue(self, val):
-        self._ph_value = max(0.0, min(14.9, round(val, 2)))
-        self.lineEdit().setText(f"{self._ph_value:05.2f}")
-
-    def stepEnabled(self):
-        return QAbstractSpinBox.StepUpEnabled | QAbstractSpinBox.StepDownEnabled
-
-    def stepBy(self, steps):
-        whole, decimal = divmod(self._ph_value, 1)
-        if self._segment == 0:  # step whole
-            whole += steps
-        elif self._segment == 1:  # step tenths
-            decimal += steps * 0.1
-        self.setValue(whole + decimal)
-
-    def mousePressEvent(self, event):
-        super().mousePressEvent(event)
-        click_x = event.pos().x()
-        text = self.lineEdit().text()
-
-        # Estimate which digit was clicked
-        fm = QFontMetrics(self.font())
-        char_widths = [fm.width(ch) for ch in text]
-
-        # Build positions
-        char_positions = []
-        x = 0
-        for w in char_widths:
-            char_positions.append((x, x + w))
-            x += w
-
-        # Find clicked segment
-        for i, (start, end) in enumerate(char_positions):
-            if start <= click_x <= end:
-                if i < 2:  # pH 07
-                    self._segment = 0
-                elif i > 2:  # after the decimal point
-                    self._segment = 1
-                break
-
-    def valueFromText(self, text):
-        try:
-            return float(text)
-        except ValueError:
-            return self._ph_value
-
-    def textFromValue(self, value):
-        return f"{value:05.2f}"  # 2-digit whole + 2-digit decimal
+    def _adjust_segment(self, step):
+        if self.active_segment == 0:
+            self.whole.stepBy(step)
+        elif self.active_segment == 1:
+            self.decimal.stepBy(step)

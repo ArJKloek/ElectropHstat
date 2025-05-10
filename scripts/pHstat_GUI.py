@@ -18,7 +18,7 @@ from scripts.PPSWorker import PPSWorker
 from scripts.pHstat_config import ConfigReader, ConfigWriter
 from scripts.pHStat_classes import (pHPickerDialog, SelectPickerDialog, pumpControl, 
                             DatePickerDialog, CustomTextWidget, ClickableLabel, CalibratePumpDialog,CalibratepHDialog, 
-                            monoTimer, ToggleSwitch, PHSpinBox,PHSegmentSpinBox)
+                            monoTimer, ToggleSwitch, PHSelectorWidget)
 import pyqtgraph as pg
 #from pyqtgraph.Qt import QtGui, QtWidgets
 #import numpy as np
@@ -723,7 +723,7 @@ class MainWindow(QMainWindow):
         self.layerSelector = QComboBox()
         self.layerSelector.addItems(["Keep Above", "Keep Below"])
         #self.layerSelector.currentIndexChanged.connect(self.apply_layer_flag)
-        self.phSpin = PHSegmentSpinBox()
+        self.phSpin = PHSelectorWidget()
         
         pHselectLayout.addWidget(self.layerSelector,0,0)
         pHselectLayout.addWidget(self.phSpin,0,1)
