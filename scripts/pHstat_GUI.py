@@ -720,8 +720,10 @@ class MainWindow(QMainWindow):
         pHselectWidget = QWidget()
         pHselectLayout = QGridLayout(pHselectWidget)
         
-        self.layerSelector = QComboBox()
-        self.layerSelector.addItems(["Keep Above", "Keep Below"])
+        self.keepSelector = QComboBox()
+        self.keepSelector.addItems(["Keep Above", "Keep Below"])
+        self.keepSelector.currentIndexChanged.connect(self.keep_selector_changed)
+
         #self.layerSelector.currentIndexChanged.connect(self.apply_layer_flag)
         self.phSpin = QDoubleSpinBox()
         self.phSpin.setRange(0.00, 14.00)
@@ -732,7 +734,7 @@ class MainWindow(QMainWindow):
         
         self.phSpin.setValue(7.00)  # default
         
-        pHselectLayout.addWidget(self.layerSelector,0,0)
+        pHselectLayout.addWidget(self.keepSelector,0,0)
         pHselectLayout.addWidget(self.phSpin,0,1)
 
         pHselectWidget.setLayout(pHselectLayout)
@@ -853,7 +855,10 @@ class MainWindow(QMainWindow):
         self.handle_pH(float(self.pHSelect))
         self.handle_time(float(self.ml), float(self.addtime))
         #self.handle_pHselect(float(self.pHSelect))
-   
+    
+    def keep_selector_changed(self, index):
+        print(index)
+
     def togglePowerSupply(self):
         if self.powerButton.isChecked():
             self.ppsWorker.set_output(True)  # Replace with your actual PPS control
