@@ -199,11 +199,11 @@ class Round3DButton(QPushButton):
         center = rect.center()
 
         # Background color
-        #bg_color = QColor("#afafaf") if not self.isDown() else QColor("#a3a3a3")
-        #painter.setBrush(bg_color)
-        #pen = QPen(bg_color, 2)
-        #painter.setPen(pen)
-        #painter.drawEllipse(center, radius, radius)
+        bg_color = QColor("#a6a6a6")
+        #painter.setBrush(QColor("#a6a6a6"))
+        pen = QPen(bg_color, 2)
+        painter.setPen(pen)
+        painter.drawEllipse(center, radius-1, radius-1)
         #gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
         #gradient.setColorAt(0, Qt.white)  # top-left
         #gradient.setColorAt(1, QColor("#d3d3d3"))           # bottom-right
