@@ -179,7 +179,7 @@ class MainWindow(QMainWindow):
         self.modeToggle.setFontSize(9*scale)
         
         self.powerButton.setH_scale(0.55*scale)
-        self.powerButton.setW_scale(1*scale)
+        self.powerButton.setW_scale(0,55*scale)
         self.powerButton.setFontSize(9*scale)
         
         button_size = int(60 * scale)  # scale from window size
