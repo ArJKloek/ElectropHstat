@@ -21,7 +21,7 @@ class Toggle(QCheckBox):
         checked_color="#00B0FF",
         handle_color=Qt.white,
          h_scale=1.0,
-         w_scale=1.0,
+         w_scale=2.0,
         fontSize=10
         ):
         super().__init__(parent)
