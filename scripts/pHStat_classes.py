@@ -512,9 +512,7 @@ class ToggleSwitch(QCheckBox):
         width =  contRect.width() * self._h_scale
         height = contRect.height() * self._v_scale
         #handleRadius = round(0.24 * height)
-        print("Painting: width =", width, "height =", height)
-        print("Painting: ContRectwidth =", contRect.width(), "contRectheight =", contRect.height())
-
+        
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
 

@@ -54,7 +54,9 @@ class Toggle(QCheckBox):
         height = contRect.height() * self._h_scale
         width = contRect.width()  * self._w_scale
         handleRadius = round(0.4 * contRect.height())
-        
+        print("Painting: width =", width, "height =", height)
+        print("Painting: ContRectwidth =", contRect.width(), "contRectheight =", contRect.height())
+
         #handleRadius = round(0.24 * contRect.height())
 
         p = QPainter(self)
