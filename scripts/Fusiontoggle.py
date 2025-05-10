@@ -66,7 +66,7 @@ class Fusion3DToggle(QCheckBox):
         painter.drawEllipse(handle_center, handle_radius, handle_radius)
 
         # Inner handle circle (colored)
-        handle_color = QColor("#6ec06e") if self.isChecked() else QColor("#cccccc")
+        handle_color = QColor("#6ec06e") if self.isChecked() else QColor("#ec7063")
         painter.setBrush(handle_color)
         painter.setPen(Qt.NoPen)
         painter.drawEllipse(handle_center, handle_radius * 0.8, handle_radius * 0.8)
