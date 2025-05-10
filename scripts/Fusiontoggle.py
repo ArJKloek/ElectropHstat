@@ -219,12 +219,12 @@ class Round3DButton(QPushButton):
             # Sunken: draw bottom + right highlight
             border_pen.setColor(QColor("gray"))
             painter.setPen(border_pen)
-            painter.drawArc(rect.adjusted(2, 2, -2, -2), 135 * 16, 180 * 16)
+            painter.drawArc(rect.adjusted(2, 2, -2, -2), 225 * 16, 180 * 16)
         else:
             # Raised: draw top + left highlight
             border_pen.setColor(QColor("gray"))
             painter.setPen(border_pen)
-            painter.drawArc(rect.adjusted(2, 2, -2, -2), -45 * 16, 180 * 16)
+            painter.drawArc(rect.adjusted(2, 2, -2, -2), 45 * 16, 180 * 16)
 
         # Draw centered text
         painter.setPen(Qt.black)
