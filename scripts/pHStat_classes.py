@@ -522,7 +522,7 @@ class ToggleSwitch(QCheckBox):
         barRect.moveCenter(contRect.center())
         rounding = barRect.width() / 2
         
-        handleRadius = round(0.4 * barRect.width())
+        handleRadius = round(0.9 * barRect.width())
 
 
        
