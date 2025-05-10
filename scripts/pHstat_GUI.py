@@ -143,7 +143,7 @@ class MainWindow(QMainWindow):
         scale = min(width / 800, height / 600)
         font_size = (18 * scale)
         
-        border_size = (4 *scale)
+        border_size = (2 *scale)
         
         start_padding = int(12 * scale)
         stop_padding = int(10 * scale)
