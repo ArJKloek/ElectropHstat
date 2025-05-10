@@ -153,7 +153,7 @@ class Push3DButton(QPushButton):
         pen = QPen()
         pen.setWidth(2)
 
-        if self.isDown():
+        if not self.isDown():
             # Sunken look: bottom and right borders
             pen.setColor(QColor("gray"))
             painter.setPen(pen)
