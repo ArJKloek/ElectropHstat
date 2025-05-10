@@ -214,9 +214,6 @@ class Round3DButton(QPushButton):
 
         if not self.isDown():       #ecf0f1
             # Sunken: draw bottom + right highlight
-            border_pen.setColor(QColor("#c8c8c8"))
-            painter.setPen(border_pen)
-            painter.drawArc(rect.adjusted(4, 4, -4, -4), 225 * 16, 180 * 16)
             gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
             gradient.setColorAt(0, QColor("#f7f7f7"))  # top-left
             gradient.setColorAt(1, QColor("#e1e1e1"))           # bottom-right
@@ -224,6 +221,9 @@ class Round3DButton(QPushButton):
             painter.setBrush(gradient)
             painter.setPen(Qt.NoPen)
             painter.drawEllipse(center, radius, radius)
+            border_pen.setColor(QColor("#c8c8c8"))
+            painter.setPen(border_pen)
+            painter.drawArc(rect.adjusted(4, 4, -4, -4), 225 * 16, 180 * 16)
             
         
         else:
