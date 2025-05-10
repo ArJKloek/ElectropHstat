@@ -700,7 +700,13 @@ class MainWindow(QMainWindow):
         #self.pumpActive = CustomTextWidget("Active", "#F1C40F", 13)
         #F1C40F
 
+        self.layerSelector = QComboBox()
+        self.layerSelector.addItems(["Keep Above", "Keep Below"])
+        #self.layerSelector.currentIndexChanged.connect(self.apply_layer_flag)
+        
+
         selectLayout.addWidget(self.selectlabel,0,0)
+        selectLayout.addWidget(self.layerSelector,0,1)
         selectLayout.addWidget(self.pHText, 0,2, alignment= Qt.AlignRight)
         selectLayout.addWidget(self.pHSelectLabel,0,3, alignment=Qt.AlignLeft)
         selectLayout.addWidget(self.pHstatLabel,1,0,1,2, alignment= Qt.AlignLeft )
