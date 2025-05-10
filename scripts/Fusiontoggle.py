@@ -241,12 +241,12 @@ class Round3DButton(QPushButton):
             painter.drawArc(rect.adjusted(6, 6, -6, -6), 45 * 16, 180 * 16)
             
 
-        bg_color = QColor("#a6a6a6")
+        #bg_color = QColor("#a6a6a6")
         #painter.setBrush(QColor("#a6a6a6"))
-        pen = QPen(bg_color, 1)
-        painter.setPen(pen)
-        inner_radius = radius-1
-        painter.drawEllipse(center, inner_radius, inner_radius)
+        #pen = QPen(bg_color, 1)
+        #painter.setPen(pen)
+        #inner_radius = radius-1
+        #painter.drawEllipse(center, inner_radius, inner_radius)
         
         # Draw centered text
         offset = QPointF(1.5, 1.5) if self.isDown() else QPointF(0, 0)
