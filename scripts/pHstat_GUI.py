@@ -197,6 +197,7 @@ class MainWindow(QMainWindow):
                 background-color: #B0B0B0;
             }}
         """)
+        print("Toggle size:", self.setButton.width(), "x", self.setButton.height())
 
         def set_font(widget, base_size):
             if widget is not None:
