@@ -518,11 +518,12 @@ class ToggleSwitch(QCheckBox):
 
         p.setPen(self._transparent_pen)
         #barRect = QRectF(0, 0, width - handleRadius, 0.40 * height)
-        barRect = QRectF(0, 0, 0.40 * width, height - 10)
+        barRect = QRectF(0, 0, width, height - 10)
         barRect.moveCenter(contRect.center())
         rounding = barRect.width() / 2
         
-        handleRadius = round(0.9 * barRect.width())
+        handleRadius = round(0.4 * barRect.width())
+
 
        
         trailLength = barRect.height() - 2 * handleRadius
