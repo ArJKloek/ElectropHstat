@@ -181,7 +181,24 @@ class MainWindow(QMainWindow):
         #self.toolButton.setFixedSize(button_size,button_size)
         
         self.setButton.setFixedSize(button_size, button_size)
-       
+
+
+        def set_font(widget, base_size):
+            if widget is not None:
+                font = widget.font()
+                font.setPointSizeF(base_size * scale)
+                widget.setFont(font)
+
+        # Adjust fonts on key widgets
+        set_font(self.pHlabel, 35)
+        set_font(self.pHNumber, 35)
+        set_font(self.RTDlabel, 20)
+        set_font(self.selectlabel, 20)
+        set_font(self.pHText, 20)
+        set_font(self.pHSelectLabel, 20)
+        set_font(self.voltagelabel, 20)
+        set_font(self.currentlabel, 20)
+        set_font(self.modelabel, 20)
         # Update Start button stylesheet with dynamic font size
         start_style = f"""
             QPushButton {{
