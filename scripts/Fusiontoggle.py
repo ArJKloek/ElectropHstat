@@ -135,8 +135,7 @@ class Push3DButton(QPushButton):
         super().__init__(text, parent)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setMinimumSize(80, 30)
-        self.setCursor(Qt.PointingHandCursor)
-        self.setFont(QFont("Arial", 11, QFont.Bold))
+        self.setFont(QFont("Arial", 11))
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -162,7 +161,7 @@ class Push3DButton(QPushButton):
             painter.drawLine(rect.topRight(), rect.bottomRight())    # right
         else:
             # Raised look: top and left borders
-            pen.setColor(QColor("white"))
+            pen.setColor(QColor("gray"))
             painter.setPen(pen)
             painter.drawLine(rect.topLeft(), rect.topRight())        # top
             painter.drawLine(rect.topLeft(), rect.bottomLeft())      # left
