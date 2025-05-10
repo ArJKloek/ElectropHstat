@@ -237,7 +237,6 @@ class Round3DButton(QPushButton):
             painter.drawEllipse(center, radius, radius)
             
             bg_color = QColor("#a6a6a6")
-            painter.setBrush(QColor("#a6a6a6"))
             pen = QPen(bg_color, 1)
             painter.setPen(pen)
             inner_radius = radius-1
