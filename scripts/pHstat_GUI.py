@@ -30,7 +30,7 @@ import re
 from scripts.pHStat_classes import MockLib8MosInd
 import serial.tools.list_ports
 from voltcraft.pps import PPS
-from scripts import PlotManager, atlas_i2c, Fusion3DToggle, RoundSetButton
+from scripts import PlotManager, atlas_i2c, Fusion3DToggle, RoundSetButton, Push3DButton
 
 
 lib8mosind = MockLib8MosInd()
@@ -633,20 +633,9 @@ class MainWindow(QMainWindow):
         self.modeToggle.setChecked(False)  # Default to CV mode
         self.modeToggle.setMinimumSize(80, 120)
         
-        self.toolButton = QToolButton() 
+        self.toolButton = Push3DButton() 
         self.toolButton.setFixedSize(80,80)
-        self.toolButton.setStyleSheet("""
-                QPushButton {
-                    background-color: #e0e0e0;
-                    border: 2px outset lightgray;
-                    padding: 6px;
-                }
-                QPushButton:pressed {
-                    border: 2px inset gray;
-                    background-color: #d0d0d0;
-                }
-            """)
-
+        
 
 
         self.setButton = RoundSetButton("Set")

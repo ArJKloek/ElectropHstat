@@ -129,3 +129,52 @@ class RoundSetButton(QPushButton):
         painter.drawText(self.rect(), Qt.AlignCenter, self.text())
 
         painter.end()
+
+class Push3DButton(QPushButton):
+    def __init__(self, text="Set", parent=None):
+        super().__init__(text, parent)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setMinimumSize(80, 30)
+        self.setCursor(Qt.PointingHandCursor)
+        self.setFont(QFont("Arial", 11, QFont.Bold))
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        rect = self.rect()
+
+        # Background
+        bg_color = QColor("#e0e0e0") if not self.isDown() else QColor("#d0d0d0")
+        painter.setBrush(bg_color)
+        painter.setPen(Qt.NoPen)
+        painter.drawRect(rect)
+
+        # Draw 3D effect with lines
+        pen = QPen()
+        pen.setWidth(2)
+
+        if self.isDown():
+            # Sunken look: bottom and right borders
+            pen.setColor(QColor("gray"))
+            painter.setPen(pen)
+            painter.drawLine(rect.bottomLeft(), rect.bottomRight())  # bottom
+            painter.drawLine(rect.topRight(), rect.bottomRight())    # right
+        else:
+            # Raised look: top and left borders
+            pen.setColor(QColor("white"))
+            painter.setPen(pen)
+            painter.drawLine(rect.topLeft(), rect.topRight())        # top
+            painter.drawLine(rect.topLeft(), rect.bottomLeft())      # left
+
+        # Draw text centered
+        painter.setPen(Qt.black)
+        font = painter.font()
+        font.setPointSizeF(rect.height() * 0.35)
+        painter.setFont(font)
+        painter.drawText(rect, Qt.AlignCenter, self.text())
+
+        painter.end()
+
+    def sizeHint(self):
+        return QSize(100, 40)
