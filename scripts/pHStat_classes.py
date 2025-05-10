@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QDateTimeEdit, QPushButton, 
-                             QWidget, QHBoxLayout, QSpinBox, QLabel, QComboBox, QDoubleSpinBox, QLineEdit, QCheckBox, QAbstractSpinBox)
+                             QWidget, QHBoxLayout, QSpinBox, QLabel, QComboBox, QDoubleSpinBox, QLineEdit, QCheckBox, QHoxLayout)
 from PyQt5.QtCore import QEvent, Qt, QDateTime, pyqtSignal, QObject, QTimer, QSize, QPoint, QRectF, QPointF, QRect, pyqtSlot as Slot, pyqtProperty as Property
 from PyQt5.QtGui import QPainter, QColor, QFont, QFontMetrics, QCursor, QPen, QPaintEvent, QBrush
 from scripts.pHStat_worker import StatWorker
@@ -768,13 +768,14 @@ class horizontalToggleSwitch(QCheckBox):
         self._fontSize = value
         self.update()
 
+
 class PHSelectorWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.active_segment = 0  # 0 = whole, 1 = decimal
 
-        # Spinboxes
+        # Spinboxes (non-editable)
         self.whole = QSpinBox()
         self.whole.setRange(0, 14)
         self.whole.setSuffix(".")
@@ -782,29 +783,37 @@ class PHSelectorWidget(QWidget):
         self.decimal = QSpinBox()
         self.decimal.setRange(0, 9)
 
-        # Unified look
         for box in (self.whole, self.decimal):
             box.setButtonSymbols(QSpinBox.NoButtons)
             box.setAlignment(Qt.AlignCenter)
             box.setWrapping(True)
+            box.setFocusPolicy(Qt.NoFocus)  # no keyboard
 
-        # Label
-        self.label = QLabel("pH:")
-        self.label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-
-        layout = QHBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.label)
-        layout.addWidget(self.whole)
-        layout.addWidget(self.decimal)
-        self.setLayout(layout)
-
-        # Default active
-        self.select_segment(0)
-
-        # Mouse clicks activate segment
+        # Click to select
         self.whole.mousePressEvent = self._make_activate_handler(0)
         self.decimal.mousePressEvent = self._make_activate_handler(1)
+
+        # Action buttons
+        self.btn_up = QPushButton("▲")
+        self.btn_down = QPushButton("▼")
+        self.btn_up.clicked.connect(lambda: self._adjust_segment(1))
+        self.btn_down.clicked.connect(lambda: self._adjust_segment(-1))
+
+        # Layout
+        layout = QVBoxLayout()
+        top_row = QHBoxLayout()
+        top_row.addWidget(QLabel("pH:"))
+        top_row.addWidget(self.whole)
+        top_row.addWidget(self.decimal)
+        layout.addLayout(top_row)
+
+        control_row = QHBoxLayout()
+        control_row.addWidget(self.btn_up)
+        control_row.addWidget(self.btn_down)
+        layout.addLayout(control_row)
+
+        self.setLayout(layout)
+        self.select_segment(0)
 
     def _make_activate_handler(self, segment):
         def handler(event):
@@ -816,23 +825,11 @@ class PHSelectorWidget(QWidget):
         self.whole.setStyleSheet("border: 2px solid blue;" if segment == 0 else "")
         self.decimal.setStyleSheet("border: 2px solid blue;" if segment == 1 else "")
 
-    def value(self):
-        return float(f"{self.whole.value()}.{self.decimal.value()}")
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Up:
-            self._adjust_segment(1)
-        elif event.key() == Qt.Key_Down:
-            self._adjust_segment(-1)
-        else:
-            super().keyPressEvent(event)
-
-    def wheelEvent(self, event):
-        delta = 1 if event.angleDelta().y() > 0 else -1
-        self._adjust_segment(delta)
-
     def _adjust_segment(self, step):
         if self.active_segment == 0:
             self.whole.stepBy(step)
-        elif self.active_segment == 1:
+        else:
             self.decimal.stepBy(step)
+
+    def value(self):
+        return float(f"{self.whole.value()}.{self.decimal.value()}")
