@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QCheckBox, QSizePolicy, QPushButton
 from PyQt5.QtCore import Qt, QRectF, QPointF, QSize
-from PyQt5.QtGui import QPainter, QColor, QBrush, QPen, QLinearGradient, QPaintEvent, QFont
+from PyQt5.QtGui import QPainter, QColor, QBrush, QPen, QLinearGradient, QPaintEvent, QFont, QPainterPath
 
 class Fusion3DToggle(QCheckBox):
     def __init__(self, parent=None):
@@ -220,12 +220,28 @@ class Round3DButton(QPushButton):
             border_pen.setColor(QColor("#d3d3d3"))
             painter.setPen(border_pen)
             painter.drawArc(rect.adjusted(2, 2, -2, -2), 225 * 16, 180 * 16)
+            gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
+            gradient.setColorAt(0, Qt.white)  # top-left
+            gradient.setColorAt(1, QColor("#d3d3d3"))           # bottom-right
+
+            painter.setBrush(gradient)
+            painter.setPen(Qt.NoPen)
+            painter.drawEllipse(center, radius, radius)
+ 
+        
         else:
             # Raised: draw top + left highlight
             border_pen.setColor(QColor("#d3d3d3"))
             painter.setPen(border_pen)
             painter.drawArc(rect.adjusted(2, 2, -2, -2), 45 * 16, 180 * 16)
+            gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
+            gradient.setColorAt(0, QColor("#d3d3d3"))  # top-left
+            gradient.setColorAt(1, Qt.gray)           # bottom-right
 
+            painter.setBrush(gradient)
+            painter.setPen(Qt.NoPen)
+            painter.drawEllipse(center, radius, radius)
+ 
         # Draw centered text
         painter.setPen(Qt.black)
         font = painter.font()
@@ -234,4 +250,36 @@ class Round3DButton(QPushButton):
         painter.drawText(rect, Qt.AlignCenter, self.text())
 
         painter.end()
+
+def draw_half_moon(painter, center, radius, thickness_start, thickness_end, angle_start_deg=135, angle_span_deg=180):
+    path = QPainterPath()
+    angle_start_rad = angle_start_deg * (3.14159 / 180)
+    angle_span_rad = angle_span_deg * (3.14159 / 180)
+    steps = 50
+
+    # Outer arc
+    for i in range(steps + 1):
+        t = i / steps
+        angle = angle_start_rad + angle_span_rad * t
+        r = radius
+        x = center.x() + r * np.cos(angle)
+        y = center.y() - r * np.sin(angle)
+        if i == 0:
+            path.moveTo(x, y)
+        else:
+            path.lineTo(x, y)
+
+    # Inner arc (thinner radius)
+    for i in range(steps, -1, -1):
+        t = i / steps
+        angle = angle_start_rad + angle_span_rad * t
+        # Linearly interpolate thickness
+        local_thickness = thickness_start * (1 - t) + thickness_end * t
+        r = radius - local_thickness
+        x = center.x() + r * np.cos(angle)
+        y = center.y() - r * np.sin(angle)
+        path.lineTo(x, y)
+
+    path.closeSubpath()
+    painter.drawPath(path)
 
