@@ -683,23 +683,8 @@ class MainWindow(QMainWindow):
         self.powerButton = Toggle()
         #self.powerButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.powerButton.setCheckable(True)
-        #self.powerButton.setStyleSheet("""
-        #    QPushButton {
-        #        background-color: #3498db;
-        #        color: white;
-        #        font-weight: bold;
-        #        border-radius: 10px;
-        #        padding: 6px;
-        #    }
-        #    QPushButton:checked {
-        #        background-color: #e74c3c;
-        #    }
-        #""")
         self.powerButton.setToolTip("Toggle power supply output ON/OFF")
-        #self.powerButton.clicked.connect(self.togglePowerSupply)
-
-
-        #pHLayout.addWidget(self.pHlabel,0,0,1,3,alignment= Qt.AlignCenter)
+       
         pHLayout.addWidget(self.pHNumber,0,0,1,2, alignment=Qt.AlignLeft)
         pHLayout.addWidget(self.RTDlabel,0,3,alignment=Qt.AlignRight)
         pHLayout.addWidget(self.voltageDial, 1, 0,alignment= Qt.AlignCenter) 
@@ -709,7 +694,7 @@ class MainWindow(QMainWindow):
         pHLayout.addWidget(self.voltagelabel,2,0,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.currentlabel,2,1,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.modelabel,2,2,alignment= Qt.AlignCenter)
-        pHLayout.addWidget(self.powerButton,2,3,1,1,alignment= Qt.AlignLeft)
+        pHLayout.addWidget(self.powerButton,2,3,alignment= Qt.AlignCenter)
         
         #USB Button
         self.usb_button = QPushButton(self)
