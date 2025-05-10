@@ -238,7 +238,7 @@ class Round3DButton(QPushButton):
             
             border_pen.setColor(QColor("#c8c8c8"))
             painter.setPen(border_pen)
-            painter.drawArc(rect.adjusted(4, 4, -4, -4), 45 * 16, 180 * 16)
+            painter.drawArc(rect.adjusted(0, 0, 0, 0), 45 * 16, 180 * 16)
             
 
         bg_color = QColor("#a6a6a6")
