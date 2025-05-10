@@ -30,7 +30,7 @@ import re
 from scripts.pHStat_classes import MockLib8MosInd
 import serial.tools.list_ports
 from voltcraft.pps import PPS
-from scripts import PlotManager, atlas_i2c, Toggle
+from scripts import PlotManager, atlas_i2c, Fusion3DToggle
 
 
 lib8mosind = MockLib8MosInd()
@@ -683,7 +683,7 @@ class MainWindow(QMainWindow):
         """)
 
         #self.powerButton = QPushButton("Power ON")
-        self.powerButton = QPushButton("OFF")
+        self.powerButton = Fusion3DToggle()
         #self.powerButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.powerButton.setCheckable(True)
         self.powerButton.setToolTip("Toggle power supply output ON/OFF")
