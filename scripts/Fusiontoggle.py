@@ -215,14 +215,14 @@ class Round3DButton(QPushButton):
         border_pen = QPen()
         border_pen.setWidth(2)
 
-        if not self.isDown():
+        if not self.isDown():       #ecf0f1
             # Sunken: draw bottom + right highlight
-            border_pen.setColor(QColor("gray"))
+            border_pen.setColor(QColor("#d3d3d3"))
             painter.setPen(border_pen)
             painter.drawArc(rect.adjusted(2, 2, -2, -2), 225 * 16, 180 * 16)
         else:
             # Raised: draw top + left highlight
-            border_pen.setColor(QColor("gray"))
+            border_pen.setColor(QColor("#d3d3d3"))
             painter.setPen(border_pen)
             painter.drawArc(rect.adjusted(2, 2, -2, -2), 45 * 16, 180 * 16)
 
