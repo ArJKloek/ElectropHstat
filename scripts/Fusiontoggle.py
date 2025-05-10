@@ -203,9 +203,9 @@ class Round3DButton(QPushButton):
         #painter.setBrush(bg_color)
         #painter.setPen(Qt.NoPen)
         #painter.drawEllipse(center, radius, radius)
-        gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
-        gradient.setColorAt(0, Qt.white)  # top-left
-        gradient.setColorAt(1, QColor("#d3d3d3"))           # bottom-right
+        #gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
+        #gradient.setColorAt(0, Qt.white)  # top-left
+        #gradient.setColorAt(1, QColor("#d3d3d3"))           # bottom-right
 
         painter.setBrush(gradient)
         painter.setPen(Qt.NoPen)
@@ -221,8 +221,8 @@ class Round3DButton(QPushButton):
             painter.setPen(border_pen)
             painter.drawArc(rect.adjusted(2, 2, -2, -2), 225 * 16, 180 * 16)
             gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
-            gradient.setColorAt(0, Qt.white)  # top-left
-            gradient.setColorAt(1, QColor("#d3d3d3"))           # bottom-right
+            gradient.setColorAt(0, QColor("#fdfefe"))  # top-left
+            gradient.setColorAt(1, QColor("#f8f9f9"))           # bottom-right
 
             painter.setBrush(gradient)
             painter.setPen(Qt.NoPen)
@@ -231,12 +231,12 @@ class Round3DButton(QPushButton):
         
         else:
             # Raised: draw top + left highlight
-            border_pen.setColor(QColor("#d3d3d3"))
+            border_pen.setColor(QColor("#f8f9f9"))
             painter.setPen(border_pen)
             painter.drawArc(rect.adjusted(2, 2, -2, -2), 45 * 16, 180 * 16)
             gradient = QLinearGradient(rect.topLeft(), rect.bottomRight())
-            gradient.setColorAt(0, QColor("#f7f9f9"))  # top-left
-            gradient.setColorAt(1, QColor("#d3d3d3"))           # bottom-right
+            gradient.setColorAt(0, QColor("#fbfcfc"))  # top-left
+            gradient.setColorAt(1, QColor("#f2f3f4"))           # bottom-right
 
             painter.setBrush(gradient)
             painter.setPen(Qt.NoPen)
