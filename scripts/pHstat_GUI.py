@@ -633,8 +633,18 @@ class MainWindow(QMainWindow):
         self.modeToggle.setChecked(False)  # Default to CV mode
         self.modeToggle.setMinimumSize(80, 120)
         
-        self.toolButton = QToolButton() 
+        self.toolButton = QToolButton('Set') 
         self.toolButton.setFixedSize(80,80)
+        self.toolButton.setStyleSheet("""
+            QPushButton {
+                background-color: #f0f0f0;
+                border: 2px outset lightgray;
+                padding: 6px;
+            }
+            QPushButton:pressed {
+                border: 2px inset gray;
+            }
+        """)
 
 
         self.setButton = RoundSetButton("Set")
