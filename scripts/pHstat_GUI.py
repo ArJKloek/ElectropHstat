@@ -30,7 +30,7 @@ import re
 from scripts.pHStat_classes import MockLib8MosInd
 import serial.tools.list_ports
 from voltcraft.pps import PPS
-from scripts import PlotManager, atlas_i2c, Fusion3DToggle
+from scripts import PlotManager, atlas_i2c, Fusion3DToggle, RoundSetButton
 
 
 lib8mosind = MockLib8MosInd()
@@ -186,45 +186,19 @@ class MainWindow(QMainWindow):
         
         button_size = int(60 * scale)  # scale from window size
         self.setButton.setFixedSize(button_size, button_size)
-        self.setButton.setStyleSheet(f"""
-            QPushButton {{
-                background-color: #DCDCDC;
-                color: black;
-                font-weight: bold;
-                font-size: {int(14 * scale)}pt;
-                border-radius: {button_size // 2}px;
-                border: 2px solid #A9A9A9;
-            }}
-            QPushButton:pressed {{
-                background-color: #B0B0B0;
-            }}
-        """)
-        #print("Toggle size:", self.setButton.width(), "x", self.setButton.height())
-
-        def set_font(widget, base_size):
-            if widget is not None:
-                font = widget.font()
-                font.setPointSizeF(base_size * scale)
-                widget.setFont(font)
-
-        # Adjust fonts on key widgets
-        set_font(self.pHlabel, 35)
-        set_font(self.pHNumber, 35)
-        set_font(self.RTDlabel, 20)
-        set_font(self.selectlabel, 20)
-        set_font(self.pHText, 20)
-        set_font(self.pHSelectLabel, 20)
-        set_font(self.voltagelabel, 20)
-        set_font(self.currentlabel, 20)
-        set_font(self.modelabel, 20)
-        #set_font(self.pumpon, 30)
-        #set_font(self.pHOK, 30)
-        
-        # Resize font of control buttons
-        #set_font(self.startbutton, 15)
-        #set_font(self.stopbutton, 15)
-        #set_font(self.resetbutton, 15)
-        
+        #self.setButton.setStyleSheet(f"""
+        #    QPushButton {{
+        #        background-color: #DCDCDC;
+        #        color: black;
+        #        font-weight: bold;
+        #        font-size: {int(14 * scale)}pt;
+        #        border-radius: {button_size // 2}px;
+        #        border: 2px solid #A9A9A9;
+        #    }}
+        #    QPushButton:pressed {{
+        #        background-color: #B0B0B0;
+         #   }}
+       
         # Update Start button stylesheet with dynamic font size
         start_style = f"""
             QPushButton {{
@@ -659,7 +633,7 @@ class MainWindow(QMainWindow):
         self.modeToggle.setChecked(False)  # Default to CV mode
         self.modeToggle.setMinimumSize(80, 120)
         
-        self.setButton = QPushButton("Set")
+        self.setButton = RoundSetButton("Set")
         self.setButton.clicked.connect(self.apply_ps_settings)
         self.setButton.setFixedSize(80, 80)  # Makes it a square (round via radius below)
         self.setButton.setStyleSheet("""

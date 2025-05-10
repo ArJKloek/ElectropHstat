@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QCheckBox, QSizePolicy
+from PyQt5.QtWidgets import QCheckBox, QSizePolicy, QPushButton
 from PyQt5.QtCore import Qt, QRectF, QPointF, QSize
 from PyQt5.QtGui import QPainter, QColor, QBrush, QPen, QLinearGradient, QPaintEvent, QFont
 
@@ -83,5 +83,49 @@ class Fusion3DToggle(QCheckBox):
             2 * handle_radius,
             2 * handle_radius),
             Qt.AlignCenter, label)
+
+        painter.end()
+
+class RoundSetButton(QPushButton):
+    def __init__(self, label="Set", parent=None):
+        super().__init__(label, parent)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setMinimumSize(60, 60)  # Enforces a circular shape
+
+    def sizeHint(self):
+        side = max(self.fontMetrics().height(), 60)
+        return QSize(side, side)
+
+    def paintEvent(self, event):
+        size = min(self.width(), self.height())
+        center = self.rect().center()
+        radius = size / 2 - 2
+
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        # Shadow or inset effect
+        if self.isDown():
+            top_color = QColor("#b0b0b0")  # darker pressed
+            bottom_color = QColor("#909090")
+        else:
+            top_color = QColor("#e0e0e0")
+            bottom_color = QColor("#ffffff")
+
+        gradient_brush = QBrush(top_color if self.isDown() else bottom_color)
+        painter.setBrush(gradient_brush)
+        painter.setPen(QPen(Qt.gray, 2))
+
+        # Draw circle
+        painter.drawEllipse(center, radius, radius)
+
+        # Draw text
+        painter.setPen(Qt.black)
+        font = painter.font()
+        font.setBold(True)
+        font.setPointSizeF(radius * 0.4)
+        painter.setFont(font)
+
+        painter.drawText(self.rect(), Qt.AlignCenter, self.text())
 
         painter.end()
