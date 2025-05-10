@@ -198,6 +198,9 @@ class Round3DButton(QPushButton):
         radius = size / 2 - 2
         center = rect.center()
 
+        painter.setBrush(QColor("#99ccff"))
+        painter.setPen(Qt.NoPen)
+        draw_half_moon(painter, center, radius, thickness_start=8, thickness_end=2)
         # Background color
         #bg_color = QColor("#e0e0e0") if not self.isDown() else QColor("#d0d0d0")
         #painter.setBrush(bg_color)
