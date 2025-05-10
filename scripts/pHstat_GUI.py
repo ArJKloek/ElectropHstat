@@ -661,7 +661,8 @@ class MainWindow(QMainWindow):
         self.powerButton.setCheckable(True)
         self.powerButton.setChecked(False)
         self.powerButton.setToolTip("Toggle power supply output ON/OFF")
-       
+        self.powerButton.clicked.connect(self.togglePowerSupply)  # Connect the button to a method
+
         pHLayout.addWidget(self.pHNumber,0,0,1,2, alignment=Qt.AlignLeft)
         pHLayout.addWidget(self.RTDlabel,0,3,alignment=Qt.AlignRight)
         pHLayout.addWidget(self.voltageDial, 1, 0,alignment= Qt.AlignCenter) 
@@ -846,13 +847,9 @@ class MainWindow(QMainWindow):
    
     def togglePowerSupply(self):
         if self.powerButton.isChecked():
-            self.powerButton.setText("Power OFF")
             self.ppsWorker.set_output(True)  # Replace with your actual PPS control
-            print("Power Supply ON")
         else:
-            self.powerButton.setText("Power ON")
             self.ppsWorker.set_output(False)
-            print("Power Supply OFF")
 
     def apply_ps_settings(self):
         # Read toggle state (assuming you're using your ToggleSwitch class)
