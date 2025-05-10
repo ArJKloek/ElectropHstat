@@ -185,6 +185,8 @@ class MainWindow(QMainWindow):
         #self.powerButton.setFontSize(9*scale)
         
         button_size = int(60 * scale)  # scale from window size
+        self.toolButton.setFixedSize(button_size,button_size)
+        
         self.setButton.setFixedSize(button_size, button_size)
         #self.setButton.setStyleSheet(f"""
         #    QPushButton {{
