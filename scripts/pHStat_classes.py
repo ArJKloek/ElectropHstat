@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QDateTimeEdit, QPushButton, 
-                             QWidget, QHBoxLayout, QSpinBox, QLabel, QComboBox, QDoubleSpinBox, QLineEdit, QCheckBox, QSizePolicy)
+                             QWidget, QHBoxLayout, QSpinBox, QLabel, QComboBox, QDoubleSpinBox, QLineEdit, QCheckBox, QAbstractSpinBox)
 from PyQt5.QtCore import QEvent, Qt, QDateTime, pyqtSignal, QObject, QTimer, QSize, QPoint, QRectF, QPointF, QRect, pyqtSlot as Slot, pyqtProperty as Property
 from PyQt5.QtGui import QPainter, QColor, QFont, QFontMetrics, QCursor, QPen, QPaintEvent, QBrush
 from scripts.pHStat_worker import StatWorker
@@ -767,3 +767,40 @@ class horizontalToggleSwitch(QCheckBox):
     def setFontSize(self,value):
         self._fontSize = value
         self.update()
+
+class PHSpinBox(QAbstractSpinBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ph_value = 7.00
+        self.setAlignment(Qt.AlignCenter)
+        self.setAccelerated(True)  # hold to scroll fast
+        self.setKeyboardTracking(False)
+        self.setValue(self._ph_value)
+
+    def value(self):
+        return round(self._ph_value, 2)
+
+    def setValue(self, val):
+        self._ph_value = max(0.0, min(14.0, round(val, 2)))
+        self.lineEdit().setText(f"{self._ph_value:.2f}")
+
+    def stepEnabled(self):
+        return QAbstractSpinBox.StepUpEnabled | QAbstractSpinBox.StepDownEnabled
+
+    def stepBy(self, steps):
+        self.setValue(self._ph_value + steps * 0.1)
+
+    def textFromValue(self, value):
+        return f"{value:.2f}"
+
+    def valueFromText(self, text):
+        try:
+            return float(text)
+        except ValueError:
+            return self._ph_value
+
+    def keyPressEvent(self, event):
+        if event.key() in (Qt.Key_Up, Qt.Key_Down):
+            super().keyPressEvent(event)
+        else:
+            event.ignore()  # prevent typing unless you want to parse text
