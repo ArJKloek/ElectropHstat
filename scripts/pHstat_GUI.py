@@ -727,7 +727,9 @@ class MainWindow(QMainWindow):
         self.phSpin.setRange(0.00, 14.00)
         self.phSpin.setSingleStep(0.1)
         self.phSpin.setDecimals(2)
-        self.phSpin.setSuffix("  pH")
+        #self.phSpin.setSuffix("  pH")
+        self.phSpin.setPrefix("pH")
+        
         self.phSpin.setValue(7.00)  # default
         
         pHselectLayout.addWidget(self.layerSelector,0,0)
