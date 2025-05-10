@@ -180,7 +180,6 @@ class MainWindow(QMainWindow):
         powerButton_width = int(60 * scale)
         powerButton_height = int(40 * scale)
         self.powerButton.setFixedSize(powerButton_width, powerButton_height)
-        self.powerButton.setFlat(False)
         #self.powerButton.setH_scale(0.55*scale)
         #self.powerButton.setW_scale(0.55*scale)
         #self.powerButton.setFontSize(9*scale)
