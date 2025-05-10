@@ -701,8 +701,8 @@ class MainWindow(QMainWindow):
         #F1C40F
 
         selectLayout.addWidget(self.selectlabel,0,0)
-        selectLayout.addWidget(self.pHText, 0,1, alignment= Qt.AlignRight)
-        selectLayout.addWidget(self.pHSelectLabel,0,2, alignment=Qt.AlignLeft)
+        selectLayout.addWidget(self.pHText, 0,2, alignment= Qt.AlignRight)
+        selectLayout.addWidget(self.pHSelectLabel,0,3, alignment=Qt.AlignLeft)
         selectLayout.addWidget(self.pHstatLabel,1,0,1,2, alignment= Qt.AlignLeft )
         selectLayout.addWidget(self.pumpLabel,1,0,1,3,alignment= Qt.AlignRight )
 
@@ -1320,6 +1320,8 @@ class MainWindow(QMainWindow):
                 self.pump_start_time = None  # Reset the start time
             else:
                 print("Warning: Pump was not active, no elapsed time to calculate.")
+    
+    
     @pyqtSlot(int)
     def handle_select(self, select):
         if select == 0:
