@@ -178,9 +178,9 @@ class MainWindow(QMainWindow):
         self.modeToggle.setV_scale(0.55*scale)
         self.modeToggle.setFontSize(9*scale)
         
-        self.powerButton.setH_scale(0.55*scale)
-        self.powerButton.setW_scale(0.55*scale)
-        self.powerButton.setFontSize(9*scale)
+        #self.powerButton.setH_scale(0.55*scale)
+        #self.powerButton.setW_scale(0.55*scale)
+        #self.powerButton.setFontSize(9*scale)
         
         button_size = int(60 * scale)  # scale from window size
         self.setButton.setFixedSize(button_size, button_size)
@@ -680,7 +680,7 @@ class MainWindow(QMainWindow):
         """)
 
         #self.powerButton = QPushButton("Power ON")
-        self.powerButton = Toggle()
+        self.powerButton = QPushButton("OFF")
         #self.powerButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.powerButton.setCheckable(True)
         self.powerButton.setToolTip("Toggle power supply output ON/OFF")
