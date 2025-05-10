@@ -179,7 +179,7 @@ class MainWindow(QMainWindow):
         self.modeToggle.setFontSize(9*scale)
         
         self.powerButton.setH_scale(0.55*scale)
-        self.powerButton.setW_scale(0.55*scale)
+        self.powerButton.setW_scale(1*scale)
         self.powerButton.setFontSize(9*scale)
         
         button_size = int(60 * scale)  # scale from window size
@@ -197,7 +197,7 @@ class MainWindow(QMainWindow):
                 background-color: #B0B0B0;
             }}
         """)
-        print("Toggle size:", self.setButton.width(), "x", self.setButton.height())
+        #print("Toggle size:", self.setButton.width(), "x", self.setButton.height())
 
         def set_font(widget, base_size):
             if widget is not None:
