@@ -699,16 +699,28 @@ class MainWindow(QMainWindow):
         #self.pHstatActive = CustomTextWidget("Active", "#F1C40F", 13)
         #self.pumpActive = CustomTextWidget("Active", "#F1C40F", 13)
         #F1C40F
-
+        pHselectWidget = QWidget()
+        pHselectLayout = QGridLayout(pHselectWidget)
+        
         self.layerSelector = QComboBox()
         self.layerSelector.addItems(["Keep Above", "Keep Below"])
         #self.layerSelector.currentIndexChanged.connect(self.apply_layer_flag)
-        
+        self.phSpin = QDoubleSpinBox()
+        self.phSpin.setRange(0.00, 14.00)
+        self.phSpin.setSingleStep(0.1)
+        self.phSpin.setDecimals(2)
+        self.phSpin.setSuffix("  pH")
+        self.phSpin.setValue(7.00)  # default
+
+        pHselectLayout.addWidget(self.layerSelector,0,0)
+        pHselectLayout.addWidget(self.phSpin,0,1)
+
+        pHselectWidget.setLayout(pHselectLayout)
+
 
         selectLayout.addWidget(self.selectlabel,0,0)
-        selectLayout.addWidget(self.layerSelector,0,1)
-        selectLayout.addWidget(self.pHText, 0,2, alignment= Qt.AlignRight)
-        selectLayout.addWidget(self.pHSelectLabel,0,3, alignment=Qt.AlignLeft)
+        selectLayout.addWidget(self.pHText, 0,1, alignment= Qt.AlignRight)
+        selectLayout.addWidget(self.pHSelectLabel,0,2, alignment=Qt.AlignLeft)
         selectLayout.addWidget(self.pHstatLabel,1,0,1,2, alignment= Qt.AlignLeft )
         selectLayout.addWidget(self.pumpLabel,1,0,1,3,alignment= Qt.AlignRight )
 
@@ -805,7 +817,8 @@ class MainWindow(QMainWindow):
         grid.addWidget(pHWidget, 0, 0,2,1)  # Place label next to the LED
         
         grid.addWidget(selectWidget, 0, 1)
-        grid.addWidget(self.usb_button, 0, 2, Qt.AlignRight)
+        grid.addWidget(pHselectWidget, 0, 2)
+        grid.addWidget(self.usb_button, 0, 3, Qt.AlignRight)
         
         grid.addWidget(buttonWidget,2,0,2,1)
         grid.addWidget(selectWidget, 0, 1)
