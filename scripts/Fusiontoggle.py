@@ -207,9 +207,9 @@ class Round3DButton(QPushButton):
         #gradient.setColorAt(0, Qt.white)  # top-left
         #gradient.setColorAt(1, QColor("#d3d3d3"))           # bottom-right
 
-        painter.setBrush(gradient)
-        painter.setPen(Qt.NoPen)
-        painter.drawEllipse(center, radius, radius)
+        #painter.setBrush(gradient)
+        #painter.setPen(Qt.NoPen)
+        #painter.drawEllipse(center, radius, radius)
  
         # 3D border effect
         border_pen = QPen()
