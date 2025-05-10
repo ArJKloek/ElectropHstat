@@ -17,6 +17,9 @@ class Fusion3DToggle(QCheckBox):
 
     def sizeHint(self):
         return QSize(100, 40)
+    
+    def hitButton(self, pos):
+        return self.rect().contains(pos)
 
     def paintEvent(self, e: QPaintEvent):
         width = self.width()
