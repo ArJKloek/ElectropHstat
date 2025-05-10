@@ -170,36 +170,17 @@ class MainWindow(QMainWindow):
         self.currentDial.setFixedSize(dial_size, dial_size)
         
 
-        #self.powerButton.setH_scale(0.55*scale)
-        #self.powerButton.setV_scale(0.55*scale)
-        #self.powerButton.setFontSize(9*scale)
-        
         self.modeToggle.setH_scale(0.55*scale)
         self.modeToggle.setV_scale(0.55*scale)
         self.modeToggle.setFontSize(9*scale)
         powerButton_width = int(60 * scale)
         powerButton_height = int(40 * scale)
         self.powerButton.setFixedSize(powerButton_width, powerButton_height)
-        #self.powerButton.setH_scale(0.55*scale)
-        #self.powerButton.setW_scale(0.55*scale)
-        #self.powerButton.setFontSize(9*scale)
         
         button_size = int(60 * scale)  # scale from window size
-        self.toolButton.setFixedSize(button_size,button_size)
+        #self.toolButton.setFixedSize(button_size,button_size)
         
         self.setButton.setFixedSize(button_size, button_size)
-        #self.setButton.setStyleSheet(f"""
-        #    QPushButton {{
-        #        background-color: #DCDCDC;
-        #        color: black;
-        #        font-weight: bold;
-        #        font-size: {int(14 * scale)}pt;
-        #        border-radius: {button_size // 2}px;
-        #        border: 2px solid #A9A9A9;
-        #    }}
-        #    QPushButton:pressed {{
-        #        background-color: #B0B0B0;
-         #   }}
        
         # Update Start button stylesheet with dynamic font size
         start_style = f"""
@@ -635,33 +616,15 @@ class MainWindow(QMainWindow):
         self.modeToggle.setChecked(False)  # Default to CV mode
         self.modeToggle.setMinimumSize(80, 120)
         
-        self.toolButton = Round3DButton() 
-        self.toolButton.setFixedSize(80,80)
+        #self.toolButton = Round3DButton() 
+        #self.toolButton.setFixedSize(80,80)
         
 
 
-        self.setButton = RoundSetButton("Set")
+        self.setButton = Round3DButton("Set")
         self.setButton.clicked.connect(self.apply_ps_settings)
         self.setButton.setFixedSize(80, 80)  # Makes it a square (round via radius below)
-        self.setButton.setStyleSheet("""
-            QPushButton {
-                background-color: #DCDCDC;      /* light gray */
-                color: black;
-                font-weight: bold;
-                font-size: 14pt;
-                border-radius: 40px;            /* round shape */
-                border: 2px solid #A9A9A9;      /* darker gray border */
-            }
-            QPushButton:pressed {
-                background-color: #B0B0B0;      /* slightly darker on press */
-            }
-            QPushButton:disabled {
-                background-color: #E0E0E0;
-                color: #888888;
-                border: 2px solid #CCCCCC;
-            }
-        """)
-
+        
         #self.powerButton = QPushButton("Power ON")
         self.powerButton = Fusion3DToggle()
         #self.powerButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -675,7 +638,7 @@ class MainWindow(QMainWindow):
         pHLayout.addWidget(self.voltageDial, 1, 0,alignment= Qt.AlignCenter) 
         pHLayout.addWidget(self.currentDial, 1, 1,alignment= Qt.AlignCenter)  
         pHLayout.addWidget(self.modeToggle, 1, 2,alignment= Qt.AlignCenter)
-        pHLayout.addWidget(self.toolButton, 1, 3,alignment= Qt.AlignCenter)
+        pHLayout.addWidget(self.setButton, 1, 3,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.voltagelabel,2,0,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.currentlabel,2,1,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.modelabel,2,2,alignment= Qt.AlignCenter)

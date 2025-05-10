@@ -179,7 +179,7 @@ class Push3DButton(QPushButton):
         return QSize(100, 40)
     
 class Round3DButton(QPushButton):
-    def __init__(self, text="Set", parent=None):
+    def __init__(self, text, parent=None):
         super().__init__(text, parent)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setMinimumSize(60, 60)
