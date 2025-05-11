@@ -861,10 +861,10 @@ class PowerLogger:
         self.filename = os.path.join(log_dir, f"Log_{timestamp}.txt")
         self.file = open(self.filename, "w")
 
-    def log_start(self, voltage, current, mode):
+    def log_start(self, voltage, current, mode, output):
         self.file.write("=== Power Supply Run Started ===\n")
         self.file.write(f"Start Time: {datetime.now()}\n")
-        self.file.write(f"Initial Settings: Voltage={voltage:.2f}V, Current={current:.2f}A, Mode={mode}\n")
+        self.file.write(f"Initial Settings: Voltage={voltage:.2f}V, Current={current:.2f}A, Mode={mode}\n, Power={output}\n")
         self.file.flush()
 
     def log_change(self, what, value):
