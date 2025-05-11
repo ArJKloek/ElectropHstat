@@ -716,7 +716,8 @@ class MainWindow(QMainWindow):
 
         pHselectLayout.addWidget(self.keepSelector,0,0)
         pHselectLayout.addWidget(self.phSpin,0,1)
-
+        pHselectLayout.addWidget(self.pHstatLabel,1,0)
+        pHselectLayout.addWidget(self.pumpLabel,1,1)
         pHselectWidget.setLayout(pHselectLayout)
 
 
@@ -816,9 +817,9 @@ class MainWindow(QMainWindow):
         grid.addWidget(pHWidget, 0, 0,2,1)  # Place label next to the LED
         grid.addWidget(pHselectWidget, 0, 1)
         grid.addWidget(self.usb_button, 0, 2, Qt.AlignRight)
-        grid.addWidget(statusWidget,1,1)
-        grid.addWidget(buttonWidget,2,0,2,1)
-        grid.addWidget(self.tabWidget, 2,1,2,2)
+        #grid.addWidget(statusWidget,1,1)
+        grid.addWidget(buttonWidget,1,0,2,1)
+        grid.addWidget(self.tabWidget, 1,1,2,2)
         
         self.plot_manager = PlotManager(self)
 
