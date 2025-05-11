@@ -1180,7 +1180,7 @@ class MainWindow(QMainWindow):
         self.StatThread.started.connect(self.StatWorker.run)
         self.startProcessingSignal.connect(self.StatWorker.start_processing)
         self.pHWorker.update_signal_pH.connect(self.StatWorker.update_pH)
-        self.pH_settings_window.select_changed.connect(self.StatWorker.update_pH_select)
+        #self.pH_settings_window.select_changed.connect(self.StatWorker.update_pH_select)
         #self.select_settings_window.select_changed.connect(self.StatWorker.update_select)
         
         self.StatWorker.status_signal.connect(self.handle_Stat)
