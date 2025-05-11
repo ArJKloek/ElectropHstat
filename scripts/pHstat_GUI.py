@@ -814,11 +814,11 @@ class MainWindow(QMainWindow):
         self.tabWidget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         
-        grid.addWidget(pHWidget, 0, 0)  # Place label next to the LED
+        grid.addWidget(pHWidget, 0, 0,2,1)  # Place label next to the LED
         grid.addWidget(pHselectWidget, 0, 1)
         grid.addWidget(self.usb_button, 0, 2, Qt.AlignRight)
         #grid.addWidget(statusWidget,1,1)
-        grid.addWidget(buttonWidget,1,0)
+        grid.addWidget(buttonWidget,1,0,2,1)
         grid.addWidget(self.tabWidget, 1,1,2,2)
         
         self.plot_manager = PlotManager(self)
