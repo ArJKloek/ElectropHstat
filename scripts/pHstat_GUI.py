@@ -859,7 +859,7 @@ class MainWindow(QMainWindow):
     
     def keep_selector_changed(self, index):
         self.StatWorker.update_select(index)
-        self.handle_select(int(self.Select))
+        self.handle_select(index)
 
     def togglePowerSupply(self):
         if self.powerButton.isChecked():
