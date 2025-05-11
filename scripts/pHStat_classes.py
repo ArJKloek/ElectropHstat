@@ -445,6 +445,13 @@ class CustomTextWidget(QWidget):
     def setFontsize(self, size):
         self.size = size
         self.font = QFont("Arial", self.size)  # update the font
+        
+        metrics = QFontMetrics(self.font)
+        normal_size = metrics.size(Qt.TextSingleLine, self.max_normalText)
+        shadow_size = metrics.size(Qt.TextSingleLine, self.max_shadowText)
+        self.fixed_total_width = normal_size.width() + shadow_size.width()
+        self.fixed_total_height = metrics.height()
+        
         self.update()
 
     
