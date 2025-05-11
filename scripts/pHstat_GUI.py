@@ -610,7 +610,7 @@ class MainWindow(QMainWindow):
         voltagedialcontainer = QWidget()
         self.voltageDial = QDial()
         self.voltageDiallabel = QLabel("0", parent=self.voltageDial)
-        self.voltagelabel.setAlignment(Qt.AlignCenter)
+        self.voltageDiallabel.setAlignment(Qt.AlignCenter)
         self.voltageDiallabel.setStyleSheet("background: transparent; font-size: 16pt;")
         self.voltageDiallabel.resize(self.voltageDial.size())
         
