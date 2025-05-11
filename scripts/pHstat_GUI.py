@@ -84,8 +84,8 @@ class MainWindow(QMainWindow):
 
         self.setupVariables()
 
-        self.pH_settings_window = pHPickerDialog(float(self.pHSelect))
-        self.pH_settings_window.select_changed.connect(self.handle_pH)
+        #self.pH_settings_window = pHPickerDialog(float(self.pHSelect))
+        #self.pH_settings_window.select_changed.connect(self.handle_pH)
         
         #self.select_settings_window = SelectPickerDialog(self.Select)
         #self.select_settings_window.select_changed.connect(self.handle_select)
@@ -486,7 +486,7 @@ class MainWindow(QMainWindow):
                 # Connect signals
                 self.startProcessingSignal.connect(self.StatWorker.start_processing)
                 self.pHWorker.update_signal_pH.connect(self.StatWorker.update_pH)
-                self.pH_settings_window.select_changed.connect(self.StatWorker.update_pH_select)
+                #self.pH_settings_window.select_changed.connect(self.StatWorker.update_pH_select)
                 
                 #self.select_settings_window.select_changed.connect(self.StatWorker.update_select)
                 
@@ -735,6 +735,9 @@ class MainWindow(QMainWindow):
         
         self.phSpin.setValue(7.00)  # default
         
+        self.phSpin.valueChanged.connect(self.pH_selector_changed)
+
+
         pHselectLayout.addWidget(self.keepSelector,0,0)
         pHselectLayout.addWidget(self.phSpin,0,1)
 
@@ -860,6 +863,9 @@ class MainWindow(QMainWindow):
     def keep_selector_changed(self, index):
         self.StatWorker.update_select(index)
         self.handle_select(index)
+
+    def pH_selector_changed(self, value):
+        print(value)
 
     def togglePowerSupply(self):
         if self.powerButton.isChecked():
