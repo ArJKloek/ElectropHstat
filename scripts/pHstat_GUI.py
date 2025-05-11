@@ -27,14 +27,14 @@ from scripts.pHStat_csv import create_csv, log_csv, read_log_data, scale_time_da
 import datetime
 import shutil
 import re
-#import lib8mosind
-from scripts.pHStat_classes import MockLib8MosInd
+import lib8mosind
+#from scripts.pHStat_classes import MockLib8MosInd
 import serial.tools.list_ports
 from voltcraft.pps import PPS
 from scripts import PlotManager, atlas_i2c, Fusion3DToggle, RoundSetButton, Push3DButton, Round3DButton, PowerLogger
 
 
-lib8mosind = MockLib8MosInd()
+#lib8mosind = MockLib8MosInd()
 
 def find_voltcraft_pps() -> str or None:
     ports = serial.tools.list_ports.comports()
