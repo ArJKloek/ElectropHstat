@@ -177,6 +177,7 @@ class MainWindow(QMainWindow):
         self.currentDiallabel.resize(self.currentDial.size())
         csize = self.currentDial.height() * 0.2
         self.currentDiallabel.setStyleSheet(f"font-size: {csize:.1f}pt;")
+        self.currentDial.setWrapping(False)
 
         
 
