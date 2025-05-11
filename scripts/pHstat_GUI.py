@@ -500,8 +500,8 @@ class MainWindow(QMainWindow):
                 self.pumpLabel.updateText("Active")
                 self.pumpLabel.updateNormalColor(Qt.black)
                 # Enable clickalble labels
-                self.phSpin.setEnabled(checked)
-                self.keepSelector.setEnabled(checked)
+                self.phSpin.setDisabled(False)
+                self.keepSelector.setDisabled(False)
                 #self.pHSelectLabel.setEnabled(checked)
                 
             except Exception as e:
@@ -529,8 +529,8 @@ class MainWindow(QMainWindow):
                 self.pumpLabel.updateText("Inactive")
                 self.pumpLabel.updateNormalColor(Qt.gray)
                 #Disable clickable labels
-                self.phSpin.setEnabled(checked)
-                self.keepSelector.setEnabled(checked)
+                self.phSpin.setDisabled(True)
+                self.keepSelector.setDisabled(True)
                 #self.pHSelectLabel.setEnabled(checked)
                
             except Exception as e:
