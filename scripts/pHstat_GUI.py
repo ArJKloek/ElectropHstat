@@ -1073,7 +1073,7 @@ class MainWindow(QMainWindow):
    
     def start_pHStat(self):
         create_csv(self, self.valueData, self.plotindex, self.headerindex)
-        self.logger.log_start(self.valueData[3], self.valueData[4],self.valueData[5])
+        self.logger.log_start(self.voltageDiallabel, self.valueData[4],self.valueData[5])
         self.logtimer.start()  # Start the timer
         self.coulombs = 0.0
         self.coulombClock.start()
