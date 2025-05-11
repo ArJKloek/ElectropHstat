@@ -861,7 +861,10 @@ class MainWindow(QMainWindow):
         #self.handle_pHselect(float(self.pHSelect))
     
     def keep_selector_changed(self, index):
-        self.StatWorker.update_select(index)
+        try:
+            self.StatWorker.update_select(index)
+        except:
+            
         self.handle_select(index)
 
     def pH_selector_changed(self, value):
