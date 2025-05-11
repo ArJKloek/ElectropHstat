@@ -1470,7 +1470,7 @@ class MainWindow(QMainWindow):
         #self.voltagelabel.setText(f"{voltage:.1f} V")
 
         # Show popup tooltip near the dial
-        self.voltageDiallabel.setText(voltage)
+        self.voltageDiallabel.setText(f"{voltage:.1f} V")
         QToolTip.showText(
             self.voltageDial.mapToGlobal(QPoint(0, -30)),  # Position above dial
             f"{voltage:.1f} V",
