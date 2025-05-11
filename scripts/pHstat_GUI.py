@@ -605,8 +605,14 @@ class MainWindow(QMainWindow):
         self.modelabel.setStatusTip("Current mode")
         modefont = self.modelabel.font()
         modefont.setPointSize(20)  # Set the font size to 20 points
-    
+
+        voltagedialcontainer = QWidget()
         self.voltageDial = QDial()
+        self.voltageDiallabel = QLabel("0", parent=self.voltageDial)
+        self.voltagelabel.setAlignment(Qt.AlignCenter)
+        self.voltageDiallabel.setStyleSheet("background: transparent; font-size: 16pt;")
+        self.voltageDiallabel.resize(self.voltageDial.size())
+        
         self.voltageDial.setMinimum(0)          # e.g., 0 V
         self.voltageDial.setMaximum(300)        # e.g., 30.0 V in 0.1V steps
         self.voltageDial.setSingleStep(1)       # One step = 0.1V
@@ -614,6 +620,9 @@ class MainWindow(QMainWindow):
         self.voltageDial.setNotchesVisible(True)
         self.voltageDial.valueChanged.connect(self.voltage_dial_changed)    
         
+        voltagelayout = QVBoxLayout(voltagedialcontainer)
+        voltagelayout.addWidget(self.voltageDial)
+
         self.currentDial = QDial()
         self.currentDial.setMinimum(0)          # e.g., 0 V
         self.currentDial.setMaximum(300)        # e.g., 30.0 V in 0.1V steps
@@ -655,7 +664,8 @@ class MainWindow(QMainWindow):
 
         pHLayout.addWidget(self.pHNumber,0,0,1,2, alignment=Qt.AlignLeft)
         pHLayout.addWidget(self.RTDlabel,0,3,alignment=Qt.AlignRight)
-        pHLayout.addWidget(self.voltageDial, 1, 0,alignment= Qt.AlignCenter) 
+        #pHLayout.addWidget(self.voltageDial, 1, 0,alignment= Qt.AlignCenter) 
+        pHLayout.addWidget(voltagelayout, 1, 0,alignment= Qt.AlignCenter) 
         pHLayout.addWidget(self.currentDial, 1, 1,alignment= Qt.AlignCenter)  
         pHLayout.addWidget(self.modeToggle, 1, 2,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.setButton, 1, 3,alignment= Qt.AlignCenter)
