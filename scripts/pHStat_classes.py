@@ -858,7 +858,7 @@ class PowerLogger:
     def __init__(self, log_dir="logs"):
         os.makedirs(log_dir, exist_ok=True)
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        self.filename = os.path.join(log_dir, f"ps_log_{timestamp}.txt")
+        self.filename = os.path.join(log_dir, f"Log_{timestamp}.txt")
         self.file = open(self.filename, "w")
 
     def log_start(self, voltage, current, mode):
