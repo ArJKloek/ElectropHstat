@@ -174,7 +174,7 @@ class MainWindow(QMainWindow):
         #voltagefont = self.voltageDiallabel.font()
         #voltagefont.setPointSizeF(self.voltageDial.height()*0.3)
         #self.voltageDiallabel.setStyleSheet("font-size: {self.voltageDial.height()*0.3}]pt;")
-        size = self.voltageDial.height() * 0.3
+        size = self.voltageDial.height() * 0.2
         self.voltageDiallabel.setStyleSheet(f"font-size: {size:.1f}pt;")
 
         #self.voltageDiallabel.setFo(voltagefont)
