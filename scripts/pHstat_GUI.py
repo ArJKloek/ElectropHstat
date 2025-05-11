@@ -202,6 +202,7 @@ class MainWindow(QMainWindow):
         set_font(self.voltagelabel, 20)
         set_font(self.currentlabel, 20)
         set_font(self.modelabel, 20)
+        set_font(self.voltageDiallabel, 10)
         # Update Start button stylesheet with dynamic font size
         start_style = f"""
             QPushButton {{
@@ -1470,7 +1471,7 @@ class MainWindow(QMainWindow):
         #self.voltagelabel.setText(f"{voltage:.1f} V")
 
         # Show popup tooltip near the dial
-        self.voltageDiallabel.setText(f"{voltage:.1f} V")
+        self.voltageDiallabel.setText(f"{voltage:.1f}")
         QToolTip.showText(
             self.voltageDial.mapToGlobal(QPoint(0, -30)),  # Position above dial
             f"{voltage:.1f} V",
