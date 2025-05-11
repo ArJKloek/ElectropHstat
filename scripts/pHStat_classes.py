@@ -444,7 +444,9 @@ class CustomTextWidget(QWidget):
     
     def setFontsize(self, size):
         self.size = size
+        self.font = QFont("Arial", self.size)  # update the font
         self.update()
+
     
     def setColor(self, color):
         self.color = color
