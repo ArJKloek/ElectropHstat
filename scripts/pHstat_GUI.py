@@ -210,6 +210,7 @@ class MainWindow(QMainWindow):
         set_font(self.currentlabel, 20)
         set_font(self.modelabel, 20)
         set_font(self.voltageDiallabel, 10)
+        set_font(self.pHstatLabel.setFontsize, 13)
         # Update Start button stylesheet with dynamic font size
         start_style = f"""
             QPushButton {{
@@ -627,7 +628,6 @@ class MainWindow(QMainWindow):
         self.voltageDial.setSingleStep(1)       # One step = 0.1V
         self.voltageDial.setPageStep(5)         # Larger jumps
         self.voltageDial.setNotchesVisible(True)
-        self.voltageDial.setWrapping(False)
 
         self.voltageDial.valueChanged.connect(self.voltage_dial_changed)    
         
@@ -647,9 +647,7 @@ class MainWindow(QMainWindow):
         self.currentDial.setSingleStep(1)       # One step = 0.1V
         self.currentDial.setPageStep(5)         # Larger jumps
         self.currentDial.setNotchesVisible(True)
-        self.currentDial.setWrapping(False)
-        print("Wrapping enabled?", self.currentDial.wrapping())  # Should print False
-
+        
         self.currentDial.valueChanged.connect(self.current_dial_changed)    
         
         currentlayout = QVBoxLayout(currentdialcontainer)

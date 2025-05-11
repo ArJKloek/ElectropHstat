@@ -441,7 +441,10 @@ class CustomTextWidget(QWidget):
             self.setColor("#F1C40F")
         else:
             self.setColor("#DCDCDC")
-
+    
+    def setFontsize(self, size):
+        self.size = size
+        self.update()
     
     def setColor(self, color):
         self.color = color
