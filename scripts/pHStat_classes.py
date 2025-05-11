@@ -861,8 +861,9 @@ class PowerLogger:
         self.filename = os.path.join(log_dir, f"Log_{timestamp}.txt")
         self.file = open(self.filename, "w")
 
-    def log_start(self, voltage, current, mode, output):
+    def log_start(self, voltage, current, mode, output, PStype):
         self.file.write("=== Power Supply Run Started ===\n")
+        self.file.write(f"PPS Model: {PStype[0]}, VMAX: {PStype[1]} V, IMAX: {PStype[2]} A, VMIN: {PStype[3]} V\n")
         self.file.write(f"Start Time: {datetime.now()}\n")
         self.file.write(f"Initial Settings: Voltage={voltage:.2f}V, Current={current:.2f}A, Mode={mode}, Power={output}\n")
         self.file.flush()

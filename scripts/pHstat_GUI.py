@@ -345,7 +345,7 @@ class MainWindow(QMainWindow):
         #self.log_interval = 500
         self.viewBoxes = {}  # In __init__ or setupVariables()
         self.rightViewBoxes = {}
-        self.PStype = ""
+        self.PStype = []
         ConfigReader(self)
     
     def setupMenu(self):
@@ -1075,7 +1075,7 @@ class MainWindow(QMainWindow):
         create_csv(self, self.valueData, self.plotindex, self.headerindex)
         mode = "CC" if self.modeToggle.isChecked() else "CV"
         ouput = "ON" if self.powerButton.isChecked() else "OFF"
-        self.logger.log_start(self.voltageDial.value()/10, self.currentDial.value()/10, mode, ouput)
+        self.logger.log_start(self.voltageDial.value()/10, self.currentDial.value()/10, mode, ouput, self.PStype)
         self.logtimer.start()  # Start the timer
         self.coulombs = 0.0
         self.coulombClock.start()
@@ -1471,7 +1471,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot(float, float, float, str)
     def handle_pps_limits(self, vmax, imax, vmin, model):
         print(f"PPS Model: {model}, VMAX: {vmax} V, IMAX: {imax} A, VMIN: {vmin} V")
-        self.PStype= f"PPS Model: {model}, VMAX: {vmax} V, IMAX: {imax} A, VMIN: {vmin} V/n"
+        self.PStype[0] = model
+        self.PStype[1] = vmax 
+        self.PStype[2] = imax
+        self.PStype[3] = vmin
         # Re-enable all previously disabled UI elements
         self.voltageDial.setEnabled(True)
         self.currentDial.setEnabled(True)
