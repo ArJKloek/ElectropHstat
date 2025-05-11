@@ -679,41 +679,18 @@ class MainWindow(QMainWindow):
         
         
         # Above/below
-        selectWidget = QWidget()
-        selectLayout = QGridLayout(selectWidget)
-        #self.selectlabel = ClickableLabel("select")
-        #self.selectlabel.clicked.connect(self.openSelectSettingsWindow)
-        # Set the frame shape to be a box
-        #self.selectlabel.setFrameShape(QLabel.Panel)
-
-        # Set the frame shadow to be raised
-        #self.selectlabel.setFrameShadow(QLabel.Raised)
-    
-        # Optionally, set the border width
-        #self.selectlabel.setLineWidth(2)
-        #self.selectlabel.setMidLineWidth(2)
-
-        # Use ClickableLabel
-        self.pHText = QLabel('pH')
-        #self.pHText.setFont(selectfont)
-        self.pHSelectLabel = ClickableLabel("0.0")
-        self.pHSelectLabel.clicked.connect(self.openpHSettingsWindow)
-        #self.pHSelectLabel.setFont(selectfont)
-        #self.selectlabel.setFont(selectfont)
-        # Set the frame shape to be a box
-        self.pHSelectLabel.setFrameShape(QLabel.Panel)
-
-        # Set the frame shadow to be raised
-        self.pHSelectLabel.setFrameShadow(QLabel.Raised)
-    
-        # Optionally, set the border width
-        self.pHSelectLabel.setLineWidth(2)
-        self.pHSelectLabel.setMidLineWidth(2)
-
+        statusWidget = QWidget()
+        statusLayout = QGridLayout(statusWidget)
+        
         self.pHstatLabel = CustomTextWidget("pH Stat ", "Active", "#DCDCDC", 13)
         self.pHstatLabel.setStatusTip("Activity of pH Stat, grey (inactive), yellow (active)")
         self.pumpLabel = CustomTextWidget("Pump ", "Active", "#DCDCDC", 13)
         self.pumpLabel.setStatusTip("Activity of pump, grey (inactive), yellow (standby), green (pumping)")
+
+        statusLayout.addWidget(self.pHstatLabel,0,0, alignment= Qt.AlignLeft )
+        statusLayout.addWidget(self.pumpLabel,0,1,alignment= Qt.AlignRight )
+
+        statusWidget.setLayout(statusLayout)
 
         #self.pHstatActive = CustomTextWidget("Active", "#F1C40F", 13)
         #self.pumpActive = CustomTextWidget("Active", "#F1C40F", 13)
@@ -745,13 +722,9 @@ class MainWindow(QMainWindow):
 
 
         #selectLayout.addWidget(self.selectlabel,0,0)
-        selectLayout.addWidget(self.pHText, 0,1, alignment= Qt.AlignRight)
-        selectLayout.addWidget(self.pHSelectLabel,0,2, alignment=Qt.AlignLeft)
-        selectLayout.addWidget(self.pHstatLabel,1,0,1,2, alignment= Qt.AlignLeft )
-        selectLayout.addWidget(self.pumpLabel,1,0,1,3,alignment= Qt.AlignRight )
-
-        selectWidget.setLayout(selectLayout)
-
+        #selectLayout.addWidget(self.pHText, 0,1, alignment= Qt.AlignRight)
+        #selectLayout.addWidget(self.pHSelectLabel,0,2, alignment=Qt.AlignLeft)
+        
         # Text Layout of the pump ON and pH OK
         self.pumpon = QLabel('PUMP <span style="color:#DCDCDC;">ON</span>')
         pumpfont = self.pumpon.font()
@@ -841,13 +814,10 @@ class MainWindow(QMainWindow):
         
         
         grid.addWidget(pHWidget, 0, 0,2,1)  # Place label next to the LED
-        
-        grid.addWidget(selectWidget, 0, 1)
-        grid.addWidget(pHselectWidget, 0, 2)
-        grid.addWidget(self.usb_button, 0, 3, Qt.AlignRight)
+        grid.addWidget(pHselectWidget, 0, 1)
+        grid.addWidget(self.usb_button, 0, 1, Qt.AlignRight)
         
         grid.addWidget(buttonWidget,2,0,2,1)
-        grid.addWidget(selectWidget, 0, 1)
         grid.addWidget(self.tabWidget, 1,1,3,2)
         
         self.plot_manager = PlotManager(self)
