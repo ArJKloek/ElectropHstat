@@ -922,7 +922,7 @@ class MainWindow(QMainWindow):
             print(f"[SET] Mode: {mode}, Voltage: {voltage:.1f} V, Current: {current:.1f} A")
             if self.start: self.logger.setting_change(voltage, current, mode)
             else: pass
-            
+
     def update_mode_label(self, state):
         mode = "CC" if state == Qt.Checked else "CV"
         print(f"Mode switched to: {mode}")
@@ -1137,7 +1137,7 @@ class MainWindow(QMainWindow):
             self.resetbutton.setEnabled(False)
             self.pumpLabel.setEnabled(False)
             self.start = False
-
+            self.logger.reset()
         else:
             pass
         

@@ -873,7 +873,7 @@ class PowerLogger:
         self.file.flush()
     
     def setting_change(self, voltage, current, mode):
-        self.file.write(f"Settings set: Voltage={voltage:.2f}V, Current={current:.2f}A, Mode={mode}\n")
+        self.file.write(f"[{datetime.now().strftime('%H:%M:%S')}] Settings set: Voltage={voltage:.2f}V, Current={current:.2f}A, Mode={mode}\n")
         self.file.flush()
 
     def log_stop(self, voltage, current, coulombs):
