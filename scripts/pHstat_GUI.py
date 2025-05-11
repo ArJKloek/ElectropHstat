@@ -817,7 +817,7 @@ class MainWindow(QMainWindow):
         grid.addWidget(self.usb_button, 0, 2, Qt.AlignRight)
         grid.addWidget(statusWidget,1,1)
         grid.addWidget(buttonWidget,2,0,2,1)
-        grid.addWidget(self.tabWidget, 1,2,3,2)
+        grid.addWidget(self.tabWidget, 2,1,3,2)
         
         self.plot_manager = PlotManager(self)
 
