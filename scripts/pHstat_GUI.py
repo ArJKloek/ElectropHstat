@@ -87,8 +87,8 @@ class MainWindow(QMainWindow):
         self.pH_settings_window = pHPickerDialog(float(self.pHSelect))
         self.pH_settings_window.select_changed.connect(self.handle_pH)
         
-        self.select_settings_window = SelectPickerDialog(self.Select)
-        self.select_settings_window.select_changed.connect(self.handle_select)
+        #self.select_settings_window = SelectPickerDialog(self.Select)
+        #self.select_settings_window.select_changed.connect(self.handle_select)
         
 
         self.time_settings_window = CalibratePumpDialog(float(self.ml), float(self.addtime))
@@ -488,7 +488,7 @@ class MainWindow(QMainWindow):
                 self.pHWorker.update_signal_pH.connect(self.StatWorker.update_pH)
                 self.pH_settings_window.select_changed.connect(self.StatWorker.update_pH_select)
                 
-                self.select_settings_window.select_changed.connect(self.StatWorker.update_select)
+                #self.select_settings_window.select_changed.connect(self.StatWorker.update_select)
                 
                 self.StatWorker.status_signal.connect(self.handle_Stat)
                 self.StatWorker.pump_signal.connect(self.pumpInput)
@@ -501,7 +501,7 @@ class MainWindow(QMainWindow):
                 self.pumpLabel.updateNormalColor(Qt.black)
                 # Enable clickalble labels
                 self.pHText.setEnabled(checked)
-                self.selectlabel.setEnabled(checked)
+                self.keepSelector.setEnabled(checked)
                 self.pHSelectLabel.setEnabled(checked)
                 
             except Exception as e:
@@ -518,7 +518,7 @@ class MainWindow(QMainWindow):
                 self.startProcessingSignal.disconnect(self.StatWorker.start_processing)
                 self.pHWorker.update_signal_pH.disconnect(self.StatWorker.update_pH)
                 self.pH_settings_window.select_changed.disconnect(self.StatWorker.update_pH_select)
-                self.select_settings_window.select_changed.disconnect(self.StatWorker.update_select)
+                #self.select_settings_window.select_changed.disconnect(self.StatWorker.update_select)
                 self.StatWorker.status_signal.disconnect(self.handle_Stat)
                 self.StatWorker.pump_signal.disconnect(self.pumpInput)
                 #Update labels
@@ -530,7 +530,7 @@ class MainWindow(QMainWindow):
                 self.pumpLabel.updateNormalColor(Qt.gray)
                 #Disable clickable labels
                 self.pHText.setEnabled(checked)
-                self.selectlabel.setEnabled(checked)
+                self.keepSelector.setEnabled(checked)
                 self.pHSelectLabel.setEnabled(checked)
                
             except Exception as e:
@@ -681,27 +681,27 @@ class MainWindow(QMainWindow):
         # Above/below
         selectWidget = QWidget()
         selectLayout = QGridLayout(selectWidget)
-        self.selectlabel = ClickableLabel("select")
-        self.selectlabel.clicked.connect(self.openSelectSettingsWindow)
+        #self.selectlabel = ClickableLabel("select")
+        #self.selectlabel.clicked.connect(self.openSelectSettingsWindow)
         # Set the frame shape to be a box
-        self.selectlabel.setFrameShape(QLabel.Panel)
+        #self.selectlabel.setFrameShape(QLabel.Panel)
 
         # Set the frame shadow to be raised
-        self.selectlabel.setFrameShadow(QLabel.Raised)
+        #self.selectlabel.setFrameShadow(QLabel.Raised)
     
         # Optionally, set the border width
-        self.selectlabel.setLineWidth(2)
-        self.selectlabel.setMidLineWidth(2)
+        #self.selectlabel.setLineWidth(2)
+        #self.selectlabel.setMidLineWidth(2)
 
-        selectfont = self.selectlabel.font()
-        selectfont.setPointSize(20) 
+        #selectfont = self.selectlabel.font()
+        #selectfont.setPointSize(20) 
         # Use ClickableLabel
         self.pHText = QLabel('pH')
         self.pHText.setFont(selectfont)
         self.pHSelectLabel = ClickableLabel("0.0")
         self.pHSelectLabel.clicked.connect(self.openpHSettingsWindow)
         self.pHSelectLabel.setFont(selectfont)
-        self.selectlabel.setFont(selectfont)
+        #self.selectlabel.setFont(selectfont)
         # Set the frame shape to be a box
         self.pHSelectLabel.setFrameShape(QLabel.Panel)
 
@@ -743,7 +743,7 @@ class MainWindow(QMainWindow):
         pHselectWidget.setLayout(pHselectLayout)
 
 
-        selectLayout.addWidget(self.selectlabel,0,0)
+        #selectLayout.addWidget(self.selectlabel,0,0)
         selectLayout.addWidget(self.pHText, 0,1, alignment= Qt.AlignRight)
         selectLayout.addWidget(self.pHSelectLabel,0,2, alignment=Qt.AlignLeft)
         selectLayout.addWidget(self.pHstatLabel,1,0,1,2, alignment= Qt.AlignLeft )
@@ -907,8 +907,8 @@ class MainWindow(QMainWindow):
 
     def pHlabelClicked(self):
         print('pH label clicked')
-    def selectlabelClicked(self):
-        print("select label clicked")
+    #def selectlabelClicked(self):
+    #    print("select label clicked")
 
     def initializeTabTimer(self):
         self.tabtimer = QTimer()
@@ -1177,7 +1177,7 @@ class MainWindow(QMainWindow):
         self.startProcessingSignal.connect(self.StatWorker.start_processing)
         self.pHWorker.update_signal_pH.connect(self.StatWorker.update_pH)
         self.pH_settings_window.select_changed.connect(self.StatWorker.update_pH_select)
-        self.select_settings_window.select_changed.connect(self.StatWorker.update_select)
+        #self.select_settings_window.select_changed.connect(self.StatWorker.update_select)
         
         self.StatWorker.status_signal.connect(self.handle_Stat)
         self.StatWorker.pump_signal.connect(self.pumpInput)
@@ -1370,16 +1370,14 @@ class MainWindow(QMainWindow):
                 print("Warning: Pump was not active, no elapsed time to calculate.")
     
     
-    @pyqtSlot(int)
     def handle_select(self, select):
         if select == 0:
-            text = "Keep above"
+            self.keepSelector.setCurrentIndex(0)
             self.statustext = "above"
         else:
-            text = "Keep below"
+            self.keepSelector.setCurrentIndex(1)
             self.statustext = "below"
-        self.selectlabel.setText(f'{text}')
-        self.selectlabel.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.statustext} a pH of {self.pHSelect}')
+        self.keepSelector.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.statustext} a pH of {self.pHSelect}')
         ConfigWriter(self)
         #print(f"Received signal with value: {value}")
         # Handle the change in the main GUI here
@@ -1548,9 +1546,9 @@ class MainWindow(QMainWindow):
         # Create and show the Settings window as a separate window
         self.pH_settings_window.exec_()
     
-    def openSelectSettingsWindow(self):
-        # Create and show the Settings window as a separate window
-        self.select_settings_window.exec_()
+    #def openSelectSettingsWindow(self):
+    #    # Create and show the Settings window as a separate window
+    #    self.select_settings_window.exec_()
     
     def openCalibratepHWindow(self):
         # Create and show the Settings window as a separate window
