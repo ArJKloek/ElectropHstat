@@ -863,8 +863,8 @@ class MainWindow(QMainWindow):
     def keep_selector_changed(self, index):
         try:
             self.StatWorker.update_select(index)
-        except:
-            
+        except Exception as e:
+            print(f"[Warning] Failed to update StatWorker: {e}")   
         self.handle_select(index)
 
     def pH_selector_changed(self, value):
