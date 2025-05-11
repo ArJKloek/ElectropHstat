@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QDateTimeEdit, QPushButton, 
-                             QWidget, QHBoxLayout, QSpinBox, QLabel, QComboBox, QDoubleSpinBox, QLineEdit, QCheckBox, QHBoxLayout)
+                             QWidget, QHBoxLayout, QSpinBox, QLabel, QComboBox, QDoubleSpinBox, QLineEdit, QCheckBox, QHBoxLayout, QSizePolicy)
 from PyQt5.QtCore import QEvent, Qt, QDateTime, pyqtSignal, QObject, QTimer, QSize, QPoint, QRectF, QPointF, QRect, pyqtSlot as Slot, pyqtProperty as Property
 from PyQt5.QtGui import QPainter, QColor, QFont, QFontMetrics, QCursor, QPen, QPaintEvent, QBrush
 from scripts.pHStat_worker import StatWorker
@@ -370,6 +370,7 @@ class CustomTextWidget(QWidget):
         self.shadowText = shadowText
         self.color = color
         self.normalTextColor = Qt.black  # Default normal text color is black
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         #self.shadowColor = shadowColor
         self.size = size
