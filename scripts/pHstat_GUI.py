@@ -693,14 +693,12 @@ class MainWindow(QMainWindow):
         #self.selectlabel.setLineWidth(2)
         #self.selectlabel.setMidLineWidth(2)
 
-        selectfont = self.selectlabel.font()
-        selectfont.setPointSize(20) 
         # Use ClickableLabel
         self.pHText = QLabel('pH')
-        self.pHText.setFont(selectfont)
+        #self.pHText.setFont(selectfont)
         self.pHSelectLabel = ClickableLabel("0.0")
         self.pHSelectLabel.clicked.connect(self.openpHSettingsWindow)
-        self.pHSelectLabel.setFont(selectfont)
+        #self.pHSelectLabel.setFont(selectfont)
         #self.selectlabel.setFont(selectfont)
         # Set the frame shape to be a box
         self.pHSelectLabel.setFrameShape(QLabel.Panel)
