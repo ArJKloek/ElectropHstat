@@ -892,7 +892,13 @@ class MainWindow(QMainWindow):
             self.ppsWorker.set_output(False)
             if self.start: self.logger.log_change("Power","OFF") 
             else: pass
-            
+    
+    def force_power_off(self):
+        if self.powerButton.isChecked():
+            self.powerButton.setChecked(False)  # uncheck the button
+            self.ppsWorker.set_output(False)    # turn off power supply
+            if self.start:
+                self.logger.log_change("Power", "FORCED OFF")
 
     def apply_ps_settings(self):
         # Read toggle state (assuming you're using your ToggleSwitch class)
@@ -1108,6 +1114,7 @@ class MainWindow(QMainWindow):
         self.totalml = 0
         if self.start: self.logger.log_change("Pressed","STOP") 
         else: pass
+        self.force_power_off()
         self.logger.log_stop(self.voltageDial.value()/10, self.currentDial.value()/10, self.coulombs)
 
             
