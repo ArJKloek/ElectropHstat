@@ -632,13 +632,24 @@ class MainWindow(QMainWindow):
         voltagelayout = QVBoxLayout(voltagedialcontainer)
         voltagelayout.addWidget(self.voltageDial)
 
+
+        currentdialcontainer = QWidget()
         self.currentDial = QDial()
+        self.currentDiallabel = QLabel("0", parent=self.currentDial)
+        self.currentDiallabel.setAlignment(Qt.AlignCenter)
+        self.currentDiallabel.setStyleSheet("background: transparent; font-size: 16pt;")
+        self.currentDiallabel.resize(self.currentDial.size())
+
         self.currentDial.setMinimum(0)          # e.g., 0 V
         self.currentDial.setMaximum(300)        # e.g., 30.0 V in 0.1V steps
         self.currentDial.setSingleStep(1)       # One step = 0.1V
         self.currentDial.setPageStep(5)         # Larger jumps
         self.currentDial.setNotchesVisible(True)
         self.currentDial.valueChanged.connect(self.current_dial_changed)    
+        
+        currentlayout = QVBoxLayout(currentdialcontainer)
+        currentlayout.addWidget(self.currentDial)
+
         
         #self.modeSelector = QComboBox()
         #self.modeSelector.addItems(["CV", "CC"])
@@ -675,7 +686,7 @@ class MainWindow(QMainWindow):
         pHLayout.addWidget(self.RTDlabel,0,3,alignment=Qt.AlignRight)
         #pHLayout.addWidget(self.voltageDial, 1, 0,alignment= Qt.AlignCenter) 
         pHLayout.addWidget(voltagedialcontainer, 1, 0,alignment= Qt.AlignCenter) 
-        pHLayout.addWidget(self.currentDial, 1, 1,alignment= Qt.AlignCenter)  
+        pHLayout.addWidget(currentdialcontainer, 1, 1,alignment= Qt.AlignCenter)  
         pHLayout.addWidget(self.modeToggle, 1, 2,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.setButton, 1, 3,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.voltagelabel,2,0,alignment= Qt.AlignCenter)
@@ -1479,26 +1490,27 @@ class MainWindow(QMainWindow):
 
         # Show popup tooltip near the dial
         self.voltageDiallabel.setText(f"{voltage:.1f}")
-        QToolTip.showText(
-            self.voltageDial.mapToGlobal(QPoint(0, -30)),  # Position above dial
-            f"{voltage:.1f} V",
-            self.voltageDial,
-            self.voltageDial.rect(),
-            1000  # duration in ms
-        )
+        #QToolTip.showText(
+        #    self.voltageDial.mapToGlobal(QPoint(0, -30)),  # Position above dial
+        #    f"{voltage:.1f} V",
+        #    self.voltageDial,
+        #    self.voltageDial.rect(),
+        #    1000  # duration in ms
+        #)
     @pyqtSlot(int)
     def current_dial_changed(self, val):
         current = val / 10.0
         #self.voltagelabel.setText(f"{voltage:.1f} V")
+        self.currentDiallabel.setText(f"{current:.1f}")
 
         # Show popup tooltip near the dial
-        QToolTip.showText(
-            self.currentDial.mapToGlobal(QPoint(0, -30)),  # Position above dial
-            f"{current:.1f} A",
-            self.currentDial,
-            self.currentDial.rect(),
-            1000  # duration in ms
-        )
+        #QToolTip.showText(
+        #    self.currentDial.mapToGlobal(QPoint(0, -30)),  # Position above dial
+        #    f"{current:.1f} A",
+        #    self.currentDial,
+        #    self.currentDial.rect(),
+        #    1000  # duration in ms
+        #)
         #if hasattr(self, 'ppsWorker'):
         #    self.ppsWorker.set_voltage(voltage)
 
