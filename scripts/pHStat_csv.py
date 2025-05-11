@@ -8,7 +8,7 @@ import locale
 import numpy as np
 # Set the locale to Dutch (Netherlands)
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')  # On Windows, try 'Dutch_Netherlands' or 'nl_NL'
-
+from scripts import PowerLogger
 
 def create_csv(self, data, plots, header):
     """
@@ -25,7 +25,7 @@ def create_csv(self, data, plots, header):
 
     # Set the directory of saving the data
     script_dir = create_folder()
-    
+    self.logger = PowerLogger(log_dir=script_dir)
     for i, labels in enumerate(plots):
         if self.Log_file[i]:
             return
@@ -207,4 +207,4 @@ def scale_time_data(self, time, data):
             scale = 1
     
         return time, data, time_unit, scale
-    
+

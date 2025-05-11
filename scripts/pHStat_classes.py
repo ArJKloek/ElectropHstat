@@ -6,6 +6,7 @@ from scripts.pHStat_worker import StatWorker
 import os
 import math
 import time
+from datetime import datetime
 
 class monoTimer:
     def __init__(self):
@@ -851,3 +852,39 @@ class PHSelectorWidget(QWidget):
 
     def value(self):
         return float(f"{self.whole.value()}.{self.decimal.value()}")
+
+
+class PowerLogger:
+    def __init__(self, log_dir="logs"):
+        os.makedirs(log_dir, exist_ok=True)
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        self.filename = os.path.join(log_dir, f"ps_log_{timestamp}.txt")
+        self.file = open(self.filename, "w")
+
+    def log_start(self, voltage, current, mode):
+        self.file.write("=== Power Supply Run Started ===\n")
+        self.file.write(f"Start Time: {datetime.now()}\n")
+        self.file.write(f"Initial Settings: Voltage={voltage:.2f}V, Current={current:.2f}A, Mode={mode}\n")
+        self.file.flush()
+
+    def log_change(self, what, value):
+        self.file.write(f"[{datetime.now().strftime('%H:%M:%S')}] Changed {what}: {value}\n")
+        self.file.flush()
+
+    def log_stop(self, voltage, current, coulombs):
+        self.file.write("\n=== Power Supply Run Stopped ===\n")
+        self.file.write(f"Stop Time: {datetime.now()}\n")
+        self.file.write(f"Final Voltage: {voltage:.2f} V\n")
+        self.file.write(f"Final Current: {current:.2f} A\n")
+        self.file.write(f"Total Coulombs: {coulombs:.2f} C\n")
+        self.file.close()
+    
+    def reset(self):
+        self.close()  # close current file
+        # Create a new filename with new timestamp
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        self.filename = os.path.join("logs", f"ps_log_{timestamp}.txt")
+        self.file = open(self.filename, "w")
+
+    def close(self):
+        self.file.close()
