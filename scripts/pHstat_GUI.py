@@ -200,6 +200,7 @@ class MainWindow(QMainWindow):
                 widget.setFont(font)
         
         self.pHstatLabel.setFontsize(13 * scale)
+        self.pumpLabel.setFontsize(13 * scale)
 
         # Adjust fonts on key widgets
         set_font(self.pHlabel, 35)
