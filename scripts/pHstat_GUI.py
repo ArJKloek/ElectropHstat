@@ -31,7 +31,7 @@ import re
 from scripts.pHStat_classes import MockLib8MosInd
 import serial.tools.list_ports
 from voltcraft.pps import PPS
-from scripts import PlotManager, atlas_i2c, Fusion3DToggle, RoundSetButton, Push3DButton, Round3DButton
+from scripts import PlotManager, atlas_i2c, Fusion3DToggle, RoundSetButton, Push3DButton, Round3DButton, PowerLogger
 
 
 lib8mosind = MockLib8MosInd()
