@@ -169,16 +169,16 @@ class MainWindow(QMainWindow):
         
         dial_size = int(70 * scale)
         self.voltageDial.setFixedSize(dial_size, dial_size)
-        self.currentDial.setFixedSize(dial_size, dial_size)
         self.voltageDiallabel.resize(self.voltageDial.size())
-        #voltagefont = self.voltageDiallabel.font()
-        #voltagefont.setPointSizeF(self.voltageDial.height()*0.3)
-        #self.voltageDiallabel.setStyleSheet("font-size: {self.voltageDial.height()*0.3}]pt;")
-        size = self.voltageDial.height() * 0.2
-        self.voltageDiallabel.setStyleSheet(f"font-size: {size:.1f}pt;")
+        vsize = self.voltageDial.height() * 0.2
+        self.voltageDiallabel.setStyleSheet(f"font-size: {vsize:.1f}pt;")
 
-        #self.voltageDiallabel.setFo(voltagefont)
+        self.currentDial.setFixedSize(dial_size, dial_size)
+        self.currentDiallabel.resize(self.currentDial.size())
+        csize = self.currentDial.height() * 0.2
+        self.currentDiallabel.setStyleSheet(f"font-size: {csize:.1f}pt;")
 
+        
 
         self.modeToggle.setH_scale(0.55*scale)
         self.modeToggle.setV_scale(0.55*scale)
