@@ -1074,6 +1074,7 @@ class MainWindow(QMainWindow):
     def start_pHStat(self):
         create_csv(self, self.valueData, self.plotindex, self.headerindex)
         mode = "CC" if self.modeToggle.isChecked() else "CV"
+        print(f'{self.voltageDial.value}')
         self.logger.log_start(self.voltageDial.value, self.currentDial.value, mode)
         self.logtimer.start()  # Start the timer
         self.coulombs = 0.0
