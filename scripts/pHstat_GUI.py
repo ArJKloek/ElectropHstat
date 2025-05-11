@@ -693,8 +693,8 @@ class MainWindow(QMainWindow):
         #self.selectlabel.setLineWidth(2)
         #self.selectlabel.setMidLineWidth(2)
 
-        #selectfont = self.selectlabel.font()
-        #selectfont.setPointSize(20) 
+        selectfont = self.selectlabel.font()
+        selectfont.setPointSize(20) 
         # Use ClickableLabel
         self.pHText = QLabel('pH')
         self.pHText.setFont(selectfont)
