@@ -195,7 +195,7 @@ class MainWindow(QMainWindow):
         set_font(self.pHlabel, 35)
         set_font(self.pHNumber, 35)
         set_font(self.RTDlabel, 20)
-        set_font(self.selectlabel, 20)
+        #set_font(self.selectlabel, 20)
         set_font(self.pHText, 20)
         set_font(self.pHSelectLabel, 20)
         set_font(self.voltagelabel, 20)
