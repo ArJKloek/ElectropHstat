@@ -868,7 +868,9 @@ class MainWindow(QMainWindow):
         self.handle_select(index)
 
     def pH_selector_changed(self, value):
-        print(round(value,1))
+        pH_select = round(value,1)
+        self.StatWorker.update_pH_select(pH_select)
+        self.handle_pH(pH_select)        
 
     def togglePowerSupply(self):
         if self.powerButton.isChecked():
@@ -1389,10 +1391,10 @@ class MainWindow(QMainWindow):
         #print(f"Received signal with value: {value}")
         # Handle the change in the main GUI here
     
-    @pyqtSlot(float)
     def handle_pH(self,pH):
 
         self.pHSelectLabel.setText(f'{pH}')
+        self.phSpin.setValue(pH)
         self.pHSelect = float(pH)
         self.pHSelectLabel.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.statustext} a pH of {self.pHSelect}')
         ConfigWriter(self)
