@@ -665,7 +665,7 @@ class MainWindow(QMainWindow):
         pHLayout.addWidget(self.pHNumber,0,0,1,2, alignment=Qt.AlignLeft)
         pHLayout.addWidget(self.RTDlabel,0,3,alignment=Qt.AlignRight)
         #pHLayout.addWidget(self.voltageDial, 1, 0,alignment= Qt.AlignCenter) 
-        pHLayout.addWidget(voltagelayout, 1, 0,alignment= Qt.AlignCenter) 
+        pHLayout.addWidget(voltagedialcontainer, 1, 0,alignment= Qt.AlignCenter) 
         pHLayout.addWidget(self.currentDial, 1, 1,alignment= Qt.AlignCenter)  
         pHLayout.addWidget(self.modeToggle, 1, 2,alignment= Qt.AlignCenter)
         pHLayout.addWidget(self.setButton, 1, 3,alignment= Qt.AlignCenter)
