@@ -198,6 +198,8 @@ class MainWindow(QMainWindow):
                 font = widget.font()
                 font.setPointSizeF(base_size * scale)
                 widget.setFont(font)
+        
+        self.pHstatLabel.setFontsize(13 * scale)
 
         # Adjust fonts on key widgets
         set_font(self.pHlabel, 35)
@@ -210,7 +212,6 @@ class MainWindow(QMainWindow):
         set_font(self.currentlabel, 20)
         set_font(self.modelabel, 20)
         set_font(self.voltageDiallabel, 10)
-        set_font(self.pHstatLabel.setFontsize, 13)
         # Update Start button stylesheet with dynamic font size
         start_style = f"""
             QPushButton {{
