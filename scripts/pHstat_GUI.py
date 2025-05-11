@@ -1368,7 +1368,7 @@ class MainWindow(QMainWindow):
 
         self.phSpin.setValue(pH)
         self.pHSelect = float(pH)
-        self.pHSelectLabel.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.statustext} a pH of {self.pHSelect}')
+        self.phSpin.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.statustext} a pH of {self.pHSelect}')
         ConfigWriter(self)
         #print(f"Received signal with value: {value}")
         # Handle the change in the main GUI here
