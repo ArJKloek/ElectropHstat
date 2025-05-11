@@ -346,6 +346,8 @@ class MainWindow(QMainWindow):
         self.viewBoxes = {}  # In __init__ or setupVariables()
         self.rightViewBoxes = {}
         self.PStype = [0,0,0,0]
+        self.start = False
+
         ConfigReader(self)
     
     def setupMenu(self):
@@ -884,8 +886,13 @@ class MainWindow(QMainWindow):
     def togglePowerSupply(self):
         if self.powerButton.isChecked():
             self.ppsWorker.set_output(True)  # Replace with your actual PPS control
+            if self.start: self.logger.log_change("Power","ON") 
+            else:
         else:
             self.ppsWorker.set_output(False)
+            if self.start: self.logger.log_change("Power","OFF") 
+            else:
+            
 
     def apply_ps_settings(self):
         # Read toggle state (assuming you're using your ToggleSwitch class)
@@ -1086,6 +1093,7 @@ class MainWindow(QMainWindow):
         self.trigger_processing()
         self.startbutton.setEnabled(False)
         self.stopbutton.setEnabled(True)
+        self.start = True
 
     def stop_pHStat(self):
         self.logtimer.stop()  # stop the timer
@@ -1115,6 +1123,7 @@ class MainWindow(QMainWindow):
             self.stopbutton.setEnabled(False)
             self.resetbutton.setEnabled(False)
             self.pumpLabel.setEnabled(False)
+            self.start = False
 
         else:
             pass
