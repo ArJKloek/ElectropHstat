@@ -345,7 +345,7 @@ class MainWindow(QMainWindow):
         #self.log_interval = 500
         self.viewBoxes = {}  # In __init__ or setupVariables()
         self.rightViewBoxes = {}
-        self.PStype = []
+        self.PStype = [0,0,0,0]
         ConfigReader(self)
     
     def setupMenu(self):
