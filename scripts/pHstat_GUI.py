@@ -1106,7 +1106,11 @@ class MainWindow(QMainWindow):
         self.pHstatLabel.setEnabled(False)
         self.pumpLabel.setEnabled(False)
         self.totalml = 0
+        if self.start: self.logger.log_change("Pressed","STOP") 
+        else: pass
+        self.logger.log_stop(self.voltageDial.value()/10, self.currentDial.value()/10, self.coulombs)
 
+            
     def reset_pHStat(self):
         # Create a confirmation dialog
         reply = QMessageBox.question(self, 'Reset?',
