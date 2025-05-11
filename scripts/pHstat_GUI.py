@@ -177,7 +177,6 @@ class MainWindow(QMainWindow):
         self.currentDiallabel.resize(self.currentDial.size())
         csize = self.currentDial.height() * 0.2
         self.currentDiallabel.setStyleSheet(f"font-size: {csize:.1f}pt;")
-        self.currentDial.setWrapping(False)
 
         
 
@@ -649,6 +648,7 @@ class MainWindow(QMainWindow):
         self.currentDial.setPageStep(5)         # Larger jumps
         self.currentDial.setNotchesVisible(True)
         self.currentDial.setWrapping(False)
+        print("Wrapping enabled?", self.dial.wrapping())  # Should print False
 
         self.currentDial.valueChanged.connect(self.current_dial_changed)    
         
