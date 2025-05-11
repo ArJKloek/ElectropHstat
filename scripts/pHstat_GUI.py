@@ -863,13 +863,16 @@ class MainWindow(QMainWindow):
     def keep_selector_changed(self, index):
         try:
             self.StatWorker.update_select(index)
-        except Exception as e:
-            print(f"[Warning] Failed to update StatWorker: {e}")   
+        except Exception:
+            pass   
         self.handle_select(index)
 
     def pH_selector_changed(self, value):
         pH_select = round(value,1)
-        self.StatWorker.update_pH_select(pH_select)
+        try:
+            self.StatWorker.update_pH_select(pH_select)
+        except Exception:
+            pass
         self.handle_pH(pH_select)        
 
     def togglePowerSupply(self):
@@ -1393,7 +1396,6 @@ class MainWindow(QMainWindow):
     
     def handle_pH(self,pH):
 
-        self.pHSelectLabel.setText(f'{pH}')
         self.phSpin.setValue(pH)
         self.pHSelect = float(pH)
         self.pHSelectLabel.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.statustext} a pH of {self.pHSelect}')
