@@ -196,8 +196,8 @@ class MainWindow(QMainWindow):
         set_font(self.pHNumber, 35)
         set_font(self.RTDlabel, 20)
         #set_font(self.selectlabel, 20)
-        set_font(self.phSpin, 20)
-        set_font(self.keepSelector, 20)
+        set_font(self.phSpin, 10)
+        set_font(self.keepSelector, 10)
         set_font(self.voltagelabel, 20)
         set_font(self.currentlabel, 20)
         set_font(self.modelabel, 20)
@@ -815,8 +815,8 @@ class MainWindow(QMainWindow):
         
         grid.addWidget(pHWidget, 0, 0,2,1)  # Place label next to the LED
         grid.addWidget(pHselectWidget, 0, 1)
-        grid.addWidget(self.usb_button, 0, 1, Qt.AlignRight)
-        
+        grid.addWidget(self.usb_button, 0, 2, Qt.AlignRight)
+        grid.addWidget(statusWidget,1,0)
         grid.addWidget(buttonWidget,2,0,2,1)
         grid.addWidget(self.tabWidget, 1,1,3,2)
         
