@@ -500,9 +500,9 @@ class MainWindow(QMainWindow):
                 self.pumpLabel.updateText("Active")
                 self.pumpLabel.updateNormalColor(Qt.black)
                 # Enable clickalble labels
-                self.pHText.setEnabled(checked)
+                self.phSpin.setEnabled(checked)
                 self.keepSelector.setEnabled(checked)
-                self.pHSelectLabel.setEnabled(checked)
+                #self.pHSelectLabel.setEnabled(checked)
                 
             except Exception as e:
                 print(f"Reconnect error (probably already connected): {e}")
@@ -529,9 +529,9 @@ class MainWindow(QMainWindow):
                 self.pumpLabel.updateText("Inactive")
                 self.pumpLabel.updateNormalColor(Qt.gray)
                 #Disable clickable labels
-                self.pHText.setEnabled(checked)
+                self.phSpin.setEnabled(checked)
                 self.keepSelector.setEnabled(checked)
-                self.pHSelectLabel.setEnabled(checked)
+                #self.pHSelectLabel.setEnabled(checked)
                
             except Exception as e:
                 print(f"Disconnect error (probably already disconnected): {e}")
