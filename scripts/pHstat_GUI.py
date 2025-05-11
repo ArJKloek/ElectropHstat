@@ -627,6 +627,8 @@ class MainWindow(QMainWindow):
         self.voltageDial.setSingleStep(1)       # One step = 0.1V
         self.voltageDial.setPageStep(5)         # Larger jumps
         self.voltageDial.setNotchesVisible(True)
+        self.voltageDial.setWrapping(False)
+
         self.voltageDial.valueChanged.connect(self.voltage_dial_changed)    
         
         voltagelayout = QVBoxLayout(voltagedialcontainer)
@@ -645,6 +647,8 @@ class MainWindow(QMainWindow):
         self.currentDial.setSingleStep(1)       # One step = 0.1V
         self.currentDial.setPageStep(5)         # Larger jumps
         self.currentDial.setNotchesVisible(True)
+        self.currentDial.setWrapping(False)
+
         self.currentDial.valueChanged.connect(self.current_dial_changed)    
         
         currentlayout = QVBoxLayout(currentdialcontainer)
