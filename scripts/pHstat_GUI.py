@@ -887,11 +887,11 @@ class MainWindow(QMainWindow):
         if self.powerButton.isChecked():
             self.ppsWorker.set_output(True)  # Replace with your actual PPS control
             if self.start: self.logger.log_change("Power","ON") 
-            else:
+            else: pass
         else:
             self.ppsWorker.set_output(False)
             if self.start: self.logger.log_change("Power","OFF") 
-            else:
+            else: pass
             
 
     def apply_ps_settings(self):
