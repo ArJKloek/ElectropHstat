@@ -816,7 +816,7 @@ class MainWindow(QMainWindow):
         grid.addWidget(pHWidget, 0, 0,2,1)  # Place label next to the LED
         grid.addWidget(pHselectWidget, 0, 1)
         grid.addWidget(self.usb_button, 0, 2, Qt.AlignRight)
-        grid.addWidget(statusWidget,1,0)
+        grid.addWidget(statusWidget,1,1)
         grid.addWidget(buttonWidget,2,0,2,1)
         grid.addWidget(self.tabWidget, 1,1,3,2)
         
