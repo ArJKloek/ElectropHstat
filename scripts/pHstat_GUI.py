@@ -300,6 +300,7 @@ class MainWindow(QMainWindow):
                 height: {tab_height}px;
                 width: {tab_width}px;
                 padding: {tab_padding}px;
+                margin-bottom: 4px;
             }}
         """
         self.tabWidget.setStyleSheet(tab_style)
