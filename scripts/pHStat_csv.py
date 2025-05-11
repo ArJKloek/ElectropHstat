@@ -8,7 +8,7 @@ import locale
 import numpy as np
 # Set the locale to Dutch (Netherlands)
 locale.setlocale(locale.LC_ALL, 'nl_NL.utf8')  # On Windows, try 'Dutch_Netherlands' or 'nl_NL'
-from scripts import PowerLogger
+from scripts.pHStat_classes import PowerLogger
 
 def create_csv(self, data, plots, header):
     """
