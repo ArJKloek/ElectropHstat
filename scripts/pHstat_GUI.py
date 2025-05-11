@@ -811,7 +811,8 @@ class MainWindow(QMainWindow):
         #grid.addWidget(self.led_logging, 0, 0, Qt.AlignTop)  # Place LED on the top-left
         #grid.addWidget(ledContainer, 0, 2)  # Place LED on the top-left
         
-        
+        self.tabWidget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
         grid.addWidget(pHWidget, 0, 0,2,1)  # Place label next to the LED
         grid.addWidget(pHselectWidget, 0, 1)
         grid.addWidget(self.usb_button, 0, 2, Qt.AlignRight)
