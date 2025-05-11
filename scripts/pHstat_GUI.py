@@ -90,6 +90,7 @@ class MainWindow(QMainWindow):
         self.select_settings_window = SelectPickerDialog(self.Select)
         self.select_settings_window.select_changed.connect(self.handle_select)
         
+
         self.time_settings_window = CalibratePumpDialog(float(self.ml), float(self.addtime))
         self.time_settings_window.select_changed.connect(self.handle_time)
         self.time_settings_window.test_pump.connect(self.pumpInput)
@@ -486,7 +487,9 @@ class MainWindow(QMainWindow):
                 self.startProcessingSignal.connect(self.StatWorker.start_processing)
                 self.pHWorker.update_signal_pH.connect(self.StatWorker.update_pH)
                 self.pH_settings_window.select_changed.connect(self.StatWorker.update_pH_select)
+                
                 self.select_settings_window.select_changed.connect(self.StatWorker.update_select)
+                
                 self.StatWorker.status_signal.connect(self.handle_Stat)
                 self.StatWorker.pump_signal.connect(self.pumpInput)
                 # Update labels
@@ -857,6 +860,7 @@ class MainWindow(QMainWindow):
         #self.handle_pHselect(float(self.pHSelect))
     
     def keep_selector_changed(self, index):
+        self.StatWorker.update_select(index)
         print(index)
 
     def togglePowerSupply(self):
