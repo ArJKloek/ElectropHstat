@@ -445,13 +445,13 @@ class CustomTextWidget(QWidget):
     def setFontsize(self, size):
         self.size = size
         self.font = QFont("Arial", self.size)  # update the font
-        
+
         metrics = QFontMetrics(self.font)
         normal_size = metrics.size(Qt.TextSingleLine, self.max_normalText)
         shadow_size = metrics.size(Qt.TextSingleLine, self.max_shadowText)
         self.fixed_total_width = normal_size.width() + shadow_size.width()
         self.fixed_total_height = metrics.height()
-        
+
         self.update()
 
     
@@ -468,11 +468,15 @@ class CustomTextWidget(QWidget):
             self.update()
         
     def sizeHint(self):
+        return QSize(self.fixed_total_width, self.fixed_total_height + 10)
+
+    
+    #def sizeHint(self):
         # Provide a size hint that accounts for the font size and shadow offset
-        metrics = QFontMetrics(self.font)
-        textSize = metrics.size(Qt.TextSingleLine,  self.normalText + self.shadowText)
+    #    metrics = QFontMetrics(self.font)
+    #    textSize = metrics.size(Qt.TextSingleLine,  self.normalText + self.shadowText)
         # Add some extra space for the shadow offset and padding
-        return QSize(self.fixed_total_width + 10, self.fixed_total_height + 10)
+    #    return QSize(self.fixed_total_width + 10, self.fixed_total_height + 10)
         #return QSize(80, 160)  # Width, Height (taller than before)
 
 
