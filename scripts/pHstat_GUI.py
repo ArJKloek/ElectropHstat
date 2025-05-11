@@ -648,7 +648,7 @@ class MainWindow(QMainWindow):
         self.currentDial.setPageStep(5)         # Larger jumps
         self.currentDial.setNotchesVisible(True)
         self.currentDial.setWrapping(False)
-        print("Wrapping enabled?", self.dial.wrapping())  # Should print False
+        print("Wrapping enabled?", self.currentDial.wrapping())  # Should print False
 
         self.currentDial.valueChanged.connect(self.current_dial_changed)    
         
