@@ -370,7 +370,6 @@ class CustomTextWidget(QWidget):
         self.shadowText = shadowText
         self.color = color
         self.normalTextColor = Qt.black  # Default normal text color is black
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         #self.shadowColor = shadowColor
         self.size = size
@@ -452,6 +451,8 @@ class CustomTextWidget(QWidget):
         shadow_size = metrics.size(Qt.TextSingleLine, self.max_shadowText)
         self.fixed_total_width = normal_size.width() + shadow_size.width()
         self.fixed_total_height = metrics.height()
+
+        self.setMinimumHeight(self.fixed_total_height + 10)  # Add a little padding
 
         self.update()
 
