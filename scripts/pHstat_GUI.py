@@ -868,7 +868,7 @@ class MainWindow(QMainWindow):
         self.handle_select(index)
 
     def pH_selector_changed(self, value):
-        print(value)
+        print(round(value,1))
 
     def togglePowerSupply(self):
         if self.powerButton.isChecked():
