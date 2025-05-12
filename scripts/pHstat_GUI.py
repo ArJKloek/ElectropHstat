@@ -1177,9 +1177,10 @@ class MainWindow(QMainWindow):
         
         port = find_voltcraft_pps()
         if not port:
-            raise RuntimeError("No PPS found on any ttyUSB port")
+            print("[PPS] No PPS found — running without power-supply.")
             self._disable_pps_controls()
             return
+        
         #self.ppsWorker = PPSWorker(port, 0.5, reset=False)
         try:
             temp_worker = PPSWorker(port, 0.5, reset=True)
