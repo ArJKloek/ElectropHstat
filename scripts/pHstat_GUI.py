@@ -485,10 +485,11 @@ class MainWindow(QMainWindow):
         try:
             self.setupPPSWorker()
             print("[PPS] Reconnected.")
+            self.initializeGraphTabs()
         except Exception as e:
             print(f"[PPS] Reconnect failed: {e}")
             QMessageBox.critical(self, "Reconnect Failed", f"Could not reconnect to PPS:\n{e}")
-
+        
     
     
     
