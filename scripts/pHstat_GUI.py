@@ -1160,11 +1160,25 @@ class MainWindow(QMainWindow):
         
         self.pHThread.start()
     
+    def _disable_pps_controls(self):
+        gray = "color: gray;"
+        self.voltagelabel.setText("V: N/A");   self.voltagelabel.setStyleSheet(gray)
+        self.currentlabel.setText("A: N/A");   self.currentlabel.setStyleSheet(gray)
+        self.modelabel.setText("N/A");         self.modelabel.setStyleSheet(gray)
+
+        for w in (self.voltageDial,
+                self.currentDial,
+                self.setButton,
+                self.modeToggle,
+                self.powerButton):          # ← new: also disable output toggle
+            w.setDisabled(True)
+
     def setupPPSWorker(self):
         
         port = find_voltcraft_pps()
         if not port:
             raise RuntimeError("No PPS found on any ttyUSB port")
+            self._disable_pps_controls()
             return
         #self.ppsWorker = PPSWorker(port, 0.5, reset=False)
         try:
