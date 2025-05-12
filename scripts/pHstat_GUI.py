@@ -979,23 +979,23 @@ class MainWindow(QMainWindow):
             right_label="Temperature",
             right_units="°C"
         )
-        
-        self.plot_manager.addGraphTab(
-            title="Power Plot",
-            plot_index=2,
-            left_label="Voltage (V)",
-            right_label="Amperage",
-            right_units="A"
-        )
-        
-        self.plot_manager.addGraphTab(
-            title="Coulomb",
-            plot_index=3,
-            left_label="Coulomb (C)",
-            right_label=None,
-            right_units=None
-        )
-        
+        if hasattr(self, 'ppsWorker'):
+            self.plot_manager.addGraphTab(
+                title="Power Plot",
+                plot_index=2,
+                left_label="Voltage (V)",
+                right_label="Amperage",
+                right_units="A"
+            )
+            
+            self.plot_manager.addGraphTab(
+                title="Coulomb",
+                plot_index=3,
+                left_label="Coulomb (C)",
+                right_label=None,
+                right_units=None
+            )
+            
         #self.plot_manager.addPowerGraphTab("Power Plot")
         #self.plot_manager.addCoulombGraphTab("Coulomb Plot")
 
