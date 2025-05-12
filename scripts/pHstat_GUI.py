@@ -884,6 +884,10 @@ class MainWindow(QMainWindow):
         self.handle_pH(pH_select)        
 
     def togglePowerSupply(self):
+        
+        if not hasattr(self, 'ppsWorker'):
+            return
+
         if self.powerButton.isChecked():
             self.ppsWorker.set_output(True)  # Replace with your actual PPS control
             if self.start: self.logger.log_change("Power","ON") 
@@ -901,6 +905,8 @@ class MainWindow(QMainWindow):
                 self.logger.log_change("Power", "FORCED OFF")
 
     def apply_ps_settings(self):
+        if not hasattr(self, 'ppsWorker'):
+            return
         # Read toggle state (assuming you're using your ToggleSwitch class)
         mode = "CC" if self.modeToggle.isChecked() else "CV"
 
@@ -1090,7 +1096,8 @@ class MainWindow(QMainWindow):
         create_csv(self, self.valueData, self.plotindex, self.headerindex)
         mode = "CC" if self.modeToggle.isChecked() else "CV"
         ouput = "ON" if self.powerButton.isChecked() else "OFF"
-        self.logger.log_start(self.voltageDial.value()/10, self.currentDial.value()/10, mode, ouput, self.PStype)
+        if  hasattr(self, 'ppsWorker'):
+            self.logger.log_start(self.voltageDial.value()/10, self.currentDial.value()/10, mode, ouput, self.PStype)
         self.logtimer.start()  # Start the timer
         self.coulombs = 0.0
         self.coulombClock.start()
@@ -1114,10 +1121,11 @@ class MainWindow(QMainWindow):
         self.pHstatLabel.setEnabled(False)
         self.pumpLabel.setEnabled(False)
         self.totalml = 0
-        if self.start: self.logger.log_change("Pressed","STOP") 
-        else: pass
-        self.force_power_off()
-        self.logger.log_stop(self.voltageDial.value()/10, self.currentDial.value()/10, self.coulombs)
+        if  hasattr(self, 'ppsWorker'):
+            if self.start: self.logger.log_change("Pressed","STOP") 
+            else: pass
+            self.force_power_off()
+            self.logger.log_stop(self.voltageDial.value()/10, self.currentDial.value()/10, self.coulombs)
 
             
     def reset_pHStat(self):
@@ -1137,7 +1145,8 @@ class MainWindow(QMainWindow):
             self.resetbutton.setEnabled(False)
             self.pumpLabel.setEnabled(False)
             self.start = False
-            self.logger.reset()
+            if  hasattr(self, 'ppsWorker'):
+                self.logger.reset()
         else:
             pass
         

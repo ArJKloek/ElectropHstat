@@ -25,7 +25,9 @@ def create_csv(self, data, plots, header):
 
     # Set the directory of saving the data
     script_dir = create_folder()
-    self.logger = PowerLogger(log_dir=script_dir)
+    if hasattr(self, 'ppsWorker'):      
+        self.logger = PowerLogger(log_dir=script_dir)
+        
     for i, labels in enumerate(plots):
         if self.Log_file[i]:
             return
