@@ -1165,12 +1165,12 @@ class MainWindow(QMainWindow):
         port = find_voltcraft_pps()
         if not port:
             raise RuntimeError("No PPS found on any ttyUSB port")
+            return
         #self.ppsWorker = PPSWorker(port, 0.5, reset=False)
         try:
             temp_worker = PPSWorker(port, 0.5, reset=True)
             if not temp_worker.is_connected():
                 raise RuntimeError("No PPS detected")
-            
             self.ppsThread = QThread()
             self.ppsWorker = temp_worker
             self.ppsWorker.moveToThread(self.ppsThread)
