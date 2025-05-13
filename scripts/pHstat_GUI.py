@@ -1213,18 +1213,7 @@ class MainWindow(QMainWindow):
     
         except Exception as e:
             print(f"[PPS] Not connected: {e}")
-            self.voltagelabel.setText("V: N/A")
-            self.currentlabel.setText("A: N/A")
-            self.modelabel.setText("N/A")
-            gray_style = "color: gray;"
-            self.voltagelabel.setStyleSheet(gray_style)
-            self.currentlabel.setStyleSheet(gray_style)
-            self.modelabel.setStyleSheet(gray_style)
-            
-            self.voltageDial.setDisabled(True)
-            self.currentDial.setDisabled(True)
-            self.setButton.setDisabled(True)
-            self.modeToggle.setDisabled(True)
+            self._disable_pps_controls()
 
     def setupRTDWorker(self):
         # Initialize the RTD worker, connections and start thread
