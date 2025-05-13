@@ -957,47 +957,36 @@ class MainWindow(QMainWindow):
         self.tabtimer.timeout.connect(self.updateCurrentTabPlot)
         self.tabtimer.start(1000)  # Update every second
 
-    
+    def _tab_exists(self, title: str) -> bool:
+        """Return True if a tab with *title* is already present."""
+        for i in range(self.tabWidget.count()):
+            if self.tabWidget.tabText(i) == title:
+                return True
+        return False
+        
     def initializeGraphTabs(self):
-        self.graphWidgets = []
-        self.graphTabs = []
+           # only create the tab manager once
+        if not hasattr(self, "plot_manager"):
+            self.plot_manager = PlotManager(self)
+        #self.graphWidgets = []
+        #self.graphTabs = []
 
         # Add Pump plot
         #self.addGraphTab("Pump Plot", ("Time (s)", "Added (ml)"))
+        specs = [
+            ("Pump Plot",       dict(plot_index=0, left_label="Added (ml)")),
+            ("pH + Temp Plot",  dict(plot_index=1, left_label="pH",
+                                    right_label="Temperature", right_units="°C")),
+            ("Power Plot",      dict(plot_index=2, left_label="Voltage (V)",
+                                    right_label="Amperage",     right_units="A")),
+            ("Coulomb",         dict(plot_index=3, left_label="Coulomb (C)")),
+        ]
+        for title, kwargs in specs:
+            if self._tab_exists(title):
+                continue                      # ← already present – skip
+            self.plot_manager.addGraphTab(title=title, **kwargs)
         
-        self.plot_manager.addGraphTab(
-            title="Pump Plot",
-            plot_index=0,
-            left_label="Added (ml)",
-            right_label=None,
-            right_units=None
-        )
-        
-        # Add Dual pH+Temperature plot
-        #self.plot_manager.addDualGraphTab("pH + Temp Plot")
-        self.plot_manager.addGraphTab(
-            title="pH + Temp Plot",
-            plot_index=1,
-            left_label="pH",
-            right_label="Temperature",
-            right_units="°C"
-        )
-        self.plot_manager.addGraphTab(
-            title="Power Plot",
-            plot_index=2,
-            left_label="Voltage (V)",
-            right_label="Amperage",
-            right_units="A"
-        )
-            
-        self.plot_manager.addGraphTab(
-            title="Coulomb",
-            plot_index=3,
-            left_label="Coulomb (C)",
-            right_label=None,
-            right_units=None
-        )
-            
+      
         #self.plot_manager.addPowerGraphTab("Power Plot")
         #self.plot_manager.addCoulombGraphTab("Coulomb Plot")
 
