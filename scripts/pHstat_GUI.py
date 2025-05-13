@@ -475,9 +475,7 @@ class MainWindow(QMainWindow):
 
         # Stop existing worker if running
         try:
-            self.ppsWorker.stop()
-            self.ppsThread.quit()
-            self.ppsThread.wait()
+            self._stop_pps()
             print("[PPS] Existing PPSWorker stopped.")
         except Exception as e:
             print(f"[PPS] Error stopping old PPSWorker: {e}")
@@ -885,20 +883,6 @@ class MainWindow(QMainWindow):
         except Exception:
             pass
         self.handle_pH(pH_select)        
-
-    def togglePowerSupply(self):
-        
-        if not hasattr(self, 'ppsWorker'):
-            return
-
-        if self.powerButton.isChecked():
-            self.ppsWorker.set_output(True)  # Replace with your actual PPS control
-            if self.start: self.logger.log_change("Power","ON") 
-            else: pass
-        else:
-            self.ppsWorker.set_output(False)
-            if self.start: self.logger.log_change("Power","OFF") 
-            else: pass
     
     def force_power_off(self):
         if self.powerButton.isChecked():
@@ -1159,19 +1143,27 @@ class MainWindow(QMainWindow):
         self.pHThread.started.connect(self.pHWorker.run)
         
         self.pHThread.start()
-    
-    def _disable_pps_controls(self):
-        gray = "color: gray;"
-        self.voltagelabel.setText("V: N/A");   self.voltagelabel.setStyleSheet(gray)
-        self.currentlabel.setText("A: N/A");   self.currentlabel.setStyleSheet(gray)
-        self.modelabel.setText("N/A");         self.modelabel.setStyleSheet(gray)
 
-        for w in (self.voltageDial,
-                self.currentDial,
-                self.setButton,
-                self.modeToggle,
-                self.powerButton):          # ← new: also disable output toggle
+    # --- utilities -------------------------------------------------
+    def _disable_pps_controls(self):
+        """Gray-out all PPS widgets and make them inert."""
+        gray = "color: gray;"
+        for lbl in (self.voltagelabel, self.currentlabel, self.modelabel):
+            lbl.setText("N/A" if lbl is self.modelabel else lbl.text().split()[0] + ": N/A")
+            lbl.setStyleSheet(gray)
+
+        for w in (self.voltageDial, self.currentDial,
+                self.setButton, self.modeToggle, self.powerButton):
             w.setDisabled(True)
+
+    def _enable_pps_controls(self):
+        """Undo the gray-out – called after handle_pps_limits()."""
+        for lbl in (self.voltagelabel, self.currentlabel, self.modelabel):
+            lbl.setStyleSheet("color: black;")
+        for w in (self.voltageDial, self.currentDial,
+                self.setButton, self.modeToggle, self.powerButton):
+            w.setEnabled(True)
+
 
     def setupPPSWorker(self):
         
@@ -1194,7 +1186,7 @@ class MainWindow(QMainWindow):
             self.ppsWorker.current_signal.connect(self.update_pps_current)
             self.ppsWorker.mode_signal.connect(self.update_pps_mode)
             self.ppsWorker.limits_signal.connect(self.handle_pps_limits)
-            self.ppsWorker.disconnected_signal.connect(self.handle_pps_disconnect)
+            self.ppsWorker.disconnected_signal.connect(self.on_pps_disconnect)
 
             self.ppsThread.started.connect(self.ppsWorker.run)
             self.ppsThread.start()
@@ -1438,6 +1430,35 @@ class MainWindow(QMainWindow):
         #print(f"Received signal with value: {value}")
         # Handle the change in the main GUI here
     
+    def _stop_pps(self):
+        if getattr(self, "ppsWorker", None):
+            self.ppsWorker.stop()
+            self.ppsThread.quit()
+            self.ppsThread.wait()
+
+
+    @pyqtSlot()
+    def togglePowerSupply(self):
+        if not getattr(self, "ppsWorker", None):
+            return                              # nothing connected
+        try:
+            self.ppsWorker.set_output(self.powerButton.isChecked())
+        except Exception as e:
+            print(f"[PPS] Could not change output: {e}")
+            self.powerButton.setChecked(False)
+
+
+    @pyqtSlot()
+    def on_pps_disconnect(self):
+        print("[PPS] Lost connection — disabling controls.")
+        self._disable_pps_controls()
+        self.powerButton.setChecked(False)     # keep toggle in sync
+        self._stop_pps()
+        self.reconnect_pps_action.setEnabled(True)
+        QMessageBox.warning(self, "Power Supply Disconnected",
+                            "The power supply was disconnected.")
+
+
     @pyqtSlot(float, float)
     def handle_time(self,ml,addtime):
         self.ml = ml
@@ -1465,23 +1486,9 @@ class MainWindow(QMainWindow):
     #def update_pps_voltage(self, value):
     #    self.voltagelabel.setText(f"{value:.2f} V")
     @pyqtSlot()
-    def handle_pps_disconnect(self):
+    def f(self):
         print("[PPS] Lost connection — disabling controls.")
-
-        self.voltageDial.setDisabled(True)
-        self.currentDial.setDisabled(True)
-        self.setButton.setDisabled(True)
-        self.modeToggle.setDisabled(True)
-
-        self.voltagelabel.setText("V: N/A")
-        self.currentlabel.setText("A: N/A")
-        self.modelabel.setText("N/A")
-
-        gray_style = "color: gray;"
-        self.voltagelabel.setStyleSheet(gray_style)
-        self.currentlabel.setStyleSheet(gray_style)
-        self.modelabel.setStyleSheet(gray_style)
-
+        self._disable_pps_controls()
         QMessageBox.warning(self, "Power Supply Disconnected", "The power supply was disconnected.")
 
     @pyqtSlot(float)
@@ -1505,6 +1512,7 @@ class MainWindow(QMainWindow):
         self.voltageDial.setEnabled(True)
         self.currentDial.setEnabled(True)
         self.setButton.setEnabled(True)
+        self.powerButton.setEnabled(True)
         self.modeToggle.setEnabled(True)
         
          # Restore label styles
