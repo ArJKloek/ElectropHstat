@@ -4,7 +4,7 @@ import os
 import getpass
 from electrophstat.hardware import discover_power_supply
 from electrophstat.sensors import discover_ph_sensor
-from ph_sensor_worker import pHSensorWorker
+from scripts.ph_sensor_worker import pHSensorWorker
 
 if 'XDG_RUNTIME_DIR' not in os.environ:
     os.environ['XDG_RUNTIME_DIR'] = f"/run/user/{os.getuid()}"
