@@ -3,7 +3,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 import time
 
 class pHSensorWorker(QObject):
-    value_signal = pyqtSignal(float)
+    value_signal = pyqtSignal(float, int)
     disconnected_signal = pyqtSignal()
 
     def __init__(self, sensor, interval: float = 1.0):
@@ -16,7 +16,7 @@ class pHSensorWorker(QObject):
     def run(self):
         while self.running:
             try:
-                self.value_signal.emit(self.sensor.read())
+                self.value_signal.emit(self.sensor.read(), 1)
                 self.fail = 0
             except Exception as e:
                 print("pH read error:", e)
