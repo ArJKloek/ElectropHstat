@@ -324,7 +324,7 @@ class MainWindow(QMainWindow):
         self.temp = 20
         #self.dev = 1#atlas_i2c(address=address)
         #self.pHdev = atlas_i2c(address=99)
-        self.RTDdev = atlas_i2c(address=102)
+        #self.RTDdev = atlas_i2c(address=102)
         #self.log_interval = 0
         self.Ref_path = ''
         self.pHSelect = 0.0
@@ -1652,10 +1652,10 @@ class MainWindow(QMainWindow):
             self.valueData[1] = received_data
         elif type == 2:
             self.temp = received_data
-            if received_data < -200:
-                self.RTDlabel.setText("N/A °C")
-            else:
-                self.RTDlabel.setText(f"{received_data:.2f} °C")
+            #if received_data < -200:
+            #    self.RTDlabel.setText("N/A °C")
+            #else:
+            self.RTDlabel.setText(f"{received_data:.2f} °C")
             self.valueData[2] = received_data
             self.pHWorker.pH_temp = round(received_data,1)
         elif type == 3:   
