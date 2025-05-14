@@ -2,7 +2,7 @@ from __future__ import annotations
 import random
 from typing import Optional
 
-from .interfaces import AtlasSensor
+from ..hardware.interfaces import AtlasSensor
 
 
 class DummyAtlas(AtlasSensor):
