@@ -322,7 +322,7 @@ class MainWindow(QMainWindow):
         self.temp = 20
         #self.dev = 1#atlas_i2c(address=address)
         #self.pHdev = atlas_i2c(address=99)
-        #self.RTDdev = atlas_i2c(address=102)
+        self.RTDdev = atlas_i2c(address=102)
         #self.log_interval = 0
         self.Ref_path = ''
         self.pHSelect = 0.0
