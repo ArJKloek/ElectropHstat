@@ -3,6 +3,13 @@ from __future__ import annotations
 import serial
 from .interfaces import PowerSupply
 from voltcraft.pps import PPS
+try:
+    # Python ≥ 3.8
+    from typing import Optional
+except ImportError:                 # Python 3.7 fallback
+    from typing_extensions import Optional
+
+@runtime_checkable
 
 class VoltcraftPPS(PowerSupply):
     """Adapter over the original PPS class, exposing a clean interface."""
