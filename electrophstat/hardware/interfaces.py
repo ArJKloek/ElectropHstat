@@ -1,9 +1,9 @@
-# electrophstat/hardware/interfaces.py
 try:
-    from typing import Protocol, runtime_checkable
-except ImportError:                       # 3.7 fallback
+    # Python ≥ 3.8
+    from typing import Protocol, runtime_checkable, Optional, Tuple
+except ImportError:                 # Python 3.7 fallback
     from typing_extensions import Protocol, runtime_checkable
-from typing import Optional   # put this near the top of the file
+    from typing import Optional, Tuple        # Tuple still comes from stdlib
 
 
 @runtime_checkable
