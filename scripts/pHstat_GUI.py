@@ -500,8 +500,8 @@ class MainWindow(QMainWindow):
         self.pHWorker = pHSensorWorker(sensor, interval=2.0)
         self.pHWorker.moveToThread(self.pHThread)
 
-        self.pHWorker.value_signal.connect(self.update_ph_label)     # GUI slot
-        self.pHWorker.disconnected_signal.connect(self.update_gui)
+        self.pHWorker.value_signal.connect(self.update_gui)     # GUI slot
+        self.pHWorker.disconnected_signal.connect(self.on_ph_disconnect)
 
         self.pHThread.started.connect(self.pHWorker.run)
         self.pHThread.start()
