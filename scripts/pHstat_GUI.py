@@ -2,6 +2,7 @@ import sys
 import time
 import os
 import getpass
+from electrophstat.hardware import discover_power_supply
 
 if 'XDG_RUNTIME_DIR' not in os.environ:
     os.environ['XDG_RUNTIME_DIR'] = f"/run/user/{os.getuid()}"
@@ -1167,7 +1168,9 @@ class MainWindow(QMainWindow):
 
     def setupPPSWorker(self):
         
-        port = find_voltcraft_pps()
+        #port = find_voltcraft_pps()
+        psu = discover_power_supply()
+        self.ppsWorker = PPSWorker(psu, interval=1.0)
         if not port:
             print("[PPS] No PPS found — running without power-supply.")
             self._disable_pps_controls()

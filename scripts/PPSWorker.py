@@ -1,33 +1,31 @@
+from __future__ import annotations
 from PyQt5.QtCore import QObject, pyqtSignal
-from voltcraft.pps import PPS
+from electrophstat.hardware.interfaces import PowerSupply
 import time
 
 class PPSWorker(QObject):
-    limits_signal = pyqtSignal(float, float, float, str)  # VMAX, IMAX, VMIN, MODEL
-    voltage_signal = pyqtSignal(float)
-    current_signal = pyqtSignal(float)
-    mode_signal = pyqtSignal(str)
+    limits_signal       = pyqtSignal(float, float, float, str)  # VMAX, IMAX, VMIN, MODEL
+    voltage_signal      = pyqtSignal(float)
+    current_signal      = pyqtSignal(float)
+    mode_signal         = pyqtSignal(str)
     disconnected_signal = pyqtSignal()
 
-    def __init__(self, port, interval, reset):
+    def __init__(self, psu: PowerSupply(), interval:float):
         super().__init__()
-        print(port)
-        self.pps = PPS(port,reset)
-        self.interval = interval
-        self.failure_count = 0
-        self.max_failures = 3  # Number of allowed failures before disconnect
-        self.running = True
+        self.psu        = psu
+        self.interval   = interval
+        self.failure_count  = 0
+        self.max_failures   = 3  # Number of allowed failures before disconnect
+        self.running        = True
         
     def run(self):
         while self.running:
             try:
-                v, a, mode = self.pps.reading()
-                #voltage = self.pps.get_voltage()
-                #current = self.pps.get_current()
+                v, a = self.psu.read_output()
+                mode  = "CC" if self.psu.read_output()[1] else "CV"  # or your own logic
                 self.voltage_signal.emit(v)
                 self.current_signal.emit(a)
                 self.mode_signal.emit(mode)
-                
                 self.failure_count = 0  # ✅ reset on success
 
             except Exception as e:
@@ -38,8 +36,7 @@ class PPSWorker(QObject):
                     print("[PPSWorker] Too many failures. Assuming disconnection.")
                     self.disconnected_signal.emit()
                     self.running = False
-                    break
-                
+                    break        
             time.sleep(self.interval)
 
     def stop(self):
@@ -64,12 +61,14 @@ class PPSWorker(QObject):
             print(f"Failed to toggle output: {e}")
     
     def emit_limits(self):
+        # If your driver exposes constants, emit them; else send N/A.
         self.limits_signal.emit(
-            self.pps.VMAX,
-            self.pps.IMAX,
-            self.pps.VMIN,
-            self.pps.MODEL
+            getattr(self.psu, "VMAX", float("nan")),
+            getattr(self.psu, "IMAX", float("nan")),
+            getattr(self.psu, "VMIN", float("nan")),
+            getattr(self.psu, "MODEL", "Unknown"),
         )
+
     def is_connected(self) -> bool:
         try:
             # This triggers an initial command ("GMAX") already in __init__
@@ -77,4 +76,11 @@ class PPSWorker(QObject):
             return True
         except Exception as e:
             print(f"PPS detection failed: {e}")
-            return False
+            return self.psu.connected
+    
+    # ---------- helpers ----------
+    def _safe(self, fn):
+        try:
+            fn()
+        except Exception as e:
+            print(f"[PPSWorker] driver error: {e}")
