@@ -4,7 +4,7 @@ Utility helpers for serial devices (Voltcraft PPS, pumps, etc.).
 """
 from __future__ import annotations
 from typing import Optional   
-import serial.tools.list_ports
+import serial.tools.list_ports as lp
 
 _MATCH_IDS = {
     "0403:6001",   # FTDI FT232R  (many older units)
