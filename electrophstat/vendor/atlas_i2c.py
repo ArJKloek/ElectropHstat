@@ -2,7 +2,7 @@
 from __future__ import annotations
 from typing import Optional
 from ..hardware.i2c_transport import I2CDevice
-from .interfaces import AtlasSensor
+from ..hardware.interfaces import AtlasSensor
 
 
 class AtlasI2C(AtlasSensor):
