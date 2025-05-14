@@ -1,8 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QCoreApplication, QWaitCondition, QMutex
 import time
-#from pyudev import Context, Monitor
 import subprocess
-#from pyudev import Context
+from pyudev import Context
 
 i2c_mutex = QMutex()
 
