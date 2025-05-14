@@ -1,61 +1,53 @@
+# electrophstat/sensors/atlas_i2c.py
 from __future__ import annotations
-import time
 from typing import Optional
-
-import smbus2
-from ..hardware.interfaces import AtlasSensor
+from ..hardware.i2c_transport import I2CDevice
+from .interfaces import AtlasSensor
 
 
 class AtlasI2C(AtlasSensor):
-    """Atlas Scientific EZO board in I²C mode."""
+    """Atlas Scientific EZO board in I²C mode (pH, RTD, ORP, …)."""
 
-    def __init__(self, address: int = 0x63, kind: str = "pH", bus: int = 1):
-        self.address = address
+    def __init__(
+        self,
+        address: int = 0x63,
+        kind: str = "pH",
+        bus: int = 1,
+    ):
         self.kind = kind
-        self._bus_number = bus
-        self._bus: Optional[smbus2.SMBus] = None
+        # transport opens the bus and sets the address
+        self._dev = I2CDevice(address, bus)
 
-    # ---------- life-cycle ----------
     def connect(self) -> None:
-        self._bus = smbus2.SMBus(self._bus_number)
-
-    def disconnect(self) -> None:
-        if self._bus:
-            self._bus.close()
-            self._bus = None
+        # nothing extra to do; device already ready
+        pass
 
     @property
     def connected(self) -> bool:
-        return self._bus is not None
+        # if the file descriptors are open
+        return self._dev._rd is not None
 
-    # ---------- measurement ----------
+    def disconnect(self) -> None:
+        self._dev.close()
+
     def read(self) -> float:
-        assert self._bus, "not connected"
+        """
+        Perform a measurement read.
+        pH / RTD needs the longer timeout; others may not.
+        """
+        resp = self._dev.query("R", expect_long=True)
+        if not resp or resp[0] != "\x01":
+            raise RuntimeError(f"Bad reply from {self.kind!r}: {resp!r}")
+        # drop the status byte
+        return float(resp[1:])
 
-        # 1. send the 'R' command (0x52) with a null terminator
-        self._bus.write_i2c_block_data(self.address, 0x52, [])
-        time.sleep(1.0)                       # allow processing (800 ms)
-
-        # 2. read up to 32 bytes
-        data = self._bus.read_i2c_block_data(self.address, 0, 32)
-        chars = bytes([b for b in data if b != 0]).decode(errors="ignore")
-        # response looks like: '\x01+7.02' (leading status byte 1=success)
-        if not chars or chars[0] != "\x01":
-            raise RuntimeError(f"Bad reply from EZO: {chars!r}")
-
-        return float(chars[1:])               # strip status byte
-
-    # ---------- optional helpers ----------
     def set_temp_comp(self, celsius: float) -> None:
-        assert self._bus
         cmd = f"T,{celsius:.2f}"
-        self._bus.write_i2c_block_data(self.address, ord(cmd[0]), list(cmd[1:].encode()))
+        self._dev.query(cmd, expect_long=False)
 
     def clear_cal(self) -> None:
-        assert self._bus
-        self._bus.write_i2c_block_data(self.address, ord("Cal".encode()[0]),
-                                       list("Cal,clear".encode()[1:]))
+        self._dev.query("Cal,clear", expect_long=True)
 
     def calibrate(self, *args, **kwargs) -> None:
-        # implement as needed
-        pass
+        # you can parse args like ("mid", 7.00) or similar
+        raise NotImplementedError("Calibration not yet implemented")
