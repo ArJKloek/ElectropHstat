@@ -519,7 +519,7 @@ class MainWindow(QMainWindow):
             try:
                 # Connect signals
                 self.startProcessingSignal.connect(self.StatWorker.start_processing)
-                self.pHWorker.update_signal_pH.connect(self.StatWorker.update_pH)
+                self.pHWorker.value_signal.connect(self.StatWorker.update_pH)
                 #self.pH_settings_window.select_changed.connect(self.StatWorker.update_pH_select)
                 
                 #self.select_settings_window.select_changed.connect(self.StatWorker.update_select)
@@ -550,7 +550,7 @@ class MainWindow(QMainWindow):
             try:
                 #Disconnect signals
                 self.startProcessingSignal.disconnect(self.StatWorker.start_processing)
-                self.pHWorker.update_signal_pH.disconnect(self.StatWorker.update_pH)
+                self.pHWorker.value_signal.disconnect(self.StatWorker.update_pH)
                 #self.select_settings_window.select_changed.disconnect(self.StatWorker.update_select)
                 self.StatWorker.status_signal.disconnect(self.handle_Stat)
                 self.StatWorker.pump_signal.disconnect(self.pumpInput)
