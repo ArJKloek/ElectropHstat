@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QObject, pyqtSignal, QThread, pyqtSlot
 import time
-#from pyudev import Context, Monitor
+from pyudev import Context, Monitor
 import subprocess
 
 class USB_Worker(QObject):

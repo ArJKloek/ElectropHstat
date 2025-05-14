@@ -3,6 +3,8 @@ import time
 import os
 import getpass
 from electrophstat.hardware import discover_power_supply
+from electrophstat.sensors import discover_ph_sensor
+from ph_sensor_worker import pHSensorWorker
 
 if 'XDG_RUNTIME_DIR' not in os.environ:
     os.environ['XDG_RUNTIME_DIR'] = f"/run/user/{os.getuid()}"
@@ -28,14 +30,15 @@ from scripts.pHStat_csv import create_csv, log_csv, read_log_data, scale_time_da
 import datetime
 import shutil
 import re
-import lib8mosind
-#from scripts.pHStat_classes import MockLib8MosInd
+#import lib8mosind
+from scripts.pHStat_classes import MockLib8MosInd
 import serial.tools.list_ports
-from voltcraft.pps import PPS
-from scripts import PlotManager, atlas_i2c, Fusion3DToggle, RoundSetButton, Push3DButton, Round3DButton, PowerLogger
+#from voltcraft.pps import PPS
+from scripts import PlotManager, Fusion3DToggle, RoundSetButton, Push3DButton, Round3DButton, PowerLogger #, atlas_i2c
 
 
-#lib8mosind = MockLib8MosInd()
+lib8mosind = MockLib8MosInd()
+
 
 def find_voltcraft_pps() -> str or None:
     ports = serial.tools.list_ports.comports()
@@ -118,8 +121,8 @@ class MainWindow(QMainWindow):
         self.setupMenu()
         self.setupWidgets()
         self.setupStatusBar()
-
-        self.setuppHWorker()
+        self.initpHSensor()
+        #self.setuppHWorker()
         self.setupRTDWorker()
         self.setupStatWorker()
         self.setupUSBWorker()
@@ -318,8 +321,8 @@ class MainWindow(QMainWindow):
         self.pHdata = 9.9
         self.temp = 20
         #self.dev = 1#atlas_i2c(address=address)
-        self.pHdev = atlas_i2c(address=99)
-        self.RTDdev = atlas_i2c(address=102)
+        #self.pHdev = atlas_i2c(address=99)
+        #self.RTDdev = atlas_i2c(address=102)
         #self.log_interval = 0
         self.Ref_path = ''
         self.pHSelect = 0.0
@@ -491,7 +494,22 @@ class MainWindow(QMainWindow):
             print(f"[PPS] Reconnect failed: {e}")
             QMessageBox.critical(self, "Reconnect Failed", f"Could not reconnect to PPS:\n{e}")
         
-    
+    def initpHSensor(self):
+        sensor = discover_ph_sensor()
+        self.pHThread = QThread()
+        self.pHWorker = pHSensorWorker(sensor, interval=2.0)
+        self.pHWorker.moveToThread(self.pHThread)
+
+        self.pHWorker.value_signal.connect(self.update_ph_label)     # GUI slot
+        self.pHWorker.disconnected_signal.connect(self.update_gui)
+
+        self.pHThread.started.connect(self.pHWorker.run)
+        self.pHThread.start()
+
+    def on_ph_disconnect(self):
+        print("[pH] sensor lost – switching to N/A")
+        self.pHLabel.setText("pH: N/A")
+
     
     
     def toggle_pHStat(self, checked):
@@ -1133,17 +1151,17 @@ class MainWindow(QMainWindow):
         status_bar.showMessage("Ready")
 
    
-    def setuppHWorker(self):
-         # Initialize the worker and thread
-        self.pHThread = QThread()
-        self.pHWorker = pHWorker(self.send_counter, self.test_time, self.read, self.pHdata, self.pHdev, self.temp)
-        self.pHWorker.moveToThread(self.pHThread)
-        # Connections
-        self.pHWorker.update_signal_pH.connect(self.update_gui)
+    #def setuppHWorker(self):
+    #     # Initialize the worker and thread
+    #    self.pHThread = QThread()
+    #    self.pHWorker = pHWorker(self.send_counter, self.test_time, self.read, self.pHdata, self.pHdev, self.temp)
+    #    self.pHWorker.moveToThread(self.pHThread)
+    #    # Connections
+    #    self.pHWorker.update_signal_pH.connect(self.update_gui)#
 
-        self.pHThread.started.connect(self.pHWorker.run)
+    #    self.pHThread.started.connect(self.pHWorker.run)
         
-        self.pHThread.start()
+    #   self.pHThread.start()
 
     # --- utilities -------------------------------------------------
     def _disable_pps_controls(self):
