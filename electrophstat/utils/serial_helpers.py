@@ -6,14 +6,15 @@ from __future__ import annotations
 from typing import Optional   
 import serial.tools.list_ports
 
+_MATCH_IDS = {
+    "0403:6001",   # FTDI FT232R  (many older units)
+    "10C4:EA60",   # Silicon Labs CP2102  ← your bridge
+}
 
 def find_voltcraft_pps() -> Optional[str]:
-    """
-    Return the first serial port that looks like a Voltcraft PPS,
-    or None if nothing is found.
-    """
-    for port in serial.tools.list_ports.comports():
-        # tweak the VID:PID or string match to whatever your PPS shows
-        if "Voltcraft" in port.description or "VID:PID=0403:6001" in port.hwid:
-            return port.device          # e.g. 'COM6', '/dev/ttyUSB0'
+    """Return /dev path of the first USB-UART that matches our ID list."""
+    for port in lp.comports():
+        vidpid = port.hwid.split("VID:PID=")[-1][:9]  # e.g. "10C4:EA60"
+        if vidpid in _MATCH_IDS:
+            return port.device                        # "/dev/ttyUSB1"
     return None
