@@ -4,6 +4,7 @@ import os
 import getpass
 from electrophstat.hardware import discover_power_supply
 from electrophstat.sensors import discover_ph_sensor
+from electrophstat.sensors import discover_temp_sensor
 from scripts.ph_sensor_worker import pHSensorWorker
 
 if 'XDG_RUNTIME_DIR' not in os.environ:
@@ -122,8 +123,9 @@ class MainWindow(QMainWindow):
         self.setupWidgets()
         self.setupStatusBar()
         self.initpHSensor()
+        self.initTempSensor()
         #self.setuppHWorker()
-        self.setupRTDWorker()
+        #self.setupRTDWorker()
         self.setupStatWorker()
         self.setupUSBWorker()
         self.setupPPSWorker()
@@ -493,7 +495,22 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f"[PPS] Reconnect failed: {e}")
             QMessageBox.critical(self, "Reconnect Failed", f"Could not reconnect to PPS:\n{e}")
-        
+    def initTempSensor(self):
+        temp = discover_temp_sensor()
+        self.tempThread = QThread()
+        self.tempWorker = pHSensorWorker(temp, interval=2.0)
+        self.tempWorker.moveToThread(self.tempThread)
+
+        # lambda injects “2” so update_gui knows it’s temperature
+        self.tempWorker.value_signal.connect(lambda v: self.update_gui(v, 2))
+        self.tempWorker.disconnected_signal.connect(
+            lambda: self.update_gui(float("nan"), 2)
+        )
+
+        self.tempThread.started.connect(self.tempWorker.run)
+        self.tempThread.start()
+
+
     def initpHSensor(self):
         sensor = discover_ph_sensor()
         self.pHThread = QThread()
