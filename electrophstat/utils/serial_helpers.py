@@ -3,11 +3,11 @@
 Utility helpers for serial devices (Voltcraft PPS, pumps, etc.).
 """
 from __future__ import annotations
-
+from typing import Optional   
 import serial.tools.list_ports
 
 
-def find_voltcraft_pps() -> str | None:
+def find_voltcraft_pps() -> Optional[str]:
     """
     Return the first serial port that looks like a Voltcraft PPS,
     or None if nothing is found.

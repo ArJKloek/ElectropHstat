@@ -1,12 +1,16 @@
 # electrophstat/hardware/interfaces.py
-from typing import Protocol, runtime_checkable, Tuple
+try:
+    from typing import Protocol, runtime_checkable
+except ImportError:                       # 3.7 fallback
+    from typing_extensions import Protocol, runtime_checkable
+from typing import Optional   # put this near the top of the file
 
 
 @runtime_checkable
 class PowerSupply(Protocol):
     """High-level contract for any DC bench supply (real or dummy)."""
 
-    port: str | None      # e.g. 'COM6' or '/dev/ttyUSB0'
+    port: Optional[str] # e.g. 'COM6' or '/dev/ttyUSB0'
 
     # ---------- life-cycle ----------
     def connect(self) -> None: ...
