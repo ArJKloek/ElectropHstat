@@ -1167,22 +1167,13 @@ class MainWindow(QMainWindow):
 
 
     def setupPPSWorker(self):
-        
-        #port = find_voltcraft_pps()
-        psu = discover_power_supply()
-        self.ppsWorker = PPSWorker(psu, interval=1.0)
-        if not port:
-            print("[PPS] No PPS found — running without power-supply.")
-            self._disable_pps_controls()
-            return
-        
-        #self.ppsWorker = PPSWorker(port, 0.5, reset=False)
+        """Create the PPSWorker (real or dummy) and launch its thread."""
         try:
-            temp_worker = PPSWorker(port, 0.5, reset=True)
-            if not temp_worker.is_connected():
+            psu = discover_power_supply()
+            if not psu.connected
                 raise RuntimeError("No PPS detected")
             self.ppsThread = QThread()
-            self.ppsWorker = temp_worker
+            self.ppsWorker = PPSWorker(psu, interval=0.5)
             self.ppsWorker.moveToThread(self.ppsThread)
 
             self.ppsWorker.voltage_signal.connect(self.update_pps_voltage)
