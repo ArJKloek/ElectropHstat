@@ -1170,7 +1170,7 @@ class MainWindow(QMainWindow):
         """Create the PPSWorker (real or dummy) and launch its thread."""
         try:
             psu = discover_power_supply()
-            if not psu.connected
+            if not psu.connected:
                 raise RuntimeError("No PPS detected")
             self.ppsThread = QThread()
             self.ppsWorker = PPSWorker(psu, interval=0.5)
