@@ -3,7 +3,7 @@ import time
 from typing import Optional
 
 import smbus2
-from .interfaces import AtlasSensor
+from ..hardware.interfaces import AtlasSensor
 
 
 class AtlasI2C(AtlasSensor):
