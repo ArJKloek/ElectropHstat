@@ -1,5 +1,5 @@
 from .dummy_atlas import DummyAtlas
-from ..vendor.atlas import AtlasI2C
+from ..vendor.atlas import atlas_i2c as AtlasI2C
 from ..hardware.interfaces import AtlasSensor
 
 __all__ = ["AtlasSensor", "DummyAtlas", "AtlasI2C", "discover_ph_sensor"]
