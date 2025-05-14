@@ -44,19 +44,19 @@ class PPSWorker(QObject):
 
     def set_voltage(self, value):
         try:
-            self.pps.voltage(value)
+            self.psu.voltage(value)
         except Exception as e:
             print(f"Failed to set voltage: {e}")
 
     def set_current(self, value):
         try:
-            self.pps.current(value)
+            self.psu.current(value)
         except Exception as e:
             print(f"Failed to set current: {e}")
 
     def set_output(self, enable: bool):
         try:
-            self.pps.output(enable)
+            self.psu.output(enable)
         except Exception as e:
             print(f"Failed to toggle output: {e}")
     
@@ -72,7 +72,7 @@ class PPSWorker(QObject):
     def is_connected(self) -> bool:
         try:
             # This triggers an initial command ("GMAX") already in __init__
-            _ = self.pps.VMAX  # Try accessing a property to force failure if not connected
+            _ = self.psu.VMAX  # Try accessing a property to force failure if not connected
             return True
         except Exception as e:
             print(f"PPS detection failed: {e}")
