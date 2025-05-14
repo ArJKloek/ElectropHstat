@@ -6,6 +6,10 @@ from .interfaces import PowerSupply
 
 class DummyPPS(PowerSupply):
     """Fake supply for tests – accepts every call and returns plausible numbers."""
+    VMAX  = 30.0      # volts
+    IMAX  = 3.0       # amps
+    VMIN  = 0.0
+    MODEL = "DummyPPS v1"
 
     port = None
 
