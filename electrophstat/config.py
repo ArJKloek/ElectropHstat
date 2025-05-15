@@ -1,32 +1,21 @@
-# electrophstat/config.py
+from __future__ import annotations
 import json
 from pathlib import Path
+from typing import Any, Dict
 
-DEFAULT_CONFIG = {
+DEFAULT_CONFIG: Dict[str, Any] = {
+    "select": 0,
     "target_pH": 7.00,
-    "hysteresis": 0.05,
-    "pump_volume_per_pH": 0.1,  # mL per pH unit
 }
 
 
-def load_settings(path: Path) -> dict:
-    """
-    Load JSON settings. Returns DEFAULT_CONFIG if file missing or invalid.
-    """
+def load_settings(config_path: str) -> Dict[str, Any]:
+    path = Path(config_path)
     if not path.exists():
         return DEFAULT_CONFIG.copy()
-    try:
-        with path.open() as f:
-            data = json.load(f)
-        return {**DEFAULT_CONFIG, **data}
-    except Exception:
-        return DEFAULT_CONFIG.copy()
+    return json.loads(path.read_text())
 
 
-def save_settings(settings: dict, path: Path) -> None:
-    """
-    Write JSON settings to disk.
-    """
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w") as f:
-        json.dump(settings, f, indent=2)
+def save_settings(config_path: str, settings: Dict[str, Any]) -> None:
+    path = Path(config_path)
+    path.write_text(json.dumps(settings, indent=2))

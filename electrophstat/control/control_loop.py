@@ -1,47 +1,60 @@
-# electrophstat/control/control_loop.py
 from dataclasses import dataclass
 from typing import Optional
 
 @dataclass
-class PumpAction:
-    pump_id: str        # e.g. "acid", "base"
-    volume_ml: float    # positive to add, negative to remove
+class ControlResult:
+    """
+    Encapsulates the outcome of one control-cycle.
+    - `status`: True if pH is outside the target condition.
+    - `pump`:   True if the pump should be activated.
+    """
+    status: bool
+    pump: bool
 
 class ControlLoop:
     """
-    Encapsulates the pH-stat dosing algorithm.
-
-    Usage:
-        loop = ControlLoop(pumps, sensor, settings)
-        loop.start()
-        action = loop.process(current_pH)
-        loop.stop()
+    Core pH-stat dosing logic, extracted from the old StatWorker.
+    - select: 0 = dose when pH > target; 1 = dose when pH < target
+    - target_pH: desired pH setpoint
+    - toggle_auto(): enables/disables automatic pumping
     """
     def __init__(
         self,
-        pumps: dict[str, object],    # mapping pump_id -> pump interface
-        sensor: object,              # AtlasSensor or similar
-        settings: dict              # loaded from config
-    ):
-        self.pumps = pumps
-        self.sensor = sensor
-        self.settings = settings
-        self.running = False
+        select: int,
+        target_pH: float,
+    ) -> None:
+        self.select = select
+        self.target_pH = target_pH
+        self.auto_enabled = False
 
-    def start(self) -> None:
-        """Initialize any state before dosing."""
-        self.running = True
+    def toggle_auto(self) -> None:
+        """Enable or disable automatic dosing."""
+        self.auto_enabled = not self.auto_enabled
 
-    def stop(self) -> None:
-        """Clean up any running timers or state."""
-        self.running = False
+    def set_select(self, select: int) -> None:
+        """0 = high pH dosing; 1 = low pH dosing."""
+        self.select = select
 
-    def process(self, pH: float) -> Optional[PumpAction]:
+    def set_target_pH(self, pH: float) -> None:
+        """Update the pH setpoint."""
+        self.target_pH = pH
+
+    def process(self, pH: float) -> Optional[ControlResult]:
         """
-        Given the latest pH reading, decide on a pump action.
-        Returns a PumpAction if dosing is needed, else None.
+        Take a new pH measurement and decide:
+        - `status`: whether the condition (pH >/< target) is met
+        - `pump`:   whether to keep or stop pumping when no longer met
+        Returns a ControlResult or None if nothing changed.
         """
-        if not self.running:
-            return None
-        # TODO: implement control logic based on self.settings
-        return None
+        # Determine if dosing condition is currently true
+        condition_met = (pH > self.target_pH) if self.select == 0 else (pH < self.target_pH)
+
+        # Status always reflects the condition
+        status = condition_met
+
+        # Pump only turns off when auto-enabled and condition ceases
+        pump = False
+        if not condition_met and self.auto_enabled:
+            pump = False
+
+        return ControlResult(status=status, pump=pump)
