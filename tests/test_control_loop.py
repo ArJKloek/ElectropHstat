@@ -1,5 +1,5 @@
 import pytest
-from electrophstat.control.control_loop import ControlLoop, PumpAction
+from ..electrophstat.control.control_loop import ControlLoop, PumpAction
 
 @pytest.mark.parametrize("select,target,pH,should_start,expected", [
     (0, 7.0, 7.5, False, PumpAction(pump_on=True,  status=True)),
