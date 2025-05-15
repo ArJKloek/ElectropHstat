@@ -1,6 +1,16 @@
 from dataclasses import dataclass
 from typing import Optional
 
+@dataclass(frozen=True)
+class PumpAction:
+    """
+    Represents what the control loop decided:
+      • pump_on: should the pump be running?
+      • status:   does the current pH state satisfy the control condition?
+    """
+    pump_on: bool
+    status: bool
+
 @dataclass
 class ControlResult:
     """
