@@ -1,7 +1,7 @@
 import csv
 import pytest
 from pathlib import Path
-from ..electrophstat.io.logger import Logger
+from electrophstat.io.logger import Logger
 
 def test_logger_creates_file_and_writes(tmp_path):
     fields = ["timestamp", "pH", "temperature", "volume"]
