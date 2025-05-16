@@ -3,12 +3,14 @@ import time
 import os
 import getpass
 from electrophstat.hardware import discover_power_supply
+from electrophstat.hardware.dummy_switcher import MockLib8MosInd
 from electrophstat.sensors import discover_ph_sensor
 from electrophstat.sensors import discover_temp_sensor
 from scripts.ph_sensor_worker import pHSensorWorker
 from electrophstat.control.control_loop import ControlLoop, PumpAction
 from electrophstat.io.logger import Logger
 from electrophstat.control.pump_control import PumpController
+
 if 'XDG_RUNTIME_DIR' not in os.environ:
     os.environ['XDG_RUNTIME_DIR'] = f"/run/user/{os.getuid()}"
 
@@ -34,7 +36,6 @@ import datetime
 import shutil
 import re
 #import lib8mosind
-from scripts.pHStat_classes import MockLib8MosInd
 import serial.tools.list_ports
 #from voltcraft.pps import PPS
 from scripts import PlotManager, Fusion3DToggle, RoundSetButton, Push3DButton, Round3DButton, PowerLogger #, atlas_i2c
@@ -561,6 +562,20 @@ class MainWindow(QMainWindow):
             "pump_on": action.pump_on,
             "status": action.status,
         })
+    
+    def startPump(self):
+        """Turn on the pump via the PPSWorker interface."""
+        try:
+            lib8mosind.set(0,1,1)
+        except Exception as e:
+            print(f"Failed to start pump: {e}")
+
+    def stopPump(self):
+        """Turn off the pump via the PPSWorker interface."""
+        try:
+            lib8mosind.set(0,1,0)
+        except Exception as e:
+            print(f"Failed to stop pump: {e}")
 
 
     def initpHSensor(self):
