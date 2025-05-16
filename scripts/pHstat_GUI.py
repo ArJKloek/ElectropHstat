@@ -89,6 +89,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+
+
+
         self.setupVariables()
 
         #self.pH_settings_window = pHPickerDialog(float(self.pHSelect))
@@ -109,27 +112,7 @@ class MainWindow(QMainWindow):
         self.pump_control.pumpActivated.connect(self.pump_activated)
         self.pump_control.pumpDeactivated.connect(self.pump_deactivated)
         
-        self.initializeUI()
-        #self.delayed_show_fullscreen()
 
-    def initializeUI(self):
-        
-        """Initialize the window and display its contents to the screen."""
-        self.setWindowTitle('pHStat Qt.Mosfet V1.2')
-        self.setWindowFlags(self.windowFlags() | Qt.WindowTitleHint)
-
-        self.setWindowIcon(QIcon('path/to/your/app/icon.png'))  # Set the window icon
-        self.setGeometry(200, 200, 700, 500)  # Set the size of the window (x_pos, y_pos, width, height)
-        #self.setupVariables()
-        self.setupMenu()
-        self.setupWidgets()
-        self.setupStatusBar()
-        self.initpHSensor()
-        self.initTempSensor()
-        #self.setuppHWorker()
-        #self.setupRTDWorker()
-        #self.setupStatWorker()
-        # instantiate control logic and logger
         self.control_loop = ControlLoop(
             select=self.pHSelectMode,   # 0=above-limit, 1=below-limit
             target_pH=self.pHSelect
@@ -144,6 +127,34 @@ class MainWindow(QMainWindow):
             duration_s=self.pumpDurationSeconds,
             parent=self
         )
+
+
+        self.initializeUI()
+        #self.delayed_show_fullscreen()
+
+    def initializeUI(self):
+        
+        """Initialize the window and display its contents to the screen."""
+        self.setWindowTitle('pHStat Qt.Mosfet V1.2')
+        self.setWindowFlags(self.windowFlags() | Qt.WindowTitleHint)
+
+        self.setWindowIcon(QIcon('path/to/your/app/icon.png'))  # Set the window icon
+        self.setGeometry(200, 200, 700, 500)  # Set the size of the window (x_pos, y_pos, width, height)
+        #self.setupVariables()
+        
+        
+        
+        self.setupMenu()
+
+        self.setupWidgets()
+        self.setupStatusBar()
+        self.initpHSensor()
+        self.initTempSensor()
+        #self.setuppHWorker()
+        #self.setupRTDWorker()
+        #self.setupStatWorker()
+        # instantiate control logic and logger
+
 
         self.setupUSBWorker()
         self.setupPPSWorker()
