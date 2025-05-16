@@ -6,6 +6,8 @@ from electrophstat.hardware import discover_power_supply
 from electrophstat.sensors import discover_ph_sensor
 from electrophstat.sensors import discover_temp_sensor
 from scripts.ph_sensor_worker import pHSensorWorker
+from electrophstat.control.control_loop import ControlLoop, PumpAction
+from electrophstat.io.logger import Logger
 
 if 'XDG_RUNTIME_DIR' not in os.environ:
     os.environ['XDG_RUNTIME_DIR'] = f"/run/user/{os.getuid()}"
@@ -15,7 +17,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QGridLayout,
                              QComboBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, 
                              QPushButton, QTabWidget, QFrame, QMenu, QMessageBox, QActionGroup, QDial, QToolTip, QCheckBox, QSizePolicy, QToolButton)
 from PyQt5.QtGui import QFont, QColor, QIcon, QPen, QTransform, QPalette
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint, QDatetime
 from scripts.LedIndicatorWidget import LedIndicator
 from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2c_mutex
 from scripts.PPSWorker import PPSWorker
@@ -126,7 +128,17 @@ class MainWindow(QMainWindow):
         self.initTempSensor()
         #self.setuppHWorker()
         #self.setupRTDWorker()
-        self.setupStatWorker()
+        #self.setupStatWorker()
+        # instantiate control logic and logger
+        self.control_loop = ControlLoop(
+            select=self.pHSelectMode,   # 0=above-limit, 1=below-limit
+            target_pH=self.pHSelect
+        )
+        self.logger = Logger(
+            filepath="ph_control_log.csv",
+            fieldnames=["timestamp", "pH", "pump_on", "status"]
+        ) 
+
         self.setupUSBWorker()
         self.setupPPSWorker()
         
@@ -510,6 +522,28 @@ class MainWindow(QMainWindow):
         self.tempThread.started.connect(self.tempWorker.run)
         self.tempThread.start()
 
+    def on_pH_read(self, pH: float):
+        """Pure‐logic handler: run ControlLoop and Logger, update pump/status."""
+        action = self.control_loop.process(pH)
+
+        # pump control
+        if action.pump_on:
+            self.startPump()
+        else:
+            self.stopPump()
+
+        # status label
+        self.status_label.setText("OK" if action.status else "Out of range")
+
+        # logging
+        timestamp = QDateTime.currentDateTime().toString(Qt.ISODate)
+        self.logger.log({
+            "timestamp": timestamp,
+            "pH": pH,
+            "pump_on": action.pump_on,
+            "status": action.status,
+        })
+
 
     def initpHSensor(self):
         sensor = discover_ph_sensor()
@@ -518,6 +552,8 @@ class MainWindow(QMainWindow):
         self.pHWorker.moveToThread(self.pHThread)
 
         self.pHWorker.value_signal.connect(self.update_gui)     # GUI slot
+        self.pHWorker.value_signal.connect(self.on_pH_read)     # GUI slot
+
         self.pHWorker.disconnected_signal.connect(self.on_ph_disconnect)
 
         self.pHThread.started.connect(self.pHWorker.run)
@@ -1644,13 +1680,13 @@ class MainWindow(QMainWindow):
         self.pH_calibrate_window.exec_()
     
 
-    def update_gui(self, received_data, type):
+    def update_gui(self, received_data, sensor_type):
         self.current_data = received_data
-        if type == 1:
+        if sensor_type == 1:
             self.pHNumber.setText(f'{str("pH {:.2f}".format(received_data))}')
             #self.pHvalue = received_data
             self.valueData[1] = received_data
-        elif type == 2:
+        elif sensor_type == 2:
             self.temp = received_data
             #if received_data < -200:
             #    self.RTDlabel.setText("N/A °C")
@@ -1658,11 +1694,11 @@ class MainWindow(QMainWindow):
             self.RTDlabel.setText(f"{received_data:.2f} °C")
             self.valueData[2] = received_data
             self.pHWorker.pH_temp = round(received_data,1)
-        elif type == 3:   
+        elif sensor_type == 3:   
             self.valueData[3] = received_data 
-        elif type == 4:   
+        elif sensor_type == 4:   
             self.valueData[4] = received_data
-        elif type == 5:   
+        elif sensor_type == 5:   
             self.valueData[5] = received_data
         
     
