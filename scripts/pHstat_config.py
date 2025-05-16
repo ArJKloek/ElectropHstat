@@ -24,7 +24,7 @@ def ConfigReader(self):
     self.Ref_path = reffile
     self.pHSelect = pHSelect
     self.Select = select
-    self.pHSelectMode = select
+    self.pHSelectMode = int(select)
     self.ml = ml
     self.addtime = addtime
     self.pumpDurationSeconds = float(addtime)

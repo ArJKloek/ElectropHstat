@@ -605,14 +605,14 @@ class MainWindow(QMainWindow):
             print("pH Control enabled")
             try:
                 # Connect signals
-                self.startProcessingSignal.connect(self.StatWorker.start_processing)
-                self.pHWorker.value_signal.connect(self.StatWorker.update_pH)
+                #self.startProcessingSignal.connect(self.StatWorker.start_processing)
+                #self.pHWorker.value_signal.connect(self.StatWorker.update_pH)
                 #self.pH_settings_window.select_changed.connect(self.StatWorker.update_pH_select)
                 
                 #self.select_settings_window.select_changed.connect(self.StatWorker.update_select)
                 
-                self.StatWorker.status_signal.connect(self.handle_Stat)
-                self.StatWorker.pump_signal.connect(self.pumpInput)
+                #self.StatWorker.status_signal.connect(self.handle_Stat)
+                #self.StatWorker.pump_signal.connect(self.pumpInput)
                 # Update labels
                 self.pHstatLabel.setDisabled(False)
                 self.pHstatLabel.updateText("Active")
@@ -636,11 +636,11 @@ class MainWindow(QMainWindow):
             print("pH Control disabled")
             try:
                 #Disconnect signals
-                self.startProcessingSignal.disconnect(self.StatWorker.start_processing)
-                self.pHWorker.value_signal.disconnect(self.StatWorker.update_pH)
+                #self.startProcessingSignal.disconnect(self.StatWorker.start_processing)
+                #self.pHWorker.value_signal.disconnect(self.StatWorker.update_pH)
                 #self.select_settings_window.select_changed.disconnect(self.StatWorker.update_select)
-                self.StatWorker.status_signal.disconnect(self.handle_Stat)
-                self.StatWorker.pump_signal.disconnect(self.pumpInput)
+                #self.StatWorker.status_signal.disconnect(self.handle_Stat)
+                #self.StatWorker.pump_signal.disconnect(self.pumpInput)
                 #Update labels
                 self.pHstatLabel.setDisabled(True)
                 self.pHstatLabel.updateText("Inactive")
@@ -1189,7 +1189,7 @@ class MainWindow(QMainWindow):
         self.logging_timer.start()
         self.pHstatLabel.setEnabled(True)
         self.pumpLabel.setEnabled(True)
-        self.trigger_processing()
+        #self.trigger_processing()
         self.startbutton.setEnabled(False)
         self.stopbutton.setEnabled(True)
         self.start = True
@@ -1199,7 +1199,7 @@ class MainWindow(QMainWindow):
         self.coulombTimer.stop()
         self.coulombClock.stop()
         self.logging_timer.stop()
-        self.trigger_processing()
+        #self.trigger_processing()
         self.startbutton.setEnabled(True)
         self.resetbutton.setEnabled(True)
         self.pHstatLabel.setEnabled(False)
@@ -1690,9 +1690,9 @@ class MainWindow(QMainWindow):
         self.update()
         LogGUI.mainloop.set(True)#
 
-    def trigger_processing(self):
+    #def trigger_processing(self):
         # Call this method when you want to trigger processing in the processing worker
-        QMetaObject.invokeMethod(self.StatWorker, "start_processing")
+    #    QMetaObject.invokeMethod(self.StatWorker, "start_processing")
         #self.StatWorker.start_processing
         #self.startProcessingSignal.emit()
 
