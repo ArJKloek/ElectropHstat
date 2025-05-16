@@ -1,6 +1,6 @@
 # in scripts/pHstat_GUI.py (or a new file scripts/pump_controller.py)
 from PyQt5.QtCore import QObject, QTimer
-from control_loop import PumpAction
+from electrophstat.control.control_loop import PumpAction
 class PumpController(QObject):
     """
     Drives the physical pump based on PumpAction.
