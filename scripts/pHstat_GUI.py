@@ -8,7 +8,7 @@ from electrophstat.sensors import discover_temp_sensor
 from scripts.ph_sensor_worker import pHSensorWorker
 from electrophstat.control.control_loop import ControlLoop, PumpAction
 from electrophstat.io.logger import Logger
-
+from electrophstat.control.pump_control import PumpController
 if 'XDG_RUNTIME_DIR' not in os.environ:
     os.environ['XDG_RUNTIME_DIR'] = f"/run/user/{os.getuid()}"
 
@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QGridLayout,
                              QComboBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, 
                              QPushButton, QTabWidget, QFrame, QMenu, QMessageBox, QActionGroup, QDial, QToolTip, QCheckBox, QSizePolicy, QToolButton)
 from PyQt5.QtGui import QFont, QColor, QIcon, QPen, QTransform, QPalette
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint, QDatetime
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint, QDateTime
 from scripts.LedIndicatorWidget import LedIndicator
 from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2c_mutex
 from scripts.PPSWorker import PPSWorker
@@ -138,6 +138,12 @@ class MainWindow(QMainWindow):
             filepath="ph_control_log.csv",
             fieldnames=["timestamp", "pH", "pump_on", "status"]
         ) 
+        self.pump_controller = PumpController(
+            start_fn=self.startPump,
+            stop_fn=self.stopPump,
+            duration_s=self.pumpDurationSeconds,
+            parent=self
+        )
 
         self.setupUSBWorker()
         self.setupPPSWorker()
@@ -525,15 +531,16 @@ class MainWindow(QMainWindow):
     def on_pH_read(self, pH: float):
         """Pure‐logic handler: run ControlLoop and Logger, update pump/status."""
         action = self.control_loop.process(pH)
+        self.pump_controller.execute(action)
 
         # pump control
-        if action.pump_on:
-            self.startPump()
-        else:
-            self.stopPump()
+        #if action.pump_on:
+        #    self.startPump()
+        #else:
+        #    self.stopPump()
 
         # status label
-        self.status_label.setText("OK" if action.status else "Out of range")
+        #self.status_label.setText("OK" if action.status else "Out of range")
 
         # logging
         timestamp = QDateTime.currentDateTime().toString(Qt.ISODate)
