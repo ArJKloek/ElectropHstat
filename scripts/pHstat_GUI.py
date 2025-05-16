@@ -372,7 +372,7 @@ class MainWindow(QMainWindow):
         self.rightViewBoxes = {}
         self.PStype = [0,0,0,0]
         self.start = False
-
+        self.pHSelectMode = 1 
         ConfigReader(self)
     
     def setupMenu(self):
@@ -816,7 +816,10 @@ class MainWindow(QMainWindow):
         
         self.keepSelector = QComboBox()
         self.keepSelector.addItems(["Keep Above", "Keep Below"])
-        self.keepSelector.currentIndexChanged.connect(self.keep_selector_changed)
+        #self.keepSelector.currentIndexChanged.connect(self.keep_selector_changed)
+        self.keepSelector.currentIndexChanged.connect(
+            lambda idx: setattr(self.control_loop, "select", idx)
+        )
 
         #self.layerSelector.currentIndexChanged.connect(self.apply_layer_flag)
         self.phSpin = QDoubleSpinBox()
