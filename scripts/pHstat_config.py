@@ -27,6 +27,7 @@ def ConfigReader(self):
     self.pHSelectMode = select
     self.ml = ml
     self.addtime = addtime
+    self.pumpDurationSeconds = addtime
     self.cooldown = cooldown
     self.lowpH = lowpH
     self.midpH = midpH

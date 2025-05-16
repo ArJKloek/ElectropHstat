@@ -385,6 +385,7 @@ class MainWindow(QMainWindow):
         self.PStype = [0,0,0,0]
         self.start = False
         self.pHSelectMode = 1 
+        self.pumpDurationSeconds = 1
         ConfigReader(self)
     
     def setupMenu(self):
