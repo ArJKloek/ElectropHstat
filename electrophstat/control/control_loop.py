@@ -18,8 +18,14 @@ class ControlLoop:
     """
 
     def __init__(self, select: int, target_pH: float):
-        self.select = select           # 0 = above-threshold, 1 = below-threshold
-        self.target_pH = target_pH
+        try:
+            self.select = int(select)
+        except (TypeError, ValueError):
+            self.select = 0
+        try:
+            self.target_pH = float(target_pH)
+        except (TypeError, ValueError):
+            self.target_pH = 7.0   
         self.should_start = False      # manual override toggle
 
     def toggle_start(self) -> None:
@@ -31,10 +37,14 @@ class ControlLoop:
         Decide pump_on and status based on current pH.
         Ignores should_start (tests don’t use it).
         """
-        if self.select == 0:
-            status = (pH > self.target_pH)
-        else:
-            status = (pH < self.target_pH)
+        try:
+            val = float(pH)
+        except (TypeError, ValueError):
+            val = self.target_pH
 
-        pump_on = status
-        return PumpAction(pump_on=pump_on, status=status)
+        if self.select == 0:
+            status = (val > self.target_pH)
+        else:
+            status = (val < self.target_pH)
+
+        return PumpAction(pump_on=status, status=status)

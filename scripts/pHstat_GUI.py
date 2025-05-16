@@ -1750,17 +1750,17 @@ class MainWindow(QMainWindow):
 
         if reply == QMessageBox.Yes:
             # Stop the worker
-            self.pHWorker.stop()
-            self.pHThread.quit()
+            #self.pHWorker.stop()
+            #self.pHThread.quit()
 
-            self.RTDWorker.stop()
-            self.RTDThread.quit()
+            #self.RTDWorker.stop()
+            #self.RTDThread.quit()
 
-            self.StatWorker.stop()
-            self.StatThread.quit()
+            #self.StatWorker.stop()
+            #self.StatThread.quit()
             
-            self.USBWorker.stop()
-            self.USBThread.quit()
+            #self.USBWorker.stop()
+            #self.USBThread.quit()
             
             event.accept()  # Accept the close event
 
