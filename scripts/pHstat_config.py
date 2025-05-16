@@ -23,8 +23,8 @@ def ConfigReader(self):
     self.log_interval = interval
     self.Ref_path = reffile
     self.pHSelect = pHSelect
-    self.pHSelectMode = pHSelect
     self.Select = select
+    self.pHSelectMode = select
     self.ml = ml
     self.addtime = addtime
     self.cooldown = cooldown
