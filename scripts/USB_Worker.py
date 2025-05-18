@@ -1,6 +1,18 @@
 from PyQt5.QtCore import QObject, pyqtSignal, QThread, pyqtSlot
+import sys
 import time
-from pyudev import Context, Monitor
+from serial.tools import list_ports
+
+# On Linux we can use pyudev to watch for udev events; on Windows fall back
+USE_PYUDEV = sys.platform.startswith("linux")
+if USE_PYUDEV:
+    from pyudev import Context, Monitor, MonitorObserver
+else:
+    Context = None
+    Monitor = MonitorObserver = None
+
+
+
 import subprocess
 
 class USB_Worker(QObject):

@@ -10,35 +10,47 @@ from scripts.ph_sensor_worker import pHSensorWorker
 from electrophstat.control.control_loop import ControlLoop, PumpAction
 from electrophstat.io.logger import Logger
 from electrophstat.control.pump_control import PumpController
+from electrophstat.io.usb_monitor import USBWorker
+from electrophstat.gui.dialogs import DatePickerDialog, CalibratepHDialog, CalibratePumpDialog
+from electrophstat.gui.widgets import CustomTextWidget, ToggleSwitch
+from electrophstat.control.timer_control import monoTimer
+from electrophstat.io.power_logger import PowerLogger
+from electrophstat.connections.main_connections import setup_mainwindow_signals
+from electrophstat.connections.pHstat_connections import setup_pHstat_signals
+from electrophstat.controllers.pps_controllers import PPSController
 
-if 'XDG_RUNTIME_DIR' not in os.environ:
-    os.environ['XDG_RUNTIME_DIR'] = f"/run/user/{os.getuid()}"
 
+
+if sys.platform.startswith(("linux", "darwin")):
+    # Only on UNIX-like systems
+    if "XDG_RUNTIME_DIR" not in os.environ:
+        os.environ["XDG_RUNTIME_DIR"] = f"/run/user/{os.getuid()}"
+
+from PyQt5 import uic
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QGridLayout, 
                              QLabel, QMenuBar, QAction, QStatusBar, 
                              QComboBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, 
                              QPushButton, QTabWidget, QFrame, QMenu, QMessageBox, QActionGroup, QDial, QToolTip, QCheckBox, QSizePolicy, QToolButton)
 from PyQt5.QtGui import QFont, QColor, QIcon, QPen, QTransform, QPalette
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint, QDateTime
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint, QDateTime, QEvent
 from scripts.LedIndicatorWidget import LedIndicator
-from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2c_mutex
+#from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2c_mutex
+#from scripts.pHStat_worker import USBWorker
 from scripts.PPSWorker import PPSWorker
 from scripts.pHstat_config import ConfigReader, ConfigWriter
-from scripts.pHStat_classes import (pHPickerDialog, SelectPickerDialog, pumpControl, 
-                            DatePickerDialog, CustomTextWidget, ClickableLabel, CalibratePumpDialog,CalibratepHDialog, 
-                            monoTimer, ToggleSwitch, PHSelectorWidget)
+#from scripts.pHStat_classes import (pumpControl)
 import pyqtgraph as pg
 #from pyqtgraph.Qt import QtGui, QtWidgets
 #import numpy as np
-from scripts.pHStat_csv import create_csv, log_csv, read_log_data, scale_time_data
-from scripts.atlas import atlas_i2c
+#from scripts.pHStat_csv import create_csv, log_csv, read_log_data, scale_time_data
+#from scripts.atlas import atlas_i2c
 import datetime
 import shutil
 import re
 #import lib8mosind
 import serial.tools.list_ports
 #from voltcraft.pps import PPS
-from scripts import PlotManager, Fusion3DToggle, RoundSetButton, Push3DButton, Round3DButton, PowerLogger #, atlas_i2c
+from scripts import PlotManager, Fusion3DToggle, RoundSetButton, Push3DButton, Round3DButton #, atlas_i2c
 
 
 lib8mosind = MockLib8MosInd()
@@ -95,23 +107,16 @@ class MainWindow(QMainWindow):
 
         self.setupVariables()
 
-        #self.pH_settings_window = pHPickerDialog(float(self.pHSelect))
-        #self.pH_settings_window.select_changed.connect(self.handle_pH)
-        
-        #self.select_settings_window = SelectPickerDialog(self.Select)
-        #self.select_settings_window.select_changed.connect(self.handle_select)
-        
-
         self.time_settings_window = CalibratePumpDialog(float(self.ml), float(self.addtime))
         self.time_settings_window.select_changed.connect(self.handle_time)
-        self.time_settings_window.test_pump.connect(self.pumpInput)
+        #self.time_settings_window.test_pump.connect(self.pumpInput)
 
         self.pH_calibrate_window = CalibratepHDialog(float(self.lowpH), float(self.midpH), float(self.highpH))
         self.pH_calibrate_window.calibrate_changed.connect(self.handle_calibrate)
         
-        self.pump_control = pumpControl(self)
-        self.pump_control.pumpActivated.connect(self.pump_activated)
-        self.pump_control.pumpDeactivated.connect(self.pump_deactivated)
+        #self.pump_control = pumpControl(self)
+        #self.pump_control.pumpActivated.connect(self.pump_activated)
+        #self.pump_control.pumpDeactivated.connect(self.pump_deactivated)
         
 
         self.control_loop = ControlLoop(
@@ -129,36 +134,29 @@ class MainWindow(QMainWindow):
             parent=self
         )
 
+        # 1) Load the .ui file
+        uic.loadUi("electrophstat/gui/main_window.ui", self)
+        self.setupPPSWorker()
 
-        self.initializeUI()
-        #self.delayed_show_fullscreen()
+        # instantiate controllers (they subclass QObject)
+        self.pps_controller = PPSController(self)
+        self.ppsWorker.disconnected_signal.connect(self.pps_controller.on_pps_disconnect)
 
-    def initializeUI(self):
+        # 2) Now wire up every signal/slot in one place
+        setup_mainwindow_signals(self)
+        setup_pHstat_signals(self)
         
-        """Initialize the window and display its contents to the screen."""
-        self.setWindowTitle('pHStat Qt.Mosfet V1.2')
-        self.setWindowFlags(self.windowFlags() | Qt.WindowTitleHint)
+        self.plot_manager = PlotManager(self)
 
-        self.setWindowIcon(QIcon('path/to/your/app/icon.png'))  # Set the window icon
-        self.setGeometry(200, 200, 700, 500)  # Set the size of the window (x_pos, y_pos, width, height)
-        #self.setupVariables()
+        self.initializeGraphTabs()
+        self.initializeTabTimer()
+        #self.addGraphTab()
+        self.handle_select(int(self.Select))#, float(self.pHSelect))
+        self.handle_pH(float(self.pHSelect))
+        self.handle_time(float(self.ml), float(self.addtime))
         
-        
-        
-        self.setupMenu()
-
-        self.setupWidgets()
-        self.setupStatusBar()
         self.initpHSensor()
         self.initTempSensor()
-        #self.setuppHWorker()
-        #self.setupRTDWorker()
-        #self.setupStatWorker()
-        # instantiate control logic and logger
-
-
-        self.setupUSBWorker()
-        self.setupPPSWorker()
         
         self.initTimer()
         self.initWorkerTimer()
@@ -180,7 +178,7 @@ class MainWindow(QMainWindow):
         height = self.height()
 
         # Base scaling factor
-        scale = min(width / 800, height / 600)
+        scale = min(width / 960, height / 600)
         font_size = (18 * scale)
         
         border_size = (2 *scale)
@@ -207,17 +205,8 @@ class MainWindow(QMainWindow):
         
         dial_size = int(70 * scale)
         self.voltageDial.setFixedSize(dial_size, dial_size)
-        self.voltageDiallabel.resize(self.voltageDial.size())
-        vsize = self.voltageDial.height() * 0.2
-        self.voltageDiallabel.setStyleSheet(f"font-size: {vsize:.1f}pt;")
-
         self.currentDial.setFixedSize(dial_size, dial_size)
-        self.currentDiallabel.resize(self.currentDial.size())
-        csize = self.currentDial.height() * 0.2
-        self.currentDiallabel.setStyleSheet(f"font-size: {csize:.1f}pt;")
-
         
-
         self.modeToggle.setH_scale(0.55*scale)
         self.modeToggle.setV_scale(0.55*scale)
         self.modeToggle.setFontSize(9*scale)
@@ -237,20 +226,20 @@ class MainWindow(QMainWindow):
                 font.setPointSizeF(base_size * scale)
                 widget.setFont(font)
         
-        self.pHstatLabel.setFontsize(13 * scale)
-        self.pumpLabel.setFontsize(13 * scale)
+        #self.pHstatLabel.setFontsize(13 * scale)
+        #self.pumpLabel.setFontsize(13 * scale)
 
         # Adjust fonts on key widgets
-        set_font(self.pHlabel, 35)
-        set_font(self.pHNumber, 35)
-        set_font(self.RTDlabel, 20)
+        #set_font(self.pHNumber, 35)
+        set_font(self.pHNumber, 25)
+        set_font(self.RTDlabel, 18)
         #set_font(self.selectlabel, 20)
         set_font(self.phSpin, 10)
         set_font(self.keepSelector, 10)
-        set_font(self.voltagelabel, 20)
-        set_font(self.currentlabel, 20)
-        set_font(self.modelabel, 20)
-        set_font(self.voltageDiallabel, 10)
+        set_font(self.voltagelabel, 16)
+        set_font(self.currentlabel, 16)
+        set_font(self.modelabel, 16)
+        #set_font(self.voltageDiallabel, 10)
         # Update Start button stylesheet with dynamic font size
         start_style = f"""
             QPushButton {{
@@ -341,7 +330,7 @@ class MainWindow(QMainWindow):
             }}
         """
         self.tabWidget.setStyleSheet(tab_style)
-        
+
     def setupVariables(self):
         self.pump_start_time = None  # Initialize a variable to store the start time
         self.elapsed_time = None
@@ -388,125 +377,22 @@ class MainWindow(QMainWindow):
         self.pumpDurationSeconds = 1
         ConfigReader(self)
     
-    def setupMenu(self):
-        """Setup the menu bar."""
-        menu_bar = self.menuBar()  # Get the menu bar
-        
-        # Create top-level menus
-        file_menu = menu_bar.addMenu('File')
-        setting_menu = menu_bar.addMenu('Settings')
-        
-        # Create actions for file_menu
-        self.exit_action = QAction('Exit', self)
-        self.exit_action.triggered.connect(self.close)  # Connect the triggered signal to the close method
-        self.exit_action.setStatusTip("Exit the program")
+     
+    def changeEvent(self, event):
+        """
+        Catch window‐state changes (maximize / minimize / fullscreen)
+        and update your label accordingly.
+        """
+        super().changeEvent(event)
 
-        #self.start_action = QAction('Start',self)
-        #self.start_action.triggered.connect(self.trigger_processing)
-        self.screenchange = QAction('Change screen', self)
-        self.screenchange.triggered.connect(self.toggle_fullscreen)
-        self.datewindow = QAction('Change date/time', self)
-        self.datewindow.triggered.connect(self.openDatePicker)
-        
-        self.reconnect_pps_action = QAction('Reconnect Power Supply', self)
-        self.reconnect_pps_action.setStatusTip("Try to reconnect the PPS power supply")
-        self.reconnect_pps_action.triggered.connect(self.reconnectPPS)
-        setting_menu.addAction(self.reconnect_pps_action)
+        if event.type() == QEvent.WindowStateChange:
+            if self.isFullScreen():
+                self.actionFullscreen.setText("Fullscreen on")
+            elif self.isMaximized():
+                self.actionFullscreen.setText("Maximized")
+            else:
+                self.actionFullscreen.setText("Normal")
 
-        
-        
-        # In setupMenu()
-        self.pH_control_enabled = True  # Default: enabled
-
-        self.toggle_pH_control = QAction('Enable pH Control', self, checkable=True)
-        #self.toggle_pH_control.setChecked(True)
-        self.toggle_pH_control.triggered.connect(self.toggle_pHStat)
-
-        setting_menu.addAction(self.toggle_pH_control)
-        
-        
-        
-        pHstatMenu = QMenu("pHStat settings", self)
-
-        calibrate = QAction('Calibrate pump', self)
-        calibrate.triggered.connect(self.openCalibratePumpWindow)
-        calibratepH = QAction('Calibrate pH', self)
-        calibratepH.triggered.connect(self.openCalibratepHWindow)
-        pHstatMenu.addAction(calibrate)
-        pHstatMenu.addAction(calibratepH)
-                 
-        log_options_submenu = QMenu("Log Options", self)
-        # Create an action group for exclusive selection
-        action_group = QActionGroup(self)
-        action_group.setExclusive(True)
-        
-        # Create checkable actions
-        self.option1 = QAction("5 sec", self)
-        self.option1.setCheckable(True)
-        self.option1.setData(5000)  # <-- Attach 5000 milliseconds
-
-        self.option2 = QAction("30 sec", self)
-        self.option2.setCheckable(True)
-        self.option2.setData(30000)  # <-- Attach 30000 milliseconds
-
-        self.option3 = QAction("60 sec",self)
-        self.option3.setCheckable(True)
-        self.option3.setData(60000)  # <-- Attach 60000 milliseconds
-
-        self.option4 = QAction("5 min", self)
-        self.option4.setCheckable(True)
-        self.option4.setData(300000)  # <-- Attach 300000 milliseconds
-
-        # Add actions to the group
-        action_group.addAction(self.option1)
-        action_group.addAction(self.option2)
-        action_group.addAction(self.option3)
-        action_group.addAction(self.option4)
-        
-        # Add actions to the submenu
-        log_options_submenu.addAction(self.option1)
-        log_options_submenu.addAction(self.option2)
-        log_options_submenu.addAction(self.option3)
-        log_options_submenu.addAction(self.option4)
-        
-        # Add the submenu to the settings menu
-        pHstatMenu.addMenu(log_options_submenu)
-        
-        # Optional: connect to a method
-        self.option1.triggered.connect(self.option_selected)
-        self.option2.triggered.connect(self.option_selected)
-        self.option3.triggered.connect(self.option_selected)
-        self.option3.triggered.connect(self.option_selected)
-        
-        self.view_menu = self.menuBar().addMenu("View")
-
-        self.togglepHAction = QAction("Show pH Curve", self, checkable=True)
-        self.togglepHAction.setChecked(True)  # Default is ON
-        self.togglepHAction.setStatusTip("Toggle visibility of pH curve")
-        self.togglepHAction.toggled.connect(self.updateCurrentTabPlot)
-
-        self.toggleTempAction = QAction("Show Temperature Curve", self, checkable=True)
-        self.toggleTempAction.setChecked(True)  # Default is ON
-        self.toggleTempAction.setStatusTip("Toggle visibility of temperature curve")
-        self.toggleTempAction.toggled.connect(self.updateCurrentTabPlot)
-        
-        self.view_menu.addAction(self.togglepHAction)
-        self.view_menu.addAction(self.toggleTempAction)
-
-        # Pre-select option3
-
-        # Call the same function manually
-        #self.option_selected()
-        
-        #self.settingswindow_action = QAction('pH Stat settings',self)
-        #self.settingswindow_action.triggered.connect(self.openSettingsWindow)
-        
-        
-        file_menu.addAction(self.exit_action)
-        setting_menu.addAction(self.screenchange)
-        setting_menu.addAction(self.datewindow)
-        setting_menu.addMenu(pHstatMenu)
-    
     def reconnectPPS(self):
         print("[PPS] Attempting to reconnect power supply...")
 
@@ -526,6 +412,7 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f"[PPS] Reconnect failed: {e}")
             QMessageBox.critical(self, "Reconnect Failed", f"Could not reconnect to PPS:\n{e}")
+    
     def initTempSensor(self):
         temp = discover_temp_sensor()
         self.tempThread = QThread()
@@ -544,18 +431,22 @@ class MainWindow(QMainWindow):
     def on_pH_read(self, pH: float):
         """Pure‐logic handler: run ControlLoop and Logger, update pump/status."""
         action = self.control_loop.process(pH)
+
+
+            # If not started yet, skip control & logging
+        if not self.control_loop.should_start:
+            return
+
+        # Run the control logic
+        action = self.control_loop.process(pH)
+
+        # Drive the pump & auto-off
         self.pump_controller.execute(action)
 
-        # pump control
-        #if action.pump_on:
-        #    self.startPump()
-        #else:
-        #    self.stopPump()
+        # Update status label
+        self.status_label.setText("OK" if action.status else "Out of range")
 
-        # status label
-        #self.status_label.setText("OK" if action.status else "Out of range")
-
-        # logging
+        # Log the decision
         timestamp = QDateTime.currentDateTime().toString(Qt.ISODate)
         self.logger.log({
             "timestamp": timestamp,
@@ -563,6 +454,7 @@ class MainWindow(QMainWindow):
             "pump_on": action.pump_on,
             "status": action.status,
         })
+
     
     def startPump(self):
         """Turn on the pump via the PPSWorker interface."""
@@ -683,301 +575,6 @@ class MainWindow(QMainWindow):
             self.logtimer.start(int(self.log_interval))
             #print(f"Log timer interval updated to {self.log_interval} ms")
 
-    def setupWidgets(self):
-        """Setup widgets and layouts here."""
-        central_widget = QWidget()  # Create a central widget
-        self.setCentralWidget(central_widget)  # Set the central widget
-        # Create a QGridLayout on the central widget
-        grid = QGridLayout(central_widget)  # Create a QGridLayout
-        
-        # Layout of the pH and Select label
-        pHWidget = QWidget()
-        pHLayout = QGridLayout(pHWidget)
-
-        # Main pH label
-        self.pHlabel = QLabel("pH")  # Create a label
-        self.pHlabel.setStatusTip("Current pH measured")
-        pHfont = self.pHlabel.font()
-        pHfont.setPointSize(35)  # Set the font size to 40 points
-        self.pHlabel.setFont(pHfont)
-        self.pHNumber = QLabel("pH 0.0")
-        self.pHNumber.setStatusTip("Current pH measured")
-        self.pHNumber.setFont(pHfont)
-        # Main Temperature label
-        self.RTDlabel = QLabel("RTD")  # Create a 
-        self.RTDlabel.setStatusTip("Current temperature measured")
-
-        RTDfont = self.RTDlabel.font()
-        RTDfont.setPointSize(20)  # Set the font size to 20 points
-        self.RTDlabel.setFont(RTDfont)
-        
-        
-        self.voltagelabel = QLabel("0.00 V")
-        self.voltagelabel.setStatusTip("Current Voltage measured")
-        Voltfont = self.voltagelabel.font()
-        Voltfont.setPointSize(20)  # Set the font size to 20 points
-        
-        self.currentlabel = QLabel("0.00 A")
-        self.currentlabel.setStatusTip("Current Amperage measured")
-        Ampfont = self.currentlabel.font()
-        Ampfont.setPointSize(20)  # Set the font size to 20 points
-        
-        self.modelabel = QLabel("CV")
-        self.modelabel.setStatusTip("Current mode")
-        modefont = self.modelabel.font()
-        modefont.setPointSize(20)  # Set the font size to 20 points
-
-        voltagedialcontainer = QWidget()
-        self.voltageDial = QDial()
-        self.voltageDiallabel = QLabel("0", parent=self.voltageDial)
-        self.voltageDiallabel.setAlignment(Qt.AlignCenter)
-        self.voltageDiallabel.setStyleSheet("background: transparent; font-size: 16pt;")
-        self.voltageDiallabel.resize(self.voltageDial.size())
-        
-        self.voltageDial.setMinimum(0)          # e.g., 0 V
-        self.voltageDial.setMaximum(300)        # e.g., 30.0 V in 0.1V steps
-        self.voltageDial.setSingleStep(1)       # One step = 0.1V
-        self.voltageDial.setPageStep(5)         # Larger jumps
-        self.voltageDial.setNotchesVisible(True)
-
-        self.voltageDial.valueChanged.connect(self.voltage_dial_changed)    
-        
-        voltagelayout = QVBoxLayout(voltagedialcontainer)
-        voltagelayout.addWidget(self.voltageDial)
-
-
-        currentdialcontainer = QWidget()
-        self.currentDial = QDial()
-        self.currentDiallabel = QLabel("0", parent=self.currentDial)
-        self.currentDiallabel.setAlignment(Qt.AlignCenter)
-        self.currentDiallabel.setStyleSheet("background: transparent; font-size: 16pt;")
-        self.currentDiallabel.resize(self.currentDial.size())
-
-        self.currentDial.setMinimum(0)          # e.g., 0 V
-        self.currentDial.setMaximum(300)        # e.g., 30.0 V in 0.1V steps
-        self.currentDial.setSingleStep(1)       # One step = 0.1V
-        self.currentDial.setPageStep(5)         # Larger jumps
-        self.currentDial.setNotchesVisible(True)
-        
-        self.currentDial.valueChanged.connect(self.current_dial_changed)    
-        
-        currentlayout = QVBoxLayout(currentdialcontainer)
-        currentlayout.addWidget(self.currentDial)
-
-        
-        #self.modeSelector = QComboBox()
-        #self.modeSelector.addItems(["CV", "CC"])
-        #grid.addWidget(self.modeSelector, 3, 0)
-        self.modeToggle = ToggleSwitch(
-            bar_color=Qt.gray,
-            checked_color="#27ae60",  # Green for ON
-            handle_color=Qt.white,
-            h_scale=1.0,
-            v_scale=1.0,
-            fontSize=10
-            )
-        self.modeToggle.setChecked(False)  # Default to CV mode
-        self.modeToggle.setMinimumSize(80, 120)
-        
-        #self.toolButton = Round3DButton() 
-        #self.toolButton.setFixedSize(80,80)
-        
-
-
-        self.setButton = Round3DButton("Set")
-        self.setButton.clicked.connect(self.apply_ps_settings)
-        self.setButton.setFixedSize(80, 80)  # Makes it a square (round via radius below)
-        
-        #self.powerButton = QPushButton("Power ON")
-        self.powerButton = Fusion3DToggle()
-        #self.powerButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.powerButton.setCheckable(True)
-        self.powerButton.setChecked(False)
-        self.powerButton.setToolTip("Toggle power supply output ON/OFF")
-        self.powerButton.clicked.connect(self.togglePowerSupply)  # Connect the button to a method
-
-        pHLayout.addWidget(self.pHNumber,0,0,1,2, alignment=Qt.AlignLeft)
-        pHLayout.addWidget(self.RTDlabel,0,3,alignment=Qt.AlignRight)
-        #pHLayout.addWidget(self.voltageDial, 1, 0,alignment= Qt.AlignCenter) 
-        pHLayout.addWidget(voltagedialcontainer, 1, 0,alignment= Qt.AlignCenter) 
-        pHLayout.addWidget(currentdialcontainer, 1, 1,alignment= Qt.AlignCenter)  
-        pHLayout.addWidget(self.modeToggle, 1, 2,alignment= Qt.AlignCenter)
-        pHLayout.addWidget(self.setButton, 1, 3,alignment= Qt.AlignCenter)
-        pHLayout.addWidget(self.voltagelabel,2,0,alignment= Qt.AlignCenter)
-        pHLayout.addWidget(self.currentlabel,2,1,alignment= Qt.AlignCenter)
-        pHLayout.addWidget(self.modelabel,2,2,alignment= Qt.AlignCenter)
-        pHLayout.addWidget(self.powerButton,2,3,alignment= Qt.AlignCenter)
-        
-        #USB Button
-        self.usb_button = QPushButton(self)
-        self.usb_button.setDisabled(True)
-        self.usb_button.clicked.connect(self.usb_copy)  # Connect the button to a method
-        self.usb_button.setMinimumSize(50, 50)  # minimum width = 100, minimum height = 50
-        self.usb_button.setStatusTip('Copy current data to USB drive')
-        # Set an icon on the button
-        self.usb_button.setIcon(QIcon('flashcard-usb.svg'))  # Provide the correct path to your icon image file
-        # Set the icon size
-        self.usb_button.setIconSize(QSize(50, 50))  # Set icon width and height
-        # Create and configure a button
-        
-        
-        # Above/below
-        statusWidget = QWidget()
-        statusLayout = QGridLayout(statusWidget)
-        
-        self.pHstatLabel = CustomTextWidget("pH Stat ", "Active", "#DCDCDC", 13)
-        self.pHstatLabel.setStatusTip("Activity of pH Stat, grey (inactive), yellow (active)")
-        self.pumpLabel = CustomTextWidget("Pump ", "Active", "#DCDCDC", 13)
-        self.pumpLabel.setStatusTip("Activity of pump, grey (inactive), yellow (standby), green (pumping)")
-
-        statusLayout.addWidget(self.pHstatLabel,0,0, alignment= Qt.AlignLeft )
-        statusLayout.addWidget(self.pumpLabel,0,1,alignment= Qt.AlignRight )
-
-        statusWidget.setLayout(statusLayout)
-
-        #self.pHstatActive = CustomTextWidget("Active", "#F1C40F", 13)
-        #self.pumpActive = CustomTextWidget("Active", "#F1C40F", 13)
-        #F1C40F
-        pHselectWidget = QWidget()
-        pHselectLayout = QGridLayout(pHselectWidget)
-        
-        self.keepSelector = QComboBox()
-        self.keepSelector.addItems(["Keep Above", "Keep Below"])
-        #self.keepSelector.currentIndexChanged.connect(self.keep_selector_changed)
-        self.keepSelector.currentIndexChanged.connect(
-            lambda idx: setattr(self.control_loop, "select", idx)
-        )
-
-        #self.layerSelector.currentIndexChanged.connect(self.apply_layer_flag)
-        self.phSpin = QDoubleSpinBox()
-        self.phSpin.setRange(0.00, 14.00)
-        self.phSpin.setSingleStep(0.1)
-        self.phSpin.setDecimals(1)
-        #self.phSpin.setSuffix("  pH")
-        self.phSpin.setPrefix("pH ")
-        
-        self.phSpin.setValue(7.00)  # default
-        
-        self.phSpin.valueChanged.connect(self.pH_selector_changed)
-
-
-        pHselectLayout.addWidget(self.keepSelector,0,0)
-        pHselectLayout.addWidget(self.phSpin,0,1)
-        pHselectLayout.addWidget(self.pHstatLabel,1,0)
-        pHselectLayout.addWidget(self.pumpLabel,1,1)
-        pHselectWidget.setLayout(pHselectLayout)
-
-
-        #selectLayout.addWidget(self.selectlabel,0,0)
-        #selectLayout.addWidget(self.pHText, 0,1, alignment= Qt.AlignRight)
-        #selectLayout.addWidget(self.pHSelectLabel,0,2, alignment=Qt.AlignLeft)
-        
-        # Text Layout of the pump ON and pH OK
-        self.pumpon = QLabel('PUMP <span style="color:#DCDCDC;">ON</span>')
-        pumpfont = self.pumpon.font()
-        pumpfont.setPointSize(30)
-        self.pumpon.setFont(pumpfont)
-
-        self.pHOK = QLabel('pH <span style="color:#DCDCDC;">OK</span>')
-        self.pHOK.setFont(pumpfont)
-
-        textLayout = QVBoxLayout()
-        textLayout.addWidget(self.pumpon, alignment=Qt.AlignRight)
-        textLayout.addWidget(self.pHOK,alignment=Qt.AlignRight)
-        textContainer = QWidget()
-        textContainer.setLayout(textLayout)
-
-        
-        # Create and configure LED widget                                      
-        self.led_logging = LedIndicator("yellow")
-        self.led_logging.setDisabled(True)  # Make the led non clickable
-        self.led_start = LedIndicator("green")
-        self.led_start.setDisabled(True)  # Make the led non clickable
-        ledLayout = QVBoxLayout()
-        ledLayout.addWidget(self.led_logging)
-        ledLayout.addWidget(self.led_start)
-        ledContainer = QWidget()
-        ledContainer.setLayout(ledLayout)
-
-
-        # Add the tab widghet
-        self.tabWidget = QTabWidget()
-        self.tabWidget.setStatusTip("Plots of total ml added (Pump plot), pH (pH plot) and temperature (RTD plot)")
-
-        self.tabWidget.currentChanged.connect(self.onTabChanged)
-
-        #Add the plotwidget
-        # Create a PlotWidget
-        #self.graphWidget = pg.PlotWidget()
-        # Set the background color to semi-transparent white (RGBA)
-        
-        #Add the buttons
-        # Main button widget
-        buttonWidget = QWidget()
-        # Create the grid layout for the buttons
-        buttonLayout = QVBoxLayout(buttonWidget)
-        buttonFont = QFont("Arial", 12, QFont.Bold)
-
-        # Start button
-        self.startbutton =QPushButton("Start",self)
-        self.startbutton.setStatusTip("Starts pH Stat and logging")
-        #self.startbutton.setStyleSheet("QPushButton {background-color: #52BE80;}"
-        #                     "QPushButton:pressed {background-color: #229954;}"
-        #                     "QPushButton:disabled {background-color: #D4EFDF;}")
-        #self.startbutton.setFont(buttonFont)
-        self.startbutton.setMinimumSize(100, 70)  # Minimum width = 100, Minimum height = 50
-        self.startbutton.clicked.connect(self.start_pHStat)
-        # Stop button
-        self.stopbutton =QPushButton("Stop",self)
-        self.stopbutton.setStatusTip("Stops pH Stat and logging")
-
-        self.stopbutton.setStyleSheet("QPushButton {background-color: #C0392B;}"
-                             "QPushButton:pressed {background-color: #922B21;}"
-                             "QPushButton:disabled {background-color: #F2D7D5;}")
-        self.stopbutton.setFont(buttonFont)
-
-        self.stopbutton.clicked.connect(self.stop_pHStat)
-        self.stopbutton.setMinimumSize(100, 50)  # Minimum width = 100, Minimum height = 50
-        self.stopbutton.setEnabled(False)
-        # Reset button
-        self.resetbutton =QPushButton("Reset", self)
-        self.resetbutton.setStatusTip("Resets pH Stat for new experiment")
-
-        self.resetbutton.setFont(buttonFont)
-        self.resetbutton.clicked.connect(self.reset_pHStat)
-        self.resetbutton.setEnabled(False)
-
-        # Add buttons to buttonLayout
-        buttonLayout.addWidget(self.startbutton)
-        buttonLayout.addWidget(self.stopbutton)
-        buttonLayout.addWidget(self.resetbutton)
-        # Add buttonLayout to the buttonWidget
-
-        buttonWidget.setLayout(buttonLayout)
-        #filler = QWidget()
-        # Add widgets to the grid
-        #grid.addWidget(self.led_logging, 0, 0, Qt.AlignTop)  # Place LED on the top-left
-        #grid.addWidget(ledContainer, 0, 2)  # Place LED on the top-left
-        self.tabWidget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
-        
-        grid.addWidget(pHWidget, 0, 0,2,1)  # Place label next to the LED
-        grid.addWidget(pHselectWidget, 0, 1)
-        grid.addWidget(self.usb_button, 0, 2, Qt.AlignRight)
-        #grid.addWidget(statusWidget,1,1)
-        grid.addWidget(buttonWidget,2,0,2,1)
-        grid.addWidget(self.tabWidget, 1,1,3,2)
-        
-        self.plot_manager = PlotManager(self)
-
-        self.initializeGraphTabs()
-        self.initializeTabTimer()
-        #self.addGraphTab()
-        self.handle_select(int(self.Select))#, float(self.pHSelect))
-        self.handle_pH(float(self.pHSelect))
-        self.handle_time(float(self.ml), float(self.addtime))
-        #self.handle_pHselect(float(self.pHSelect))
-    
     def keep_selector_changed(self, index):
         try:
             self.StatWorker.update_select(index)
@@ -1000,30 +597,30 @@ class MainWindow(QMainWindow):
             if self.start:
                 self.logger.log_change("Power", "FORCED OFF")
 
-    def apply_ps_settings(self):
-        if not hasattr(self, 'ppsWorker'):
-            return
-        # Read toggle state (assuming you're using your ToggleSwitch class)
-        mode = "CC" if self.modeToggle.isChecked() else "CV"
+    #def apply_ps_settings(self):
+    #    if not hasattr(self, 'ppsWorker'):
+    #        return
+    #    # Read toggle state (assuming you're using your ToggleSwitch class)
+    #    mode = "CC" if self.modeToggle.isChecked() else "CV"
 
-        # Get dial values
-        voltage = self.voltageDial.value() / 10.0  # Assuming 0.1 V steps
-        current = self.currentDial.value() / 10.0  # Assuming 0.1 A steps
+    #    # Get dial values
+    #    voltage = self.voltageDial.value() / 10.0  # Assuming 0.1 V steps
+    #    current = self.currentDial.value() / 10.0  # Assuming 0.1 A steps
 
         # Ensure PPS is connected and worker exists
-        if hasattr(self, 'ppsWorker') and hasattr(self.ppsWorker, 'pps'):
-            if mode == "CV":
+     #   if hasattr(self, 'ppsWorker') and hasattr(self.ppsWorker, 'pps'):
+     #       if mode == "CV":
                 # Constant Voltage: set voltage, allow max current
-                self.ppsWorker.set_current(self.ppsWorker.pps.IMAX)
-                self.ppsWorker.set_voltage(voltage)
-            else:
+      #          self.ppsWorker.set_current(self.ppsWorker.pps.IMAX)
+      #          self.ppsWorker.set_voltage(voltage)
+      #      else:
                 # Constant Current: set current, allow max voltage
-                self.ppsWorker.set_voltage(self.ppsWorker.pps.VMAX)
-                self.ppsWorker.set_current(current)
+       #         self.ppsWorker.set_voltage(self.ppsWorker.pps.VMAX)
+        #        self.ppsWorker.set_current(current)
 
-            print(f"[SET] Mode: {mode}, Voltage: {voltage:.1f} V, Current: {current:.1f} A")
-            if self.start: self.logger.setting_change(voltage, current, mode)
-            else: pass
+         #   print(f"[SET] Mode: {mode}, Voltage: {voltage:.1f} V, Current: {current:.1f} A")
+          #  if self.start: self.logger.setting_change(voltage, current, mode)
+           # else: pass
 
     def update_mode_label(self, state):
         mode = "CC" if state == Qt.Checked else "CV"
@@ -1035,10 +632,10 @@ class MainWindow(QMainWindow):
     def toggle_fullscreen(self):
         if self.isFullScreen():
             self.showNormal()
-            self.screenchange.setText("Fullscreen on")
+            self.actionFullscreen.setText("Fullscreen on")
         else:
             self.showFullScreen()
-            self.screenchange.setText("Fullscreen off")
+            self.actionFullscreen.setText("Fullscreen off")
 
     def pHlabelClicked(self):
         print('pH label clicked')
@@ -1130,7 +727,7 @@ class MainWindow(QMainWindow):
         for attempt in range(retry_count):
             
             try:
-                i2c_mutex.lock()
+                #i2c_mutex.lock()
                 pHdata = self.pHdev.read()   
                 success = True
                 break # Exit the function if succesvol
@@ -1139,7 +736,7 @@ class MainWindow(QMainWindow):
                 pass
             finally:
                 try:
-                    i2c_mutex.unlock()
+                    #i2c_mutex.unlock()
                     print(f"Main unlocking i2c_mutex after attempt {attempt + 1}")
                 except Exception as unlock_error:
                     print(f"Error unlocking i2c_mutex: {unlock_error}")
@@ -1288,7 +885,7 @@ class MainWindow(QMainWindow):
             self.ppsWorker.current_signal.connect(self.update_pps_current)
             self.ppsWorker.mode_signal.connect(self.update_pps_mode)
             self.ppsWorker.limits_signal.connect(self.handle_pps_limits)
-            self.ppsWorker.disconnected_signal.connect(self.on_pps_disconnect)
+            #self.ppsWorker.disconnected_signal.connect(self.on_pps_disconnect)
 
             self.ppsThread.started.connect(self.ppsWorker.run)
             self.ppsThread.start()
@@ -1411,11 +1008,11 @@ class MainWindow(QMainWindow):
         self.pHlabel.setStyleSheet(f'color: #C0392B;')
         self.pHNumber.setStyleSheet(f'color: #C0392B;')
 
-    def pumpInput(self, test):
-        if not test:
-            self.pump_control.activate_feature(int(float(self.addtime) * 1000), int(self.cooldown) * 1000, test)
-        else:
-            self.pump_control.activate_feature(int(float(self.addtime) * 1000), 0, test)
+    #def pumpInput(self, test):
+    #    if not test:
+    #        self.pump_control.activate_feature(int(float(self.addtime) * 1000), int(self.cooldown) * 1000, test)
+    #    else:
+    #        self.pump_control.activate_feature(int(float(self.addtime) * 1000), 0, test)
     
             
     def pump_activated(self, test):
@@ -1431,7 +1028,7 @@ class MainWindow(QMainWindow):
             try:
                 #print(f"Main trying to lock i2c_mutex for pump input")
                 #print(f"Attempt {attempt + 1}: Trying to lock i2c_mutex for pump input")
-                i2c_mutex.lock()
+                #i2c_mutex.lock()
                 #print(f"i2c_mutex locked for pump input")
 
                 #print(f"i2c_mutex locked for pump input")
@@ -1447,7 +1044,7 @@ class MainWindow(QMainWindow):
                 pass
             finally:
                 try:
-                    i2c_mutex.unlock()
+                    #i2c_mutex.unlock()
                     print(f"Main unlocking i2c_mutex after pump on on attempt {attempt + 1}")
                 except Exception as unlock_error:
                     print(f"Error unlocking i2c_mutex: {unlock_error}")
@@ -1466,7 +1063,7 @@ class MainWindow(QMainWindow):
         
             try:
                 #print(f"Attempt {attempt + 1}: Trying to lock i2c_mutex for pump input")
-                i2c_mutex.lock()
+                #i2c_mutex.lock()
                 #print(f"i2c_mutex locked for pump input")
                 lib8mosind.set(0,1,0)
                 #print(f"Pump off operation performed successfully on attempt {attempt + 1}")
@@ -1481,7 +1078,7 @@ class MainWindow(QMainWindow):
             finally:
                 #print(f"Main unlocking i2c_mutex after pump input")
                 try:
-                    i2c_mutex.unlock()
+                    #i2c_mutex.unlock()
                     print(f"Main unlocking i2c_mutex after pump off on attempt {attempt + 1}")
                 except Exception as unlock_error:
                     print(f"Error unlocking i2c_mutex: {unlock_error}")
@@ -1489,10 +1086,10 @@ class MainWindow(QMainWindow):
                     time.sleep(retry_delay) # Wait before retrying
         
         
-        if not test:
-            self.pumpLabel.setFlash(False)
-        else:
-            self.pumpLabel.setEnabled(False)
+        #if not test:
+        #    self.pumpLabel.setFlash(False)
+        #else:
+        #    self.pumpLabel.setEnabled(False)
         
         if success:
             if self.pump_start_time is not None:
@@ -1539,26 +1136,26 @@ class MainWindow(QMainWindow):
             self.ppsThread.wait()
 
 
-    @pyqtSlot()
-    def togglePowerSupply(self):
-        if not getattr(self, "ppsWorker", None):
-            return                              # nothing connected
-        try:
-            self.ppsWorker.set_output(self.powerButton.isChecked())
-        except Exception as e:
-            print(f"[PPS] Could not change output: {e}")
-            self.powerButton.setChecked(False)
+    #@pyqtSlot()
+    #def togglePowerSupply(self):
+    #    if not getattr(self, "ppsWorker", None):
+    #        return                              # nothing connected
+    #    try:
+    #        self.ppsWorker.set_output(self.powerButton.isChecked())
+    #    except Exception as e:
+    #        print(f"[PPS] Could not change output: {e}")
+    #        self.powerButton.setChecked(False)
 
 
-    @pyqtSlot()
-    def on_pps_disconnect(self):
-        print("[PPS] Lost connection — disabling controls.")
-        self._disable_pps_controls()
-        self.powerButton.setChecked(False)     # keep toggle in sync
-        self._stop_pps()
-        self.reconnect_pps_action.setEnabled(True)
-        QMessageBox.warning(self, "Power Supply Disconnected",
-                            "The power supply was disconnected.")
+    #@pyqtSlot()
+    #def on_pps_disconnect(self):
+    #    print("[PPS] Lost connection — disabling controls.")
+    #    self._disable_pps_controls()
+    #    self.powerButton.setChecked(False)     # keep toggle in sync
+    #    self._stop_pps()
+    #    self.reconnect_pps_action.setEnabled(True)
+    #    QMessageBox.warning(self, "Power Supply Disconnected",
+    #                        "The power supply was disconnected.")
 
 
     @pyqtSlot(float, float)
@@ -1662,6 +1259,19 @@ class MainWindow(QMainWindow):
         #if hasattr(self, 'ppsWorker'):
         #    self.ppsWorker.set_voltage(voltage)
 
+    @pyqtSlot(QAction)
+    def on_log_option_changed(self, action):
+        """action.objectName() tells us which interval to use."""
+        ms_map = {
+            "option1":  5_000,
+            "option2": 30_000,
+            "option3": 60_000,
+            "option4":  5 * 60_000,
+        }
+        interval = ms_map.get(action.objectName())
+        if interval is not None:
+            print("New log interval:", interval)
+            # … apply interval to your logging timer …
   
   
     @pyqtSlot(float)
@@ -1704,9 +1314,9 @@ class MainWindow(QMainWindow):
     def openCalibratePumpWindow(self):
         self.time_settings_window.exec_()
 
-    def openpHSettingsWindow(self):
-        # Create and show the Settings window as a separate window
-        self.pH_settings_window.exec_()
+    #def openpHSettingsWindow(self):
+    #    # Create and show the Settings window as a separate window
+    #    self.pH_settings_window.exec_()
     
     #def openSelectSettingsWindow(self):
     #    # Create and show the Settings window as a separate window

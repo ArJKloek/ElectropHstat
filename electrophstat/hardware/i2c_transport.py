@@ -1,9 +1,14 @@
 # electrophstat/hardware/i2c_transport.py
 from __future__ import annotations
 import io
-import fcntl
 import time
+import sys
 from typing import Optional
+
+# Only POSIX supports /dev/i2c and fcntl.ioctl
+PLATFORM_WINDOWS = sys.platform.startswith(("win32", "cygwin"))
+if not PLATFORM_WINDOWS:
+    import fcntl  # type: ignore
 
 
 class I2CDevice:
@@ -23,6 +28,14 @@ class I2CDevice:
         long_timeout: float = None,
         short_timeout: float = None,
     ):
+        if PLATFORM_WINDOWS:
+            raise RuntimeError(
+                "I2CDevice is not supported on Windows; "
+                "use DummyAtlas or a Windows-compatible transport."
+            )
+
+        # POSIX path + timeouts
+
         self.address = address
         self.bus = bus
         self._timeout_long  = long_timeout  or self.long_timeout
