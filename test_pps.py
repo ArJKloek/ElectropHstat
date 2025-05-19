@@ -4,9 +4,9 @@ psu = VoltcraftPPS('/dev/ttyUSB0', reset=True, debug=True)
 psu.connect()
 
 try:
-    psu.output(1)
-    psu.voltage(5.0)
-    psu.current(1.0)
+    psu.set_output(True)
+    psu.set_voltage(5.0)
+    psu.set_current(1.0)
     #psu.output(True)
 
     v, a, mode = psu.read_output()
