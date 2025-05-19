@@ -15,8 +15,8 @@ class PPSController(QObject):
 
 
         # 1) Probe for a real PPS (or get a DummyPPS)
-        port = discover_power_supply()
-        self.worker = PPSWorker(port, interval, reset)
+        port = discover_power_supply(reset=reset)
+        self.worker = PPSWorker(port, interval, reset=False)
 
         # 2) Move it into its own thread
         self.thread = QThread(window)

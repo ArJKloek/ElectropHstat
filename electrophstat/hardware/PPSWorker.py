@@ -17,9 +17,10 @@ class PPSWorker(QObject):
         self.failure_count  = 0
         self.max_failures   = 3  # Number of allowed failures before disconnect
         self.running        = True
+        
         if reset:
             self.reset_psu()
-
+    
     def run(self):
         while self.running:
             try:
@@ -86,7 +87,7 @@ class PPSWorker(QObject):
             fn()
         except Exception as e:
             print(f"[PPSWorker] driver error: {e}")
-   
+    
     def reset_psu(self):
         """Reset PPS to known state."""
         try:
@@ -96,3 +97,4 @@ class PPSWorker(QObject):
             print("[PPSWorker] PPS reset completed successfully.")
         except Exception as e:
             print(f"[PPSWorker] Failed to reset PPS: {e}")
+
