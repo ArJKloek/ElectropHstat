@@ -27,7 +27,9 @@ class PowerSupply(Protocol):
     def read_output(self) -> Tuple[float, float]: ...
         # returns (voltage_V, current_A)
 
-
+    def reading(self) -> Tuple[float, float, Literal["CC", "CV"]]: ...
+        # returns (voltage, current, mode)
+        
 @runtime_checkable
 class Pump(Protocol):
     """Contract for peristaltic / syringe pumps."""

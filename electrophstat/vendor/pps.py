@@ -163,7 +163,7 @@ class PPS:
 
     def output(self, state: int) -> None:
         """enable/disable the PS output"""
-        print(f"Vendor OUTPUT{state}")
+        print(f"Vendor OUTPUT {state}")
         state = 1 if not state else 0
         self._query("SOUT%d" % state)
     
