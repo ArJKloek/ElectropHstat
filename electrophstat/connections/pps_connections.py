@@ -66,6 +66,7 @@ class PPSConnections(QObject):
         state = self.win.powerButton.isChecked()
         try:
             self.pps_worker.set_output(checked)
+            self.pps_worker.psu.output(checked)
             print(f"[OUTPUT] Power Supply set to {'ON' if state else 'OFF'}")
         except Exception as e:
             QMessageBox.critical(self.win, "PPS Error", f"Could not set output: {e}")
