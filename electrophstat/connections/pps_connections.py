@@ -13,6 +13,8 @@ class PPSConnections(QObject):
         #self.win.powerButton.clicked.connect(self.togglePowerSupply)
         self.win.setButton.clicked.connect(self.apply_ps_settings)
 
+    def set_worker(self, worker):
+        self.pps_worker = worker
         
     @pyqtSlot(float)
     def update_pps_voltage(self, voltage: float):
