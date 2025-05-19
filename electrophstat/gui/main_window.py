@@ -88,8 +88,7 @@ class MainWindow(QMainWindow):
        
         # 1) Load the .ui file
 
-        self.button_controller = ButtonConnections(self)
-        self.pHstat_ctr = pHStatConnections(self)
+        
         # instantiate controllers (they subclass QObject)
         #self.pps_controller = PPSController(self)
         #self.ppsWorker.disconnected_signal.connect(self.pps_controller.on_pps_disconnect)
@@ -112,7 +111,8 @@ class MainWindow(QMainWindow):
 
         # Initialize PPS controller with proper interval (e.g., 1 second) and reset condition
 
-
+        self.button_controller = ButtonConnections(self)
+        self.pHstat_ctr = pHStatConnections(self)
         # 2) Now wire up every signal/slot in one place
         setup_mainwindow_signals(self)
         
