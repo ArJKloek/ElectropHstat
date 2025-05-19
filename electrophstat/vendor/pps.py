@@ -108,6 +108,7 @@ class PPS:
             raise RuntimeError(f"unknown minimum voltage for Voltcraft {self._model}")
 
         if bool(reset):
+            print("[DEBUG] >>> PPS Vendor RESET CALLED <<<")
             self.output(0)
             self.voltage(0)
             self.current(0)
