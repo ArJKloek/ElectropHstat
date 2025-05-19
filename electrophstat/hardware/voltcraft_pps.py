@@ -64,7 +64,7 @@ class VoltcraftPPS(PowerSupply):
         self._pps.current(amps)
 
     def set_output(self, enable: bool) -> None:
-        print{f'Voltcraft_pps {enable}'}
+        print(f'Voltcraft_pps {enable}')
         assert self._pps
         # PPS.output(0)=ON, 1=OFF   (inverted)
         self._pps.output(1 if enable else 0)
