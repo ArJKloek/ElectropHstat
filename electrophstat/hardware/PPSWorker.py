@@ -26,7 +26,8 @@ class PPSWorker(QObject):
         while self.running:
             try:
                 v, a = self.psu.read_output()
-                mode  = "CC" if self.psu.read_output()[1] else "CV"  # or your own logic
+                mode  = "CC" if a else "CV"  # or your own logic
+                print(f"[DEBUG] PPSWorker output read: voltage={v}, current={a}, mode={mode}")
                 self.voltage_signal.emit(v)
                 self.current_signal.emit(a)
                 self.mode_signal.emit(mode)
