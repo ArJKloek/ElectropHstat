@@ -72,4 +72,4 @@ class VoltcraftPPS(PowerSupply):
     def read_output(self):
         assert self._pps
         v, a, _mode = self._pps.reading()
-        return v, a
+        return v, a, _mode
