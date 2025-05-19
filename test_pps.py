@@ -1,7 +1,7 @@
 from electrophstat.vendor.pps import PPS
 
 psu = PPS('/dev/ttyUSB0', reset=True, debug=True)
-psu.connect()
+#psu.connect()
 
 try:
     psu.output(1)
@@ -17,4 +17,4 @@ except Exception as e:
 
 finally:
     psu.output(False)
-    psu.disconnect()
+    #psu.disconnect()
