@@ -76,6 +76,7 @@ class PPS:
         debug : bool
             output debug messages
         """
+        print(f"[VENDOR] ✅ Vendor PPS instantiated on port {port}")
         self._serial = serial.Serial(port, timeout=timeout)
         self._serial.flushInput()
         self._serial.flushOutput()
