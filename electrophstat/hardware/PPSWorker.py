@@ -20,6 +20,7 @@ class PPSWorker(QObject):
         
         if reset:
             self.reset_psu()
+            print("Reset")
     
     def run(self):
         while self.running:
@@ -30,7 +31,6 @@ class PPSWorker(QObject):
                 self.current_signal.emit(a)
                 self.mode_signal.emit(mode)
                 self.failure_count = 0  # ✅ reset on success
-                print(reset)
             except Exception as e:
                 self.failure_count += 1
                 print(f"PPS read error: {e}")
