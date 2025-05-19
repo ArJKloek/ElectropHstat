@@ -10,7 +10,8 @@ class PPSConnections(QObject):
         super().__init__(window)
         self.win = window
 
-        self.win.powerButton.clicked.connect(self.togglePowerSupply)
+        #self.win.powerButton.clicked.connect(self.togglePowerSupply)
+        self.win.setButton.clicked.connect(self.apply_ps_settings)
 
         
     @pyqtSlot(float)
@@ -32,18 +33,39 @@ class PPSConnections(QObject):
         self.win.voltageDial.setMaximum(int(vmax * 10))
         self.win.currentDial.setMaximum(int(imax * 10))
         # … any other UI work …
+    
+    @pyqtSlot()
+    def apply_ps_settings(self):
+        if not self.pps_worker:
+            print("[WARNING] PPS worker not initialized.")
+            return
 
+        mode = "CC" if self.win.modeToggle.isChecked() else "CV"
+        voltage = self.win.voltageDial.value() / 10.0
+        current = self.win.currentDial.value() / 10.0
+
+        if mode == "CV":
+            self.pps_worker.set_current(self.pps_worker.psu.IMAX)
+            self.pps_worker.set_voltage(voltage)
+        else:  # "CC"
+            self.pps_worker.set_voltage(self.pps_worker.psu.VMAX)
+            self.pps_worker.set_current(current)
+
+        print(f"[SET] Mode: {mode}, Voltage: {voltage:.1f} V, Current: {current:.1f} A")
 
     @pyqtSlot()
     def togglePowerSupply(self):
-        if not getattr(self, "ppsWorker", None):
-            return                              # nothing connected
+        if not self.pps_worker:
+            QMessageBox.warning(self.win, "PPS Error", "Power supply is not connected.")
+            self.win.powerButton.setChecked(False)
+            return
+        state = self.win.powerButton.isChecked()
         try:
-            self.ppsWorker.set_output(self.powerButton.isChecked())
+            self.pps_worker.set_output(state)
+            print(f"[OUTPUT] Power Supply set to {'ON' if state else 'OFF'}")
         except Exception as e:
-            print(f"[PPS] Could not change output: {e}")
-            self.powerButton.setChecked(False)
-
+            QMessageBox.critical(self.win, "PPS Error", f"Could not set output: {e}")
+            self.win.powerButton.setChecked(False)
 
     @pyqtSlot()
     def on_pps_disconnect(self):
