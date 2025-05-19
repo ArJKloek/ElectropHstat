@@ -79,6 +79,6 @@ class PPSConnections(QObject):
 
     @pyqtSlot()
     def on_checkPPS(self):
-        v, a, mode = self.pps_worker.reading()
+        v, a, mode = self.pps_worker.psu.reading()
         QMessageBox.information(self.win, "PPS Status",
             f"Voltage: {v:.2f} V\nCurrent: {a:.2f} A\nMode: {mode}")
