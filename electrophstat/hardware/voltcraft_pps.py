@@ -66,7 +66,7 @@ class VoltcraftPPS(PowerSupply):
     def set_output(self, enable: bool) -> None:
         assert self._pps
         # PPS.output(0)=ON, 1=OFF   (inverted)
-        self._pps.output(0 if enable else 1)
+        self._pps.output(1 if enable else 0)
 
     # monitoring ----------------------------------------------------
     def read_output(self):
