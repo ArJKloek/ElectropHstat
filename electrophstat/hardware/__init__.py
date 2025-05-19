@@ -8,6 +8,7 @@ from ..utils.serial_helpers import find_voltcraft_pps  # your existing finder
 def discover_power_supply(prefer_hw: bool = True, reset: bool= False):
     port = find_voltcraft_pps() if prefer_hw else None
     if port:
+        print("[DEBUG] VoltcraftPPS instantiated with reset =", reset)
         ps = VoltcraftPPS(port, reset=reset)
         ps.connect()
         return ps
