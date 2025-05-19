@@ -9,7 +9,7 @@ class PPSController(QObject):
     Starts a PPSWorker on its own thread, hooks up all of its signals
     back into the MainWindow.
     """
-    def __init__(self, window, interval: float = 1.0, reset: bool = True):
+    def __init__(self, window, interval: float = 0.5, reset: bool = True):
         super().__init__(window)
         self.win = window
 
