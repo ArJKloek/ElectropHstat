@@ -36,7 +36,7 @@ from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer,
 from scripts.LedIndicatorWidget import LedIndicator
 #from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2c_mutex
 #from scripts.pHStat_worker import USBWorker
-from electrophstat.control.PPSWorker import PPSWorker
+from electrophstat.hardware.PPSWorker import PPSWorker
 from scripts.pHstat_config import ConfigReader, ConfigWriter
 #from scripts.pHStat_classes import (pumpControl)
 import pyqtgraph as pg

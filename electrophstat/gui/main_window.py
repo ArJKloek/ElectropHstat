@@ -2,11 +2,7 @@ import sys
 import time
 import os
 import getpass
-from electrophstat.hardware import discover_power_supply
 from electrophstat.hardware.dummy_switcher import MockLib8MosInd
-from electrophstat.sensors import discover_sensor
-#from electrophstat.sensors import discover_temp_sensor
-from scripts.ph_sensor_worker import pHSensorWorker
 from electrophstat.control.control_loop import ControlLoop, PumpAction
 from electrophstat.io.logger import Logger
 from electrophstat.control.pump_control import PumpController
@@ -16,13 +12,13 @@ from electrophstat.gui.widgets import CustomTextWidget, ToggleSwitch
 from electrophstat.control.timer_control import monoTimer
 from electrophstat.io.power_logger import PowerLogger
 from electrophstat.connections.main_connections import setup_mainwindow_signals
-from electrophstat.controllers.pps_controllers import PPSController
-from electrophstat.control.PPSWorker import PPSWorker
 from electrophstat.connections.button_connections import ButtonConnections
 from electrophstat.connections.pHstat_connections import pHStatConnections
 from electrophstat.gui.graph_controller import GraphController
 from electrophstat.gui.plot_manager import PlotManager
 from electrophstat.gui.sensor_controller import SensorController
+from electrophstat.gui.pps_controller import PPSController
+
 from pathlib import Path
 
 
@@ -95,7 +91,7 @@ class MainWindow(QMainWindow):
         self.button_controller = ButtonConnections(self)
         self.pHstat_ctr = pHStatConnections(self)
         # instantiate controllers (they subclass QObject)
-        self.pps_controller = PPSController(self)
+        #self.pps_controller = PPSController(self)
         #self.ppsWorker.disconnected_signal.connect(self.pps_controller.on_pps_disconnect)
         slots = {
             "ph":   self.button_controller.update_gui,
@@ -103,6 +99,9 @@ class MainWindow(QMainWindow):
             # once you register an "orp" sensor, you could add
             # "orp": self.handle_ORP,
         }
+        self.pps_ctrl = PPSController(self,
+                                      interval=1.0,  # poll every second
+                                      reset=True)    # whether to reset on open
 
         # This will spin up worker+thread for each key
         self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
