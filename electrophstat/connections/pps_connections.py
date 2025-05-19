@@ -79,6 +79,27 @@ class PPSConnections(QObject):
 
     @pyqtSlot()
     def on_checkPPS(self):
-        v, a, mode = self.pps_worker.psu.reading()
-        QMessageBox.information(self.win, "PPS Status",
-            f"Voltage: {v:.2f} V\nCurrent: {a:.2f} A\nMode: {mode}")
+        if not self.pps_worker:
+            QMessageBox.warning(self.win, "PPS", "Not connected.")
+            return
+
+        try:
+            # always exists on both real and dummy
+            voltage, current = self.pps_worker.psu.read_output()
+        except Exception as e:
+            QMessageBox.critical(self.win, "PPS Error",
+                                f"Failed to read PPS: {e}")
+            return
+
+        # now optionally grab mode if your vendor supports it:
+        mode = None
+        if hasattr(self.pps_worker.psu, "reading"):
+            try:
+                _, _, mode = self.pps_worker.psu.reading()
+            except Exception:
+                mode = None
+
+        msg = f"Voltage: {voltage:.2f} V\nCurrent: {current:.2f} A"
+        if mode is not None:
+            msg += f"\nMode: {mode}"
+        QMessageBox.information(self.win, "PPS Status", msg)
