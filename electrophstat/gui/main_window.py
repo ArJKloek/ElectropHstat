@@ -99,13 +99,15 @@ class MainWindow(QMainWindow):
             # once you register an "orp" sensor, you could add
             # "orp": self.handle_ORP,
         }
+        
+        self.pps_connections = PPSConnections(self)
+
         self.pps_ctrl = PPSController(self,
                                       interval=1.0,  # poll every second
                                       reset=True)    # whether to reset on open
 
         # This will spin up worker+thread for each key
         # Initialize PPS Connections for updating the GUI
-        self.pps_connections = PPSConnections(self)
         self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
 
         # Initialize PPS controller with proper interval (e.g., 1 second) and reset condition
