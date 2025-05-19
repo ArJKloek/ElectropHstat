@@ -9,14 +9,16 @@ class PPSController(QObject):
     Starts a PPSWorker on its own thread, hooks up all of its signals
     back into the MainWindow.
     """
-    def __init__(self, window, interval: float = 0.5, reset: bool = True):
+    def __init__(self, window, pps_connections, interval: float = 0.5, reset: bool = True):
         super().__init__(window)
         self.win = window
-
+        self.connections = pps_connections
 
         # 1) Probe for a real PPS (or get a DummyPPS)
         port = discover_power_supply(reset=reset)
         self.pps_worker = PPSWorker(port, interval, reset=False)
+
+        self.connections.set_worker(self.pps_worker)
 
         # 2) Move it into its own thread
         self.thread = QThread(window)
@@ -24,11 +26,11 @@ class PPSController(QObject):
         self.thread.started.connect(self.pps_worker.run)
 
         # 3) Hook all signals back to window methods and the pps_connections
-        self.pps_worker.voltage_signal.connect(window.pps_connections.update_pps_voltage)
-        self.pps_worker.current_signal.connect(window.pps_connections.update_pps_current)
-        self.pps_worker.mode_signal.connect(window.pps_connections.update_pps_mode)
-        self.pps_worker.limits_signal.connect(window.pps_connections.handle_pps_limits)
-        self.pps_worker.disconnected_signal.connect(window.pps_connections.on_pps_disconnect)
+        self.pps_worker.voltage_signal.connect(self.connections.update_pps_voltage)
+        self.pps_worker.current_signal.connect(self.connections.update_pps_current)
+        self.pps_worker.mode_signal.connect(self.connections.update_pps_mode)
+        self.pps_worker.limits_signal.connect(self.connections.handle_pps_limits)
+        self.pps_worker.disconnected_signal.connect(self.connections.pps_connections.on_pps_disconnect)
 
         # 4) Start polling
         self.thread.start()
