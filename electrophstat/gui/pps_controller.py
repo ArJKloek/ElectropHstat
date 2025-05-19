@@ -16,29 +16,29 @@ class PPSController(QObject):
 
         # 1) Probe for a real PPS (or get a DummyPPS)
         port = discover_power_supply(reset=reset)
-        self.worker = PPSWorker(port, interval, reset=False)
+        self.pps_worker = PPSWorker(port, interval, reset=False)
 
         # 2) Move it into its own thread
         self.thread = QThread(window)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
+        self.pps_worker.moveToThread(self.thread)
+        self.thread.started.connect(self.pps_worker.run)
 
         # 3) Hook all signals back to window methods and the pps_connections
-        self.worker.voltage_signal.connect(window.pps_connections.update_pps_voltage)
-        self.worker.current_signal.connect(window.pps_connections.update_pps_current)
-        self.worker.mode_signal.connect(window.pps_connections.update_pps_mode)
-        self.worker.limits_signal.connect(window.pps_connections.handle_pps_limits)
-        self.worker.disconnected_signal.connect(window.pps_connections.on_pps_disconnect)
+        self.pps_worker.voltage_signal.connect(window.pps_connections.update_pps_voltage)
+        self.pps_worker.current_signal.connect(window.pps_connections.update_pps_current)
+        self.pps_worker.mode_signal.connect(window.pps_connections.update_pps_mode)
+        self.pps_worker.limits_signal.connect(window.pps_connections.handle_pps_limits)
+        self.pps_worker.disconnected_signal.connect(window.pps_connections.on_pps_disconnect)
 
         # 4) Start polling
         self.thread.start()
 
         # 5) fire one initial limits‐read so the dials get properly ranged
-        self.worker.emit_limits()
+        self.pps_worker.emit_limits()
 
     @pyqtSlot()
     def stop(self):
         """Call this when you want to shut down cleanly."""
-        self.worker.stop()
+        self.pps_worker.stop()
         self.thread.quit()
         self.thread.wait()
