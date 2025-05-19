@@ -61,7 +61,7 @@ class PPSWorker(QObject):
     def set_output(self, enable: bool):
         try:
             self.psu.output(enable)
-            print(enable)
+            print(f' PSSWorker output {enable}')
         except Exception as e:
             print(f"Failed to toggle output: {e}")
     

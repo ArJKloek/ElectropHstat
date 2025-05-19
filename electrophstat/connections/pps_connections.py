@@ -10,7 +10,7 @@ class PPSConnections(QObject):
         super().__init__(window)
         self.win = window
         self.pps_worker = None
-        self.win.powerButton.clicked.connect(self.togglePowerSupply)
+        self.win.powerButton.clicked.connect(self.on_checkPPS)
         self.win.setButton.clicked.connect(self.apply_ps_settings)
 
     def set_worker(self, worker):
@@ -76,3 +76,9 @@ class PPSConnections(QObject):
         QMessageBox.warning(self, "PPS Disconnected",
                             "Lost communication with the power supply.")
         self._disable_pps_controls()
+
+    @pyqtSlot()
+    def on_checkPPS(self):
+        v, a, mode = self.pps_worker.psu.reading()
+        QMessageBox.information(self.win, "PPS Status",
+            f"Voltage: {v:.2f} V\nCurrent: {a:.2f} A\nMode: {mode}")
