@@ -10,7 +10,7 @@ class PPSConnections(QObject):
         super().__init__(window)
         self.win = window
         self.pps_worker = None
-        #self.win.powerButton.clicked.connect(self.togglePowerSupply)
+        self.win.powerButton.clicked.connect(self.togglePowerSupply)
         self.win.setButton.clicked.connect(self.apply_ps_settings)
 
     def set_worker(self, worker):
