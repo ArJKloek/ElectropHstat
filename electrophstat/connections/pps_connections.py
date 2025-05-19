@@ -9,7 +9,7 @@ class PPSConnections(QObject):
     def __init__(self, window):
         super().__init__(window)
         self.win = window
-        self.pps_worker = None
+        self.pps_ctrl = None
         #self.win.powerButton.clicked.connect(self.togglePowerSupply)
         self.win.setButton.clicked.connect(self.apply_ps_settings)
 
@@ -36,7 +36,7 @@ class PPSConnections(QObject):
     
     @pyqtSlot()
     def apply_ps_settings(self):
-        if not self.pps_worker:
+        if not self.pps_ctrl:
             print("[WARNING] PPS worker not initialized.")
             return
 
@@ -45,23 +45,23 @@ class PPSConnections(QObject):
         current = self.win.currentDial.value() / 10.0
 
         if mode == "CV":
-            self.pps_worker.set_current(self.pps_worker.psu.IMAX)
-            self.pps_worker.set_voltage(voltage)
+            self.pps_ctrl.set_current(self.pps_ctrl.psu.IMAX)
+            self.pps_ctrl.set_voltage(voltage)
         else:  # "CC"
-            self.pps_worker.set_voltage(self.pps_worker.psu.VMAX)
-            self.pps_worker.set_current(current)
+            self.pps_ctrl.set_voltage(self.pps_ctrl.psu.VMAX)
+            self.pps_ctrl.set_current(current)
 
         print(f"[SET] Mode: {mode}, Voltage: {voltage:.1f} V, Current: {current:.1f} A")
 
     @pyqtSlot()
     def togglePowerSupply(self):
-        if not self.pps_worker:
+        if not self.pps_ctrl:
             QMessageBox.warning(self.win, "PPS Error", "Power supply is not connected.")
             self.win.powerButton.setChecked(False)
             return
         state = self.win.powerButton.isChecked()
         try:
-            self.pps_worker.set_output(state)
+            self.pps_ctrl.set_output(state)
             print(f"[OUTPUT] Power Supply set to {'ON' if state else 'OFF'}")
         except Exception as e:
             QMessageBox.critical(self.win, "PPS Error", f"Could not set output: {e}")
