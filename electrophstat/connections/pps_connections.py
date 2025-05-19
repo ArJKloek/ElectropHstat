@@ -56,7 +56,7 @@ class PPSConnections(QObject):
         print(f"[SET] Mode: {mode}, Voltage: {voltage:.1f} V, Current: {current:.1f} A")
 
     @pyqtSlot(bool)
-    def togglePowerSupply(self):
+    def togglePowerSupply(self, checked:bool):
         print("[CHECK] togglePowerSupply() called")
 
         if not self.pps_worker:
@@ -65,7 +65,7 @@ class PPSConnections(QObject):
             return
         state = self.win.powerButton.isChecked()
         try:
-            self.pps_worker.set_output(state)
+            self.pps_worker.set_output(checked)
             print(f"[OUTPUT] Power Supply set to {'ON' if state else 'OFF'}")
         except Exception as e:
             QMessageBox.critical(self.win, "PPS Error", f"Could not set output: {e}")
