@@ -9,7 +9,7 @@ try:
     psu.current(1.0)
     #psu.output(True)
 
-    v, a, mode = psu.reading()
+    v, a, mode = psu.read_output()
     print(f"Voltage={v} V, Current={a} A, Mode={mode}")
 
 except Exception as e:
