@@ -17,7 +17,8 @@ class PPSWorker(QObject):
         self.failure_count  = 0
         self.max_failures   = 3  # Number of allowed failures before disconnect
         self.running        = True
-        
+        print(f"[CHECK] PPSWorker created with psu = {type(psu).__name__}")
+
         if reset:
             self.reset_psu()
             print("Reset")

@@ -57,6 +57,8 @@ class PPSConnections(QObject):
 
     @pyqtSlot()
     def togglePowerSupply(self):
+        print("[CHECK] togglePowerSupply() called")
+
         if not self.pps_worker:
             QMessageBox.warning(self.win, "PPS Error", "Power supply is not connected.")
             self.win.powerButton.setChecked(False)
