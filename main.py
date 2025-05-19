@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QStyleFactory
-from scripts.pHstat_GUI import MainWindow
+from electrophstat.gui.main_window import MainWindow
 
 def main():
     app = QApplication(sys.argv)

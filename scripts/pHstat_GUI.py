@@ -18,7 +18,7 @@ from electrophstat.io.power_logger import PowerLogger
 from electrophstat.connections.main_connections import setup_mainwindow_signals
 from electrophstat.connections.pHstat_connections import setup_pHstat_signals
 from electrophstat.controllers.pps_controllers import PPSController
-
+from pathlib import Path
 
 
 if sys.platform.startswith(("linux", "darwin")):
@@ -36,7 +36,7 @@ from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer,
 from scripts.LedIndicatorWidget import LedIndicator
 #from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2c_mutex
 #from scripts.pHStat_worker import USBWorker
-from scripts.PPSWorker import PPSWorker
+from electrophstat.control.PPSWorker import PPSWorker
 from scripts.pHstat_config import ConfigReader, ConfigWriter
 #from scripts.pHStat_classes import (pumpControl)
 import pyqtgraph as pg
@@ -123,10 +123,15 @@ class MainWindow(QMainWindow):
             select=self.pHSelectMode,   # 0=above-limit, 1=below-limit
             target_pH=self.pHSelect
         )
-        self.logger = Logger(
-            filepath="ph_control_log.csv",
-            fieldnames=["timestamp", "pH", "pump_on", "status"]
-        ) 
+
+        home = Path.home()  # or wherever you like
+        labels  = ["pH", "temperature", "volume"]
+        columns = ["pH", "°C", "mL"]
+        self.logger = Logger(home / "ElectroPHData", labels, columns)
+        #self.logger = Logger(
+        #    filepath="ph_control_log.csv",
+        #    fieldnames=["timestamp", "pH", "pump_on", "status"]
+        #) 
         self.pump_controller = PumpController(
             start_fn=self.startPump,
             stop_fn=self.stopPump,
@@ -1259,20 +1264,7 @@ class MainWindow(QMainWindow):
         #if hasattr(self, 'ppsWorker'):
         #    self.ppsWorker.set_voltage(voltage)
 
-    @pyqtSlot(QAction)
-    def on_log_option_changed(self, action):
-        """action.objectName() tells us which interval to use."""
-        ms_map = {
-            "option1":  5_000,
-            "option2": 30_000,
-            "option3": 60_000,
-            "option4":  5 * 60_000,
-        }
-        interval = ms_map.get(action.objectName())
-        if interval is not None:
-            print("New log interval:", interval)
-            # … apply interval to your logging timer …
-  
+    
   
     @pyqtSlot(float)
     def update_pps_voltage(self, value):

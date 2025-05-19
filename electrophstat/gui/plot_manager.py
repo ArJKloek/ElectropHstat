@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
-from PyQt5.QtGui import QPen, QColor
+from PyQt5.QtGui import QPen, QColor, QFont
 from PyQt5.QtCore import Qt
 import numpy as np
 import pyqtgraph as pg
@@ -274,8 +274,12 @@ class PlotManager:
             if ax is None:
                 continue
 
-            # tick labels
-            ax.setStyle(tickFont=QFont('Arial', tick_size))
+            # --- only change the point size on the existing tickFont ---
+            # get the existing tickFont from the style dict (or default-construct one)
+            old = ax.style.get('tickFont', QFont())
+            f = QFont(old)            # copy it
+            f.setPointSize(tick_size) # just change the size
+            ax.setStyle(tickFont=f)
             ax.setTextPen(QPen(QColor('black')))
 
             # only relabel axes that actually have text

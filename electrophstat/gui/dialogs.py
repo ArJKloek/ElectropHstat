@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QDateTimeEdit, QPushButton, 
                             QHBoxLayout, QLabel, QDoubleSpinBox, QLineEdit, QHBoxLayout)
-from PyQt5.QtCore import Qt, QDateTime, pyqtSignal, QTimer
+from PyQt5.QtCore import Qt, QDateTime, pyqtSlot, pyqtSignal, QTimer
 from PyQt5.QtGui import QCursor
 import os
 
@@ -39,11 +39,14 @@ class CalibratePumpDialog(QDialog):
     select_changed = pyqtSignal(float,float)
     test_pump = pyqtSignal(bool)
 
-    def __init__(self, ml, addtime):
+    def __init__(self, ml: float, addtime: float):
         super().__init__(flags=Qt.WindowCloseButtonHint)
 
         self.setWindowTitle('Calibrate pump')
         self.setGeometry(200, 50, 0, 0)
+
+        self._ml = ml
+        self._addtime = addtime
 
         layout = QHBoxLayout(self)
         
@@ -67,7 +70,7 @@ class CalibratePumpDialog(QDialog):
         self.addtimewidget = QDoubleSpinBox()
         self.addtimewidget.setDecimals(2)
         self.addtimewidget.setSingleStep(0.01)
-        self.addtimewidget.setValue(addtime)
+        self.addtimewidget.setValue(self._addtime)
         layout.addWidget(self.addtimewidget)
         sec = QLabel('(s)')
         layout.addWidget(sec)
@@ -76,12 +79,18 @@ class CalibratePumpDialog(QDialog):
         
         self.setbutton.clicked.connect(self.accept)
         self.testbutton.clicked.connect(self.startTest)
+    
+    @pyqtSlot()
     def startTest(self):
+        # disable intil it's done
         self.testbutton.setEnabled(False)
+        # tell the world "pump ON"
         self.test_pump.emit(True)
 
         # Simulate test duration
-        QTimer.singleShot(int(float(self.addtimewidget.value())*1000), self.endTest)
+        QTimer.singleShot(
+            int(float(self.addtimewidget.value())*1000), 
+            self.endTest)
 
     def endTest(self):
         self.testbutton.setEnabled(True)
