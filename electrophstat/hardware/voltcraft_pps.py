@@ -18,10 +18,11 @@ except ImportError:                 # Python 3.7 fallback
 class VoltcraftPPS(PowerSupply):
     """Adapter over the original PPS class, exposing a clean interface."""
 
-    def __init__(self, port: str, *, reset: bool = False, timeout: float = 1.0):
+    def __init__(self, port: str, *, reset: bool = False, timeout: float = 1.0, debug : bool):
         self.port = port
         self._reset = reset
         self._timeout = timeout
+        self._debug = debug
         self._pps: Optional[PPS] = None     # real object created in connect()
 
         # limits populated in connect()
@@ -36,7 +37,7 @@ class VoltcraftPPS(PowerSupply):
             port=self.port,
             reset=self._reset,
             timeout=self._timeout,
-            debug=False,
+            debug=self._debug
         )
         # copy constants for GUI
         self.VMAX = self._pps.VMAX
