@@ -2,7 +2,7 @@ try:
     # Python ≥ 3.8
     from typing import Protocol, runtime_checkable, Optional, Tuple
 except ImportError:                 # Python 3.7 fallback
-    from typing_extensions import Protocol, runtime_checkable
+    from typing_extensions import Protocol, Literal, runtime_checkable
     from typing import Optional, Tuple        # Tuple still comes from stdlib
 
 
@@ -29,7 +29,7 @@ class PowerSupply(Protocol):
 
     def reading(self) -> Tuple[float, float, Literal["CC", "CV"]]: ...
         # returns (voltage, current, mode)
-        
+
 @runtime_checkable
 class Pump(Protocol):
     """Contract for peristaltic / syringe pumps."""
