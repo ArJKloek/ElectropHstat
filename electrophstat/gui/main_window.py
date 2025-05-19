@@ -18,7 +18,7 @@ from electrophstat.gui.graph_controller import GraphController
 from electrophstat.gui.plot_manager import PlotManager
 from electrophstat.gui.sensor_controller import SensorController
 from electrophstat.gui.pps_controller import PPSController
-
+from electrophstat.connections.pps_connections import PPSConnections
 from pathlib import Path
 
 
@@ -104,9 +104,13 @@ class MainWindow(QMainWindow):
                                       reset=True)    # whether to reset on open
 
         # This will spin up worker+thread for each key
+        # Initialize PPS Connections for updating the GUI
+        self.pps_connections = PPSConnections(self)
         self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
 
-        
+        # Initialize PPS controller with proper interval (e.g., 1 second) and reset condition
+
+
         # 2) Now wire up every signal/slot in one place
         setup_mainwindow_signals(self)
         
