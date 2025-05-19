@@ -184,11 +184,11 @@ class ButtonConnections(QObject):
     @pyqtSlot(str, float)
     def update_gui(self, sensor_type: str, received_data: float):
         self.win.current_data = received_data
-        if sensor_type == 1:
+        if sensor_type == 'ph':
             self.win.pHNumber.setText(f'{str("pH {:.2f}".format(received_data))}')
             #self.pHvalue = received_data
             self.win.valueData[1] = received_data
-        elif sensor_type == 2:
+        elif sensor_type == 'temp':
             self.temp = received_data
             #if received_data < -200:
             #    self.RTDlabel.setText("N/A °C")
