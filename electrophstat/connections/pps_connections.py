@@ -63,6 +63,7 @@ class PPSConnections(QObject):
             return
         state = self.win.powerButton.isChecked()
         try:
+            print(state)
             self.pps_worker.set_output(state)
             print(f"[OUTPUT] Power Supply set to {'ON' if state else 'OFF'}")
         except Exception as e:
