@@ -36,6 +36,7 @@ class AtlasSensorWorker(QObject):
         while self._running:
             try:
                 val = self.sensor.read()
+                print(val)
                 self.data_signal.emit(self.name, val)
                 self._failures = 0
             except Exception as e:
