@@ -56,15 +56,15 @@ class VoltcraftPPS(PowerSupply):
         return self._pps is not None
 
     # control -------------------------------------------------------
-    def set_voltage(self, volts: float) -> None:
+    def voltage(self, volts: float) -> None:
         assert self._pps
         self._pps.voltage(volts)
 
-    def set_current(self, amps: float) -> None:
+    def current(self, amps: float) -> None:
         assert self._pps
         self._pps.current(amps)
 
-    def set_output(self, enable: bool) -> None:
+    def output(self, enable: bool) -> None:
         print(f'Voltcraft_pps {enable}')
         assert self._pps
         # PPS.output(0)=ON, 1=OFF   (inverted)
