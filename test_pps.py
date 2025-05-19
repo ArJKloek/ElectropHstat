@@ -1,6 +1,6 @@
-from electrophstat.hardware.voltcraft_pps import VoltcraftPPS
+from electrophstat.vendor.pps import PPS
 
-psu = VoltcraftPPS('/dev/ttyUSB0', reset=True)
+psu = PPS('/dev/ttyUSB0', reset=True, debug=True)
 psu.connect()
 
 try:
