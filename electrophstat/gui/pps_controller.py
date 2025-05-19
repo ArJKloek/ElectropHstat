@@ -30,7 +30,7 @@ class PPSController(QObject):
         self.pps_worker.current_signal.connect(self.connections.update_pps_current)
         self.pps_worker.mode_signal.connect(self.connections.update_pps_mode)
         self.pps_worker.limits_signal.connect(self.connections.handle_pps_limits)
-        self.pps_worker.disconnected_signal.connect(self.connections.pps_connections.on_pps_disconnect)
+        self.pps_worker.disconnected_signal.connect(self.connections.on_pps_disconnect)
 
         # 4) Start polling
         self.thread.start()
