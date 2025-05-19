@@ -10,14 +10,16 @@ class PPSWorker(QObject):
     mode_signal         = pyqtSignal(str)
     disconnected_signal = pyqtSignal()
 
-    def __init__(self, psu: PowerSupply(), interval:float):
+    def __init__(self, psu: PowerSupply(), interval:float, reset: bool = True):
         super().__init__()
         self.psu        = psu
         self.interval   = interval
         self.failure_count  = 0
         self.max_failures   = 3  # Number of allowed failures before disconnect
         self.running        = True
-        
+        if reset:
+            self.reset_psu()
+
     def run(self):
         while self.running:
             try:
@@ -84,3 +86,13 @@ class PPSWorker(QObject):
             fn()
         except Exception as e:
             print(f"[PPSWorker] driver error: {e}")
+   
+    def reset_psu(self):
+        """Reset PPS to known state."""
+        try:
+            self.psu.output(False)    # Ensure output is OFF
+            self.psu.voltage(0)       # Reset voltage to 0V
+            self.psu.current(0)       # Reset current limit to 0A or a default value
+            print("[PPSWorker] PPS reset completed successfully.")
+        except Exception as e:
+            print(f"[PPSWorker] Failed to reset PPS: {e}")
