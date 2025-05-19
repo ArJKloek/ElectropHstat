@@ -12,6 +12,7 @@ from electrophstat.gui.widgets import CustomTextWidget, ToggleSwitch
 from electrophstat.control.timer_control import monoTimer
 from electrophstat.io.power_logger import PowerLogger
 from electrophstat.connections.main_connections import setup_mainwindow_signals
+from electrophstat.hardware import discover_power_supply
 from electrophstat.connections.button_connections import ButtonConnections
 from electrophstat.connections.pHstat_connections import pHStatConnections
 from electrophstat.gui.graph_controller import GraphController
