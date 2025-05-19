@@ -10,6 +10,8 @@ class PPSConnections(QObject):
         super().__init__(window)
         self.win = window
 
+        self.win.powerButton.clicked.connect(self.togglePowerSupply)
+
         
     @pyqtSlot(float)
     def update_pps_voltage(self, voltage: float):
@@ -30,6 +32,18 @@ class PPSConnections(QObject):
         self.win.voltageDial.setMaximum(int(vmax * 10))
         self.win.currentDial.setMaximum(int(imax * 10))
         # … any other UI work …
+
+
+    @pyqtSlot()
+    def togglePowerSupply(self):
+        if not getattr(self, "ppsWorker", None):
+            return                              # nothing connected
+        try:
+            self.ppsWorker.set_output(self.powerButton.isChecked())
+        except Exception as e:
+            print(f"[PPS] Could not change output: {e}")
+            self.powerButton.setChecked(False)
+
 
     @pyqtSlot()
     def on_pps_disconnect(self):
