@@ -15,6 +15,6 @@ try:
 except Exception as e:
     print("Error:", e)
 
-finally:
-    psu.output(False)
+#finally:
+#    psu.output(False)
     #psu.disconnect()
