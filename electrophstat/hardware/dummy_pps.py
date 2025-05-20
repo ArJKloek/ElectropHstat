@@ -27,6 +27,6 @@ class DummyPPS(PowerSupply):
     # monitor
     def read_output(self):
         base_v = getattr(self, "_volts", 12.0)
-        base_a = getattr(self, "_amps", 0.5)
+        base_a = getattr(self, "_amps", 1.5)
         mode = "CV"
         return base_v + random.uniform(-0.02, 0.02), base_a + random.uniform(-0.01, 0.01), mode

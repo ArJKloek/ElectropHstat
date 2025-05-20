@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>198</width>
+    <width>215</width>
     <height>183</height>
    </rect>
   </property>
@@ -49,6 +49,12 @@
    </item>
    <item row="0" column="1">
     <widget class="QDoubleSpinBox" name="sbMidPH">
+     <property name="prefix">
+      <string>pH </string>
+     </property>
+     <property name="suffix">
+      <string> </string>
+     </property>
      <property name="maximum">
       <double>14.000000000000000</double>
      </property>
@@ -59,6 +65,9 @@
    </item>
    <item row="2" column="1">
     <widget class="QDoubleSpinBox" name="sbHighPH">
+     <property name="prefix">
+      <string>pH </string>
+     </property>
      <property name="maximum">
       <double>14.000000000000000</double>
      </property>
@@ -69,6 +78,9 @@
    </item>
    <item row="1" column="1">
     <widget class="QDoubleSpinBox" name="sbLowPH">
+     <property name="prefix">
+      <string>pH </string>
+     </property>
      <property name="maximum">
       <double>14.000000000000000</double>
      </property>

@@ -118,20 +118,25 @@ class MainWindow(QMainWindow):
 
         # This will spin up worker+thread for each key
         # Initialize PPS Connections for updating the GUI
+        self.phstat_ctrl = pHStatController(self, interval=1.0)
+        
         slots = {
-            "pH":  [ self.button_cont.update_gui,],
-            "temperature": self.button_cont.update_gui,
-            # once you register an "orp" sensor, you could add
-            # "orp": self.handle_ORP,
+            "pH":   [self.button_cont.update_gui],
+            "temperature": [self.button_cont.update_gui],
         }
+
         self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
         self.phstat_ctrl = pHStatController(self, interval=1.0)
         self.pHstat_cont.handle_select(self.keepSelector.currentIndex())
         self.pHstat_cont.handle_pH    (self.phSpin.value())
         
+        self.pH_calibrate_dialog = CalibratepHDialog(
+            float(self.lowpH), float(self.midpH), float(self.highpH)
+        )
+        pH_worker = self.sensor_ctrl.pH_worker
         # connect your dialog
         self.pH_calibrate_dialog.calibrate_changed.connect(
-            lambda mode, val, _: self.sensor_ctrl.pH_worker.calibrate_signal.emit(mode, val)
+            lambda mode, val, _: pH_worker.calibrate_signal.emit(mode, val)
         )
         # Initialize PPS controller with proper interval (e.g., 1 second) and reset condition
 

@@ -242,9 +242,9 @@ class ButtonConnections(QObject):
             self.win.valueData[sensor_type] = received_data
         else:
             return  # unknown sensor, ignore
-        if sensor_type == 'ph':
+        if sensor_type == 'pH':
             self.win.pHNumber.setText(f'{str("pH {:.2f}".format(received_data))}')
-        elif sensor_type == 'temp':
+        elif sensor_type == 'temperature':
             self.win.RTDlabel.setText(f"{received_data:.2f} °C")
         #elif sensor_type == 'voltage':   
         #    self.win.valueData[3] = received_data 

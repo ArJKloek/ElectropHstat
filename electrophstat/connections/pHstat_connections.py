@@ -20,7 +20,6 @@ class pHStatConnections(QObject):
         self.win.actionCalibrate_pH.triggered.connect(self.openCalibratepHWindow)
     @pyqtSlot(int)
     def handle_select(self, select):
-            print(select)
             if select == 0:
                 self.win.statustext = "above"
             else:

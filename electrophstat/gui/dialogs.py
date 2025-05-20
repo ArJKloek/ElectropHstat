@@ -43,63 +43,35 @@ class CalibratePumpDialog(QDialog):
 
     def __init__(self, ml: float, addtime: float):
         super().__init__(flags=Qt.WindowCloseButtonHint)
-
-        self.setWindowTitle('Calibrate pump')
-        self.setGeometry(200, 50, 0, 0)
+        uic.loadUi("electrophstat/gui/calibrate_pump_dialog.ui", self)
 
         self._ml = ml
         self._addtime = addtime
 
-        layout = QHBoxLayout(self)
+        self.dsMlperCycle.setValue(self._ml)
+        self.dsTimeInterval.setValue(self._addtime)
         
-        self.setbutton = QPushButton("Set")
-        self.setbutton.setStatusTip("Saves all values")
-        layout.addWidget(self.setbutton)
-
-        self.testbutton = QPushButton("Test")
-        self.testbutton.setStatusTip("Activates pump for inputed time")
-        layout.addWidget(self.testbutton)
-        
-        # Create a Select widget for above or below selection
-        mlText = QLabel('ml/inj:')
-        layout.addWidget(mlText)
-        self.mlwidget = QDoubleSpinBox()
-        self.mlwidget.setDecimals(3)
-        self.mlwidget.setSingleStep(0.001)
-        self.mlwidget.setValue(ml)
-        self.mlwidget.setStatusTip("The milimeters added in the selected addition time")
-        layout.addWidget(self.mlwidget)
-        self.addtimewidget = QDoubleSpinBox()
-        self.addtimewidget.setDecimals(2)
-        self.addtimewidget.setSingleStep(0.01)
-        self.addtimewidget.setValue(self._addtime)
-        layout.addWidget(self.addtimewidget)
-        sec = QLabel('(s)')
-        layout.addWidget(sec)
-        
-        
-        
-        self.setbutton.clicked.connect(self.accept)
-        self.testbutton.clicked.connect(self.startTest)
+        self.btnSet.clicked.connect(self.accept)
+        self.btnTest.clicked.connect(self.startTest)
     
     @pyqtSlot()
     def startTest(self):
         # disable intil it's done
-        self.testbutton.setEnabled(False)
+        self.btnTest.setEnabled(False)
         # tell the world "pump ON"
         self.test_pump.emit(True)
 
         # Simulate test duration
         QTimer.singleShot(
-            int(float(self.addtimewidget.value())*1000), 
+            int(float(self.dsTimeInterval.value())*1000), 
             self.endTest)
 
     def endTest(self):
-        self.testbutton.setEnabled(True)
+        self.btnTest.setEnabled(True)
       
     def accept(self):
-        newml = self.mlwidget.value()
-        newaddtime = self.addtimewidget.value() 
+        newml = self.dsMlperCycle.value()
+        newaddtime = self.dsTimeInterval.value() 
         self.select_changed.emit(newml, newaddtime)
         super().accept()  # Close the dialog
 
