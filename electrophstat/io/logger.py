@@ -3,6 +3,7 @@ import time
 import locale
 from datetime import datetime
 from pathlib import Path
+from typing import List, Dict, Optional, Tuple
 
 class Logger:
     """
@@ -14,7 +15,12 @@ class Logger:
       • Can read back and reset logs
     """
 
-    def __init__(self, base_dir: Path, labels: list[str], column_names: list[str]):
+    def __init__(
+        self,
+        base_dir: Path,
+        labels: List[str],
+        column_names: List[str]
+    ):
         """
         base_dir: parent folder under which we’ll make date/time subfolders
         labels: list of log identifiers, e.g. ["pH", "temperature", "volume"]
@@ -25,10 +31,11 @@ class Logger:
         self.labels = labels.copy()
         self.columns = column_names.copy()
 
-        # prepare internal state
-        self.log_dir: Path | None = None
-        self.files: dict[str, Path] = {}
-        self.starts: dict[str, float] = {}
+        # internal state
+        self.log_dir: Optional[Path] = None
+        self.files: Dict[str, Path] = {}
+        self.starts: Dict[str, float] = {}
+
 
         # set locale for number formatting
         try:
@@ -38,8 +45,8 @@ class Logger:
 
     def start_session(
         self,
-        active_labels: list[str] | None = None,
-        initial_values: dict[str, float] | None = None
+        active_labels: Optional[List[str]] = None,
+        initial_values: Optional[Dict[str, float]] = None
     ) -> None:
         """
         Initialize a new logging session:
@@ -53,7 +60,7 @@ class Logger:
         self.log_dir.mkdir(parents=True, exist_ok=True)
         
         # determine which labels to log
-        labels = active_labels or self.labels
+        labels = active_labels if active_labels is not None else self.labels
 
         # clear previous session state
         self.files.clear()
@@ -84,7 +91,12 @@ class Logger:
         self.files.clear()
         self.starts.clear()
 
-    def _make_file(self, label: str, column: str, now: datetime) -> Path:
+    def _make_file(
+        self,
+        label: str,
+        column: str,
+        now: datetime
+    ) -> Path:
         """
         Creates a single CSV with:
             Label pre-header line
@@ -107,7 +119,12 @@ class Logger:
             dict_w.writeheader()
         return p
 
-    def log(self, label: str, value, elapsed: float | None = None) -> None:
+    def log(
+        self,
+        label: str,
+        value,
+        elapsed: Optional[float] = None
+    ) -> None:
         """
         Append a new row for the given label:
           • Reaction time = seconds since file creation
@@ -132,7 +149,13 @@ class Logger:
         self._write_row(label, elapsed, value)
 
 
-    def _write_row(self, label: str, elapsed: float, value) -> None:
+    def _write_row(
+        self,
+        label: str,
+        elapsed: float,
+        value
+    ) -> None:
+        
         """Internal: write a single row with given elapsed and value."""
         path = self.files[label]
         # format numbers
@@ -147,29 +170,24 @@ class Logger:
             dict_w.writerow({'Reaction time (s)': time_s, label: val_s})
     
     
-    def read(self, label: str) -> tuple[list[float], list[float]]:
-        """
-        Read back a given log file, returning two lists of floats:
-        (reaction_times_s, values).
-        """
+    def read(
+        self,
+        label: str
+    ) -> Tuple[List[float], List[float]]:
         p = self.files.get(label)
         if not p or not p.exists():
             return [], []
-
-        times: list[float] = []
-        vals: list[float] = []
+        times: List[float] = []
+        vals: List[float] = []
         with open(p, newline='') as f:
             reader = csv.reader(f, delimiter=';')
-            # skip 3 pre-header lines + header
             for _ in range(4):
                 next(reader, None)
             for row in reader:
                 if len(row) < 2:
                     continue
-                t_s, v_s = row[0], row[1]
-                # normalize decimal mark
-                t_s = t_s.replace(',', '.')
-                v_s = v_s.replace(',', '.')
+                t_s = row[0].replace(',', '.')
+                v_s = row[1].replace(',', '.')
                 try:
                     times.append(float(t_s))
                     vals.append(float(v_s))
