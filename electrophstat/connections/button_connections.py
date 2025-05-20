@@ -19,7 +19,36 @@ class ButtonConnections(QObject):
         self.win.toggle_pH_control.triggered.connect(self.toggle_pHStat)
         self.win.togglepHAction.toggled.connect(self.updateCurrentTabPlot)
         self.win.toggleTempAction.toggled.connect(self.updateCurrentTabPlot)
+    
+    def log_active(self):
+        # Determine which logs we actually need
+        active = []
+        initial = {}
 
+        # pH-stat only if its thread is alive
+        if self.win.phstat_ctrl.worker.running:
+
+            # pump volume always starts at zero
+            active += ["pump"]
+            initial["pump"] = 0.0
+
+        active += ["pH"]
+        initial["pH"] = float(self.win.valueData[1])
+    
+        # temp always on via SensorController
+        active += ["temperature"]
+        initial["temperature"] = float(self.win.valueData[2])
+
+        # PPS only if connected
+        if self.win.pps_ctrl.pps_worker.psu.connected:
+            # record voltage & current
+            active += ["voltage", "current", "coulomb"]
+            initial["voltage"]  = float(self.win.valueData[3])
+            initial["current"]  = float(self.win.valueData[4])
+            initial["coulomb"]  = 0.0  # coulomb counter reset
+
+        # Start the session
+        self.win.logger.start_session(active_labels=active, initial_values=initial)   
 
     @pyqtSlot()
     def start_stat(self):
@@ -32,7 +61,8 @@ class ButtonConnections(QObject):
         self.win.stopbutton.setEnabled(True)
         self.win.resetbutton.setEnabled(False)
         # 3) (Optionally) show a status message
-        self.win.logger.start_session()
+        self.log_active()
+        #self.win.logger.start_session()
 
         self.win.statusBar().showMessage("pH-stat/logging started")
         
@@ -195,7 +225,9 @@ class ButtonConnections(QObject):
     @pyqtSlot(str, float)
     def update_gui(self, sensor_type: str, received_data: float):
         self.win.current_data = received_data
-        if sensor_type == 'ph':
+        if sensor_type =='pump':
+            self.win.valueData[0] = received_data
+        elif sensor_type == 'ph':
             self.win.pHNumber.setText(f'{str("pH {:.2f}".format(received_data))}')
             #self.pHvalue = received_data
             self.win.valueData[1] = received_data

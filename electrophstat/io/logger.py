@@ -36,7 +36,11 @@ class Logger:
         except locale.Error:
             pass  # fallback to system default
 
-    def start_session(self) -> None:
+    def start_session(
+        self,
+        active_labels: list[str] | None = None,
+        initial_values: dict[str, float] | None = None
+    ) -> None:
         """
         Initialize a new logging session:
           • create date/time directories
@@ -47,16 +51,29 @@ class Logger:
         time_s = now.strftime("%H_%M_%S")
         self.log_dir = self.base_dir / date_s / time_s
         self.log_dir.mkdir(parents=True, exist_ok=True)
+        
+        # determine which labels to log
+        labels = active_labels or self.labels
 
         # clear previous session state
         self.files.clear()
         self.starts.clear()
-
-        # create files for each label
-        for lbl, col in zip(self.labels, self.columns):
+        
+        # create files for each active label
+        for lbl in labels:
+            if lbl not in self.labels:
+                continue
+            col = self.columns[self.labels.index(lbl)]
             path = self._make_file(lbl, col, now)
             self.files[lbl] = path
             self.starts[lbl] = time.monotonic()
+        
+        # insert initial zero‑point rows if provided
+        if initial_values:
+            for lbl, val in initial_values.items():
+                if lbl in self.files:
+                    # write with elapsed=0
+                    self._write_row(lbl, 0.0, val)
 
     def reset(self) -> None:
         """
@@ -90,7 +107,7 @@ class Logger:
             dict_w.writeheader()
         return p
 
-    def log(self, label: str, value) -> None:
+    def log(self, label: str, value, elapsed: float | None = None) -> None:
         """
         Append a new row for the given label:
           • Reaction time = seconds since file creation
@@ -98,12 +115,27 @@ class Logger:
         """
         if label not in self.files:
             raise KeyError(f"No such log label: {label}")
+        if label not in self.starts:
+            raise RuntimeError(f"Session not started for label: {label}")
 
-        path = self.files[label]
+        now = time.monotonic()
         start = self.starts[label]
-        elapsed = time.monotonic() - start
+        elapsed = elapsed if elapsed is not None else (now - start)
 
-        # format numbers via locale for grouping
+        ## format numbers via locale for grouping
+        #if isinstance(value, (int, float)):
+        #    val_s = locale.format_string("%.3f", value, grouping=True)
+        #else:
+        #    val_s = str(value)
+        #time_s = locale.format_string("%.1f", elapsed, grouping=True)
+
+        self._write_row(label, elapsed, value)
+
+
+    def _write_row(self, label: str, elapsed: float, value) -> None:
+        """Internal: write a single row with given elapsed and value."""
+        path = self.files[label]
+        # format numbers
         if isinstance(value, (int, float)):
             val_s = locale.format_string("%.3f", value, grouping=True)
         else:
@@ -113,7 +145,8 @@ class Logger:
         with open(path, 'a', newline='') as f:
             dict_w = csv.DictWriter(f, fieldnames=['Reaction time (s)', label], delimiter=';')
             dict_w.writerow({'Reaction time (s)': time_s, label: val_s})
-
+    
+    
     def read(self, label: str) -> tuple[list[float], list[float]]:
         """
         Read back a given log file, returning two lists of floats:
