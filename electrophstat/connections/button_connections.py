@@ -24,23 +24,33 @@ class ButtonConnections(QObject):
     @pyqtSlot()
     def start_stat(self):
         # 1) Kick off your control loop & logging
-        self.win.control_loop.should_start = True
-        self.win.logging_timer.start()
+        #self.win.control_loop.should_start = True
+        #self.win.logging_timer.start()
+        self.win.phstat_ctrl.on_pumpToggle(True)
         # 2) UI tweaks
         self.win.startbutton.setEnabled(False)
         self.win.stopbutton.setEnabled(True)
-        self.win.resetbutton.setEnabled(True)
+        self.win.resetbutton.setEnabled(False)
         # 3) (Optionally) show a status message
-        self.win.statusBar().showMessage("pH-stat started")
+        
+        self.win.statusBar().showMessage("pH-stat/logging started")
+
+
+
 
     @pyqtSlot()
     def stop_stat(self):
         # 1) Halt control loop & logging
-        self.win.control_loop.should_start = False
-        self.win.logging_timer.stop()
+        #self.win.control_loop.should_start = False
+        #self.win.logging_timer.stop()
+        #self.win.pump_ctrl.should_start(False)
+        self.win.phstat_ctrl.on_pumpToggle(False)
+
         # 2) UI tweaks
         self.win.startbutton.setEnabled(True)
         self.win.stopbutton.setEnabled(False)
+        self.win.resetbutton.setEnabled(True)
+
         # 3) Status
         self.win.statusBar().showMessage("pH-stat stopped")
 

@@ -20,12 +20,13 @@ class DummyPPS(PowerSupply):
     def connected(self):   return True
 
     # control
-    def set_voltage(self, volts): self._volts = volts
-    def set_current(self, amps):  self._amps = amps
-    def set_output(self, enable): self._on = enable
+    def voltage(self, volts): self._volts = volts
+    def current(self, amps):  self._amps = amps
+    def output(self, enable): self._on = enable
 
     # monitor
     def read_output(self):
         base_v = getattr(self, "_volts", 12.0)
         base_a = getattr(self, "_amps", 0.5)
-        return base_v + random.uniform(-0.02, 0.02), base_a + random.uniform(-0.01, 0.01)
+        mode = "CV"
+        return base_v + random.uniform(-0.02, 0.02), base_a + random.uniform(-0.01, 0.01), mode

@@ -7,7 +7,7 @@ from electrophstat.hardware.dummy_switcher import MockLib8MosInd
 from electrophstat.sensors import discover_ph_sensor
 from electrophstat.sensors import discover_temp_sensor
 from scripts.ph_sensor_worker import pHSensorWorker
-from electrophstat.control.control_loop import ControlLoop, PumpAction
+from electrophstat.control.phstat_control import ControlLoop, PumpAction
 from electrophstat.io.logger import Logger
 from electrophstat.control.pump_control import PumpController
 from electrophstat.io.usb_monitor import USBWorker
@@ -36,7 +36,7 @@ from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer,
 from scripts.LedIndicatorWidget import LedIndicator
 #from scripts.pHStat_worker import pHWorker, RTDWorker, StatWorker, USBWorker, i2c_mutex
 #from scripts.pHStat_worker import USBWorker
-from electrophstat.hardware.PPSWorker import PPSWorker
+from electrophstat.workers.pps_worker import PPSWorker
 from scripts.pHstat_config import ConfigReader, ConfigWriter
 #from scripts.pHStat_classes import (pumpControl)
 import pyqtgraph as pg

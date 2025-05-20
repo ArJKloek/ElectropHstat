@@ -2,6 +2,6 @@
 """
 Control-loop domain module for pH-stat dosing algorithm.
 """
-from .control_loop import ControlLoop
+from .phstat_control import pHStatLoop
 
-__all__ = ["ControlLoop"]
+__all__ = ["pHStatLoop"]

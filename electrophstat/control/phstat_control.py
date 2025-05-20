@@ -11,7 +11,7 @@ class PumpAction:
     status: bool
 
 
-class ControlLoop:
+class pHStatLoop:
     """
     Pure‐Python extraction of your StatWorker logic,
     without any Qt dependencies.
@@ -27,10 +27,19 @@ class ControlLoop:
         except (TypeError, ValueError):
             self.target_pH = 7.0   
         self.should_start = False      # manual override toggle
+    
+    def set_select(self, select: int):
+        """0 = pump when pH > target, 1 = pump when pH < target."""
+        self.select = int(select)
+
+    def set_target_pH(self, target: float):
+        """Update your desired set-point on the fly."""
+        self.target_pH = float(target)
 
     def toggle_start(self) -> None:
         """Flip the manual override switch."""
         self.should_start = not self.should_start
+        print(f'control loop toggle is {self.should_start}')
 
     def process(self, pH: float) -> PumpAction:
         """
@@ -41,10 +50,14 @@ class ControlLoop:
             val = float(pH)
         except (TypeError, ValueError):
             val = self.target_pH
-
+        print(f'{self.target_pH} and {self.select} and {val} and {self.should_start}')
         if self.select == 0:
             status = (val > self.target_pH)
         else:
             status = (val < self.target_pH)
+        
+        pump_on = status and self.should_start
+       
+        return PumpAction(pump_on=pump_on, status=status)
 
-        return PumpAction(pump_on=status, status=status)
+    

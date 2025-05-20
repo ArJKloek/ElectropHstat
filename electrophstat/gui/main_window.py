@@ -3,7 +3,7 @@ import time
 import os
 import getpass
 from electrophstat.hardware.dummy_switcher import MockLib8MosInd
-from electrophstat.control.control_loop import ControlLoop, PumpAction
+#from electrophstat.control.phstat_control import ControlLoop, PumpAction
 from electrophstat.io.logger import Logger
 from electrophstat.control.pump_control import PumpController
 from electrophstat.io.usb_monitor import USBWorker
@@ -19,6 +19,7 @@ from electrophstat.gui.plot_manager import PlotManager
 from electrophstat.gui.sensor_controller import SensorController
 from electrophstat.gui.pps_controller import PPSController
 from electrophstat.connections.pps_connections import PPSConnections
+from electrophstat.gui.phstat_controller import pHStatController
 from pathlib import Path
 
 
@@ -61,10 +62,10 @@ class MainWindow(QMainWindow):
         
         
 
-        self.control_loop = ControlLoop(
-            select=self.pHSelectMode,   # 0=above-limit, 1=below-limit
-            target_pH=self.pHSelect
-        )
+        #self.control_loop = ControlLoop(
+        #    select=self.pHSelectMode,   # 0=above-limit, 1=below-limit
+        #    target_pH=self.pHSelect
+        #)
 
         home = Path.home()  # or wherever you like
         labels  = ["pH", "temperature", "volume"]
@@ -88,17 +89,12 @@ class MainWindow(QMainWindow):
        
         # 1) Load the .ui file
 
-        self.button_controller = ButtonConnections(self)
-        self.pHstat_ctr = pHStatConnections(self)
+        self.button_cont = ButtonConnections(self)
+        self.pHstat_cont = pHStatConnections(self)
         # instantiate controllers (they subclass QObject)
         #self.pps_controller = PPSController(self)
         #self.ppsWorker.disconnected_signal.connect(self.pps_controller.on_pps_disconnect)
-        slots = {
-            "ph":   self.button_controller.update_gui,
-            "temp": self.button_controller.update_gui,
-            # once you register an "orp" sensor, you could add
-            # "orp": self.handle_ORP,
-        }
+
         
         self.pps_connections = PPSConnections(self)
 
@@ -108,7 +104,14 @@ class MainWindow(QMainWindow):
 
         # This will spin up worker+thread for each key
         # Initialize PPS Connections for updating the GUI
+        slots = {
+            "ph":  [ self.button_cont.update_gui,],
+            "temp": self.button_cont.update_gui,
+            # once you register an "orp" sensor, you could add
+            # "orp": self.handle_ORP,
+        }
         self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
+        self.phstat_ctrl = pHStatController(self, interval=1.0)
 
         # Initialize PPS controller with proper interval (e.g., 1 second) and reset condition
 
@@ -119,6 +122,9 @@ class MainWindow(QMainWindow):
         self.plot_manager = PlotManager(self)
         self.graph_ctrl = GraphController(self.tabWidget, self.plot_manager)
         self.logging_timer = monoTimer()
+
+        ph_worker = self.sensor_ctrl.ph_worker
+        #ph_worker.data_signal.connect(self.phstat_ctrl.on_pH_read)
 
         
         #self.initTimer()

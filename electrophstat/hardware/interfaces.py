@@ -1,6 +1,6 @@
 try:
     # Python ≥ 3.8
-    from typing import Protocol, runtime_checkable, Optional, Tuple
+    from typing import Protocol, Literal, runtime_checkable, Optional, Tuple
 except ImportError:                 # Python 3.7 fallback
     from typing_extensions import Protocol, Literal, runtime_checkable
     from typing import Optional, Tuple        # Tuple still comes from stdlib

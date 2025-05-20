@@ -25,18 +25,18 @@ class Logger:
         except locale.Error:
             pass  # fallback to default locale
 
-        # 2) Create timestamped folder
+    
+    def start_session(self):
+        """Create a brand-new timestamped folder + files."""
         now = datetime.now()
         date_s = now.strftime("%d_%m_%Y")
         time_s = now.strftime("%H_%M_%S")
-        self.log_dir = base_dir / date_s / time_s
+        self.log_dir = self.base_dir / date_s / time_s
         self.log_dir.mkdir(parents=True, exist_ok=True)
 
-        # 3) For each label, create its CSV file
-        self.files = {}      # label -> Path
-        self.starts = {}     # label -> epoch when file was opened
-
-        for lbl, col in zip(labels, column_names):
+        self.files.clear()
+        self.starts.clear()
+        for lbl, col in zip(self.labels, self.columns):
             p = self._make_file(lbl, col, now)
             self.files[lbl] = p
             self.starts[lbl] = time.time()
@@ -69,7 +69,7 @@ class Logger:
             dict_w.writeheader()
 
         return p
-
+    
     def log(self, label: str, value):
         """
         Append a new row for the given label:

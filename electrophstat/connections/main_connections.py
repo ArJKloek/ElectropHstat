@@ -28,6 +28,6 @@ def setup_mainwindow_signals(win):
     win.option2.setChecked(True)
 
     # 4) Connect the group's triggered signal back to the window's slot
-    lg.triggered.connect(win.button_controller.on_log_option_changed)
+    lg.triggered.connect(win.button_cont.on_log_option_changed)
 
     

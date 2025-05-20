@@ -19,7 +19,7 @@ class AtlasSensorWorker(QObject):
                 self.value_signal.emit(self.sensor.read(), 1)
                 self.fail = 0
             except Exception as e:
-                print("pH read error:", e)
+                print(f"{self.sensor}read error:", e)
                 self.fail += 1
                 if self.fail >= 3:
                     self.disconnected_signal.emit()

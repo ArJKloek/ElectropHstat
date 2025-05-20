@@ -19,7 +19,7 @@ class SensorController(QObject):
         self.win = window
 
         # For each sensor name/key, spin up a worker + thread
-        for key, slot in update_slots.items():
+        for key, slots in update_slots.items():
             # 1) ask the sensors package for the right AtlasSensor
             atlas = discover_sensor(key)  # e.g. "ph" or "temp"
             
@@ -37,7 +37,11 @@ class SensorController(QObject):
             thr.started.connect(worker.run)
 
             # 4) wire its signals
-            worker.data_signal.connect(slot)
+            if not isinstance(slots, (list, tuple)):
+                slots = [slots]
+            for slot in slots:
+                worker.data_signal.connect(slot)
+            #worker.data_signal.connect(slot)
             #worker.disconnected_signal.connect(self.win.on_sensor_disconnect)
 
             # 5) hold onto them so Python won’t garbage‐collect

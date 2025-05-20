@@ -2,7 +2,7 @@
 from PyQt5.QtCore    import QObject, QThread, pyqtSlot
 from PyQt5.QtWidgets import QMessageBox
 from electrophstat.hardware import discover_power_supply
-from electrophstat.hardware.PPSWorker import PPSWorker
+from electrophstat.workers.pps_worker import PPSWorker
 
 class PPSController(QObject):
     """

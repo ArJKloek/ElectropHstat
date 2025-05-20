@@ -73,7 +73,7 @@ class PPSConnections(QObject):
 
     @pyqtSlot()
     def on_pps_disconnect(self):
-        QMessageBox.warning(self, "PPS Disconnected",
+        QMessageBox.warning(self.win, "PPS Disconnected",
                             "Lost communication with the power supply.")
         self._disable_pps_controls()
 
@@ -95,3 +95,24 @@ class PPSConnections(QObject):
         if mode is not None:
             msg += f"\nMode: {mode}"
         QMessageBox.information(self.win, "PPS Status", msg)
+    
+    @pyqtSlot()
+    def _disable_pps_controls(self):
+        """Gray-out all PPS widgets and make them inert."""
+        gray = "color: gray;"
+        for lbl in (self.win.voltagelabel, self.win.currentlabel, self.win.modelabel):
+            lbl.setText("N/A" if lbl is self.win.modelabel else lbl.text().split()[0] + ": N/A")
+            lbl.setStyleSheet(gray)
+
+        for w in (self.win.voltageDial, self.win.currentDial,
+                self.win.setButton, self.win.modeToggle, self.win.powerButton):
+            w.setDisabled(True)
+    
+    @pyqtSlot()
+    def _enable_pps_controls(self):
+        """Undo the gray-out – called after handle_pps_limits()."""
+        for lbl in (self.win.voltagelabel, self.win.currentlabel, self.win.modelabel):
+            lbl.setStyleSheet("color: black;")
+        for w in (self.win.voltageDial, self.win.currentDial,
+                self.win.setButton, self.win.modeToggle, self.win.powerButton):
+            w.setEnabled(True)
