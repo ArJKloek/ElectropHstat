@@ -32,9 +32,10 @@ class ButtonConnections(QObject):
         self.win.stopbutton.setEnabled(True)
         self.win.resetbutton.setEnabled(False)
         # 3) (Optionally) show a status message
-        
-        self.win.statusBar().showMessage("pH-stat/logging started")
+        self.win.logger.start_session()
 
+        self.win.statusBar().showMessage("pH-stat/logging started")
+        
 
 
 

@@ -126,6 +126,11 @@ class MainWindow(QMainWindow):
         ph_worker = self.sensor_ctrl.ph_worker
         #ph_worker.data_signal.connect(self.phstat_ctrl.on_pH_read)
 
+        self.logger = Logger(
+            base_dir=Path.home()/"ElectroPHData",
+            labels=["pH","temperature","volume"],
+            column_names=["pH","°C","mL"]
+        )
         
         #self.initTimer()
         #self.initWorkerTimer()
