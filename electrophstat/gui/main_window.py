@@ -126,10 +126,10 @@ class MainWindow(QMainWindow):
         ph_worker = self.sensor_ctrl.ph_worker
         #ph_worker.data_signal.connect(self.phstat_ctrl.on_pH_read)
 
-        #HERE      = Path(__file__).resolve()          # ...\GitHub\ElectroPHstat\electrophstat\gui\main_window.py
-        #REPO_ROOT = HERE.parents[2]                   # ...\GitHub\ElectroPHstat
-        #LOG_BASE  = REPO_ROOT / "ElectroPHData"       # ...\GitHub\ElectroPHstat\ElectroPHData
-        LOG_BASE=Path.home()/"ElectroPHData",
+        HERE      = Path(__file__).resolve()          # ...\GitHub\ElectroPHstat\electrophstat\gui\main_window.py
+        REPO_ROOT = HERE.parents[2]                   # ...\GitHub\ElectroPHstat
+        LOG_BASE  = REPO_ROOT / "ElectroPHData"       # ...\GitHub\ElectroPHstat\ElectroPHData
+        #LOG_BASE=Path.home()/"ElectroPHData",
 
         self.logger = Logger(
             base_dir=LOG_BASE,
