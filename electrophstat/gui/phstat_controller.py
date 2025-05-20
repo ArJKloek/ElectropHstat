@@ -24,7 +24,7 @@ class pHStatController(QObject):
         # 1) Create the worker (polls window.pHdata) and move to thread
         self.worker = pHstatWorker(
             control_loop  = self.loop,
-            get_pH_callable = lambda: float(self.win.valueData[1]),
+            get_pH_callable = lambda: float(self.win.valueData["pH"]),
             interval      = interval
         )
         self.thread = QThread(self.win)
@@ -65,12 +65,10 @@ class pHStatController(QObject):
             else:
                 # still cooling down; skip this pulse
                 pass
-        print(self._last_pump_on)
     
     @pyqtSlot()
     def _on_dose_finished(self):
         # the pump really stopped, so allow the next rising edge to trigger again
-        print("Fired on_dose_finished")
         self._last_pump_on = False
 
     @pyqtSlot(bool)

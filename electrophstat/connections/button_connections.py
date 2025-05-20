@@ -30,25 +30,26 @@ class ButtonConnections(QObject):
 
             # pump volume always starts at zero
             active += ["pump"]
-            initial["pump"] = 0.0
+            initial["pump"] = self.win.valueData["pump"]
 
         active += ["pH"]
-        initial["pH"] = float(self.win.valueData[1])
+        initial["pH"] = float(self.win.valueData["pH"])
     
         # temp always on via SensorController
         active += ["temperature"]
-        initial["temperature"] = float(self.win.valueData[2])
+        initial["temperature"] = float(self.win.valueData["temperature"])
 
         # PPS only if connected
         if self.win.pps_ctrl.pps_worker.psu.connected:
             # record voltage & current
             active += ["voltage", "current", "coulomb"]
-            initial["voltage"]  = float(self.win.valueData[3])
-            initial["current"]  = float(self.win.valueData[4])
-            initial["coulomb"]  = 0.0  # coulomb counter reset
+            initial["voltage"]  = float(self.win.valueData["voltage"])
+            initial["current"]  = float(self.win.valueData["current"])
+            initial["coulomb"]  = float(self.win.valueData["coulomb"])  # coulomb counter reset
 
         # Start the session
         self.win.logger.start_session(active_labels=active, initial_values=initial)   
+        self.win.logging_ctrl.start()
 
     @pyqtSlot()
     def start_stat(self):
@@ -71,30 +72,37 @@ class ButtonConnections(QObject):
 
     @pyqtSlot()
     def stop_stat(self):
-        # 1) Halt control loop & logging
-        #self.win.control_loop.should_start = False
-        #self.win.logging_timer.stop()
-        #self.win.pump_ctrl.should_start(False)
-        self.win.phstat_ctrl.on_pumpToggle(False)
-
-        # 2) UI tweaks
+  
+        # 1) UI tweaks
         self.win.startbutton.setEnabled(True)
         self.win.stopbutton.setEnabled(False)
         self.win.resetbutton.setEnabled(True)
-
+        #2) Logging and pH pump logic stop
+        self.win.phstat_ctrl.on_pumpToggle(False)
+        self.win.logging_ctrl.stop()
         # 3) Status
         self.win.statusBar().showMessage("pH-stat stopped")
 
     @pyqtSlot()
     def reset_stat(self):
         # 1) Clear any accumulated state
-        self.win.control_loop.reset()   # you might need to add a reset() method
-        self.win.logger.reset()         # or recreate the log
+        #self.win.control_loop.reset()   # you might need to add a reset() method
+        #self.win.logger.reset()         # or recreate the log
         # 2) UI tweaks
         self.win.startbutton.setEnabled(True)
         self.win.stopbutton.setEnabled(False)
         self.win.resetbutton.setEnabled(False)
         # 3) Status
+        self.win.logger.reset()
+        self.win.valueData = {
+            "pump":             0.0,
+            "pH":               0.0,
+            "temperature":      0.0,
+            "voltage":          0.0,
+            "current":          0.0,
+            "coulomb":          0.0,
+            "mode":             "",
+        }
         QMessageBox.information(self.win, "Reset", "pH-stat has been reset")
     
     
@@ -142,6 +150,10 @@ class ButtonConnections(QObject):
     def openCalibratePumpWindow(self):
         self.win.calibrate_pump_window.exec_()
     
+    #@pyqtSlot() 
+    #def openCalibratepHWindow(self):
+    #    self.win.calibrate_pump_window.exec_()
+
     @pyqtSlot()
     def toggle_fullscreen(self):
         if self.win.isFullScreen():
@@ -225,24 +237,20 @@ class ButtonConnections(QObject):
     @pyqtSlot(str, float)
     def update_gui(self, sensor_type: str, received_data: float):
         self.win.current_data = received_data
-        if sensor_type =='pump':
-            self.win.valueData[0] = received_data
-        elif sensor_type == 'ph':
+        # overwrite the right channel
+        if sensor_type in self.win.valueData:
+            self.win.valueData[sensor_type] = received_data
+        else:
+            return  # unknown sensor, ignore
+        if sensor_type == 'ph':
             self.win.pHNumber.setText(f'{str("pH {:.2f}".format(received_data))}')
-            #self.pHvalue = received_data
-            self.win.valueData[1] = received_data
         elif sensor_type == 'temp':
-            self.temp = received_data
-            #if received_data < -200:
-            #    self.RTDlabel.setText("N/A °C")
-            #else:
             self.win.RTDlabel.setText(f"{received_data:.2f} °C")
-            self.win.valueData[2] = received_data
-            #self.win.pHWorker.pH_temp = round(received_data,1)
-        elif sensor_type == 3:   
-            self.win.valueData[3] = received_data 
-        elif sensor_type == 4:   
-            self.win.valueData[4] = received_data
-        elif sensor_type == 5:   
-            self.win.valueData[5] = received_data
+        #elif sensor_type == 'voltage':   
+        #    self.win.valueData[3] = received_data 
+        #elif sensor_type == 4:   
+        #    self.win.valueData[4] = received_data
+        #elif sensor_type == 5:   
+        #    self.win.valueData[5] = received_data
+    
     

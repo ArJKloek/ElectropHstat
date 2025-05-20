@@ -40,7 +40,7 @@ class AtlasI2C(AtlasSensor):
             raise RuntimeError(f"Bad reply from {self.kind!r}: {resp!r}")
         # drop the status byte
         return float(resp[1:])
-
+     
     def set_temp_comp(self, celsius: float) -> None:
         cmd = f"T,{celsius:.2f}"
         self._dev.query(cmd, expect_long=False)
@@ -48,6 +48,20 @@ class AtlasI2C(AtlasSensor):
     def clear_cal(self) -> None:
         self._dev.query("Cal,clear", expect_long=True)
 
-    def calibrate(self, *args, **kwargs) -> None:
-        # you can parse args like ("mid", 7.00) or similar
-        raise NotImplementedError("Calibration not yet implemented")
+    def calibrate(self, mode: str, value: float) -> None:
+        """
+        mode: one of "low", "mid", "high" or "clear"
+        value: pH set-point (ignored for "clear")
+        """
+        if mode == "clear":
+            cmd = "Cal,clear"
+        elif mode in ("low","mid","high"):
+            # e.g. "Cal,low,4.00"
+            cmd = f"Cal,{mode},{value:.2f}"
+        else:
+            raise ValueError(f"Unknown calibration mode: {mode!r}")
+
+        # Atlas boards need the longer timeout on calibration
+        resp = self._dev.query(cmd, expect_long=True)
+        if not resp or resp[0] != "\x01":
+            raise RuntimeError(f"Calibration failed ({mode}): {resp!r}")

@@ -40,6 +40,13 @@ class GraphController(QObject):
     @pyqtSlot()
     def _on_timeout(self):
         # update whatever tab is currently visible
+        logger = self.plot_manager.main.logger
+        if not getattr(logger, "files", None):
+            return
+        
         current = self.tabWidget.currentWidget()
         if current is not None:
             self.plot_manager.update(current)
+        
+        self.plot_manager.update_all_plots()
+

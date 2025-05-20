@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QDateTimeEdit, QPushButton,
                             QHBoxLayout, QLabel, QDoubleSpinBox, QLineEdit, QHBoxLayout)
 from PyQt5.QtCore import Qt, QDateTime, pyqtSlot, pyqtSignal, QTimer
 from PyQt5.QtGui import QCursor
+from PyQt5 import uic
+
 import os
 
 class DatePickerDialog(QDialog):
@@ -101,69 +103,30 @@ class CalibratePumpDialog(QDialog):
         self.select_changed.emit(newml, newaddtime)
         super().accept()  # Close the dialog
 
+# electrophstat/gui/dialogs.py
+
 class CalibratepHDialog(QDialog):
     calibrate_changed = pyqtSignal(str, float, object)
 
-    def __init__(self, lowpH, midpH, highpH):
-        super().__init__(flags=Qt.WindowCloseButtonHint)
-        self.setWindowTitle('Calibrate pH')
-        #self.move(200, 50)  # Position the dialog
-        self.setGeometry(QCursor.pos().x(), QCursor.pos().y(), 50, 50)
-        mainlayout = QVBoxLayout()
+    def __init__(self, lowpH: float, midpH: float, highpH: float, parent=None):
+        super().__init__(parent, flags=Qt.WindowCloseButtonHint)
+        uic.loadUi("electrophstat/gui/calibrate_ph_dialog.ui", self)
 
-        # Low pH calibration
-        lowLayout = QHBoxLayout()
-        self.lowbutton = QPushButton("Cal. low")
-        self.lowbutton.setStatusTip("Calibrate for low pH")
-        self.lowpHwidget = QDoubleSpinBox()
-        self.lowpHwidget.setDecimals(2)
-        self.lowpHwidget.setSingleStep(0.01)
-        self.lowpHwidget.setValue(lowpH)
-        self.lowbutton.clicked.connect(lambda: self.emitCalibration("low", self.lowpHwidget.value()))
-        lowLayout.addWidget(self.lowbutton)
-        lowLayout.addWidget(self.lowpHwidget)
+        # initialize values
+        self.sbLowPH.setValue(lowpH)
+        self.sbMidPH.setValue(midpH)
+        self.sbHighPH.setValue(highpH)
 
-        # Mid pH calibration
-        midLayout = QHBoxLayout()
-        self.midbutton = QPushButton("Cal. mid")
-        self.midbutton.setStatusTip("Calibrate for mid pH")
-        self.midpHwidget = QDoubleSpinBox()
-        self.midpHwidget.setDecimals(2)
-        self.midpHwidget.setSingleStep(0.01)
-        self.midpHwidget.setValue(midpH)
-        self.midbutton.clicked.connect(lambda: self.emitCalibration("mid", self.midpHwidget.value()))
-        midLayout.addWidget(self.midbutton)
-        midLayout.addWidget(self.midpHwidget)
-        # High pH calibration
-        highLayout = QHBoxLayout()
-        self.highbutton = QPushButton("Cal. high")
-        self.highbutton.setStatusTip("Calibrate for high pH")
-        self.highpHwidget = QDoubleSpinBox()
-        self.highpHwidget.setDecimals(2)
-        self.highpHwidget.setSingleStep(0.01)
-        self.highpHwidget.setValue(highpH)
-        self.highbutton.clicked.connect(lambda: self.emitCalibration("high", self.highpHwidget.value()))
-        highLayout.addWidget(self.highbutton)
-        highLayout.addWidget(self.highpHwidget)
-        
-        lineLayout = QHBoxLayout()
-        self.commandline = QLineEdit()
-        self.commandline.setEnabled(False)
-        self.commandline.setStyleSheet("color : black;")
+        # connect buttons
+        self.btnCalLowPH.clicked .connect(lambda: self.emitCalibration("low",  self.sbLowPH.value()))
+        self.btnCalMidPH.clicked .connect(lambda: self.emitCalibration("mid",  self.sbMidPH.value()))
+        self.btnCalHighPH.clicked.connect(lambda: self.emitCalibration("high", self.sbHighPH.value()))
 
-        lineLayout.addWidget(self.commandline)
-        
-        mainlayout.addLayout(midLayout)
-        mainlayout.addLayout(lowLayout)
-        mainlayout.addLayout(highLayout)
-        mainlayout.addLayout(lineLayout)
-
-        self.setLayout(mainlayout)  # Set the main layout on the dialog
-
-    def emitCalibration(self, calibrationType, pH):
-        data = [self.lowpHwidget.value(), self.midpHwidget.value(), self.highpHwidget.value()]  # Example data, adjust as needed
+    def emitCalibration(self, calibrationType: str, pH: float):
+        data = [self.sbLowPH.value(),
+                self.sbMidPH.value(),
+                self.sbHighPH.value()]
         self.calibrate_changed.emit(calibrationType, pH, data)
-        # Consider closing the dialog or other actions here if needed
-    
-    def updateInfo(self, newInfo):
-        self.commandline.setText(newInfo)
+
+    def updateInfo(self, newInfo: str):
+        self.leCalStatus.setText(newInfo)

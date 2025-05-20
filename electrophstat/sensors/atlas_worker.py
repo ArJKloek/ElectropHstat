@@ -1,7 +1,7 @@
 # electrophstat/sensors/atlas_worker.py
 
 import time
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 
 class AtlasSensorWorker(QObject):
     """
@@ -13,6 +13,7 @@ class AtlasSensorWorker(QObject):
     """
     data_signal         = pyqtSignal(str, float)
     disconnected_signal = pyqtSignal(str)
+    calibrate_signal    = pyqtSignal(str, float)   # new!
 
     def __init__(
         self,
@@ -29,6 +30,16 @@ class AtlasSensorWorker(QObject):
         self.max_failures = max_failures
         self._failures    = 0
         self._running     = False
+
+        # hook up calibrations into the worker thread
+        self.calibrate_signal.connect(self._on_calibrate)
+
+    @pyqtSlot(str, float)
+    def _on_calibrate(self, mode: str, value: float):
+        try:
+            self.sensor.calibrate(mode, value)
+        except Exception as e:
+            print(f"[AtlasWorker] Calibrate {mode}={value} failed:", e)
 
     def run(self):
         """Call this on a QThread to start readings."""

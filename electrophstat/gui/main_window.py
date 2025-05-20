@@ -20,6 +20,8 @@ from electrophstat.gui.sensor_controller import SensorController
 from electrophstat.gui.pps_controller import PPSController
 from electrophstat.connections.pps_connections import PPSConnections
 from electrophstat.gui.phstat_controller import pHStatController
+from electrophstat.gui.logging_controller import LoggingController
+
 from pathlib import Path
 
 
@@ -54,6 +56,8 @@ class MainWindow(QMainWindow):
         self.setupVariables()
 
         self.calibrate_pump_window = CalibratePumpDialog(float(self.ml), float(self.addtime))
+        self.pH_calibrate_dialog = CalibratepHDialog(float(self.lowpH),float(self.midpH),float(self.highpH))
+        
         #self.time_settings_window.select_changed.connect(self.handle_time)
         #self.time_settings_window.test_pump.connect(self.pumpInput)
 
@@ -67,10 +71,20 @@ class MainWindow(QMainWindow):
         #    target_pH=self.pHSelect
         #)
 
-        home = Path.home()  # or wherever you like
-        labels  = ["pH", "temperature", "volume"]
-        columns = ["pH", "°C", "mL"]
-        self.logger = Logger(home / "ElectroPHData", labels, columns)
+        
+        HERE      = Path(__file__).resolve()          # ...\GitHub\ElectroPHstat\electrophstat\gui\main_window.py
+        REPO_ROOT = HERE.parents[2]                   # ...\GitHub\ElectroPHstat
+        LOG_BASE  = REPO_ROOT / "ElectroPHData"       # ...\GitHub\ElectroPHstat\ElectroPHData
+        #LOG_BASE=Path.home()/"ElectroPHData",
+
+        self.logger = Logger(
+            base_dir=LOG_BASE,
+            labels=["pump","pH", "temperature","voltage","current", "coulomb"],
+            column_names = ["Pumped (ml)", "pH", "Temperature (°C)", "Voltage (V)", "Current (A)", "Coulomb (C)"]
+
+        )
+        self.logging_ctrl = LoggingController(self, interval=5.0)
+
         #self.logger = Logger(
         #    filepath="ph_control_log.csv",
         #    fieldnames=["timestamp", "pH", "pump_on", "status"]
@@ -91,7 +105,7 @@ class MainWindow(QMainWindow):
 
         self.button_cont = ButtonConnections(self)
         self.pHstat_cont = pHStatConnections(self)
-        # instantiate controllers (they subclass QObject)
+       # instantiate controllers (they subclass QObject)
         #self.pps_controller = PPSController(self)
         #self.ppsWorker.disconnected_signal.connect(self.pps_controller.on_pps_disconnect)
 
@@ -105,14 +119,20 @@ class MainWindow(QMainWindow):
         # This will spin up worker+thread for each key
         # Initialize PPS Connections for updating the GUI
         slots = {
-            "ph":  [ self.button_cont.update_gui,],
-            "temp": self.button_cont.update_gui,
+            "pH":  [ self.button_cont.update_gui,],
+            "temperature": self.button_cont.update_gui,
             # once you register an "orp" sensor, you could add
             # "orp": self.handle_ORP,
         }
         self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
         self.phstat_ctrl = pHStatController(self, interval=1.0)
-
+        self.pHstat_cont.handle_select(self.keepSelector.currentIndex())
+        self.pHstat_cont.handle_pH    (self.phSpin.value())
+        
+        # connect your dialog
+        self.pH_calibrate_dialog.calibrate_changed.connect(
+            lambda mode, val, _: self.sensor_ctrl.pH_worker.calibrate_signal.emit(mode, val)
+        )
         # Initialize PPS controller with proper interval (e.g., 1 second) and reset condition
 
 
@@ -123,19 +143,8 @@ class MainWindow(QMainWindow):
         self.graph_ctrl = GraphController(self.tabWidget, self.plot_manager)
         self.logging_timer = monoTimer()
 
-        ph_worker = self.sensor_ctrl.ph_worker
+        #ph_worker = self.sensor_ctrl.ph_worker
         #ph_worker.data_signal.connect(self.phstat_ctrl.on_pH_read)
-
-        HERE      = Path(__file__).resolve()          # ...\GitHub\ElectroPHstat\electrophstat\gui\main_window.py
-        REPO_ROOT = HERE.parents[2]                   # ...\GitHub\ElectroPHstat
-        LOG_BASE  = REPO_ROOT / "ElectroPHData"       # ...\GitHub\ElectroPHstat\ElectroPHData
-        #LOG_BASE=Path.home()/"ElectroPHData",
-
-        self.logger = Logger(
-            base_dir=LOG_BASE,
-            labels=["pH","temperature","pump","voltage","current", "coulomb"],
-            column_names=["pH","°C","mL", "V","A", "C"]
-        )
 
         #self.logger = Logger(
         #    base_dir=Path.home()/"ElectroPHData",
@@ -339,14 +348,21 @@ class MainWindow(QMainWindow):
         self.addtime = 0
         #self.pHvalue = 0
         #self.RTDvalue = 0
-        self.valueData = [0,0,0,0,0,0]
+        self.valueData = {
+            "pump":             0.0,
+            "pH":               0.0,
+            "temperature":      0.0,
+            "voltage":          0.0,
+            "current":          0.0,
+            "coulomb":          0.0,
+            "mode":             "",
+        }
         self.cooldown = 0
         self.currentActiveTabIndex = 0  # Track the current tab index
         self.graphTabs = []
         self.graphWidgets = []
         self.plotindex = ["Pump", "pH" , "RTD", "Volt", "Amp", "Coulomb"]
         self.headerindex = ["Pumped (ml)", "pH", "Temperature (°C)", "Voltage (V)", "Current (A)", "Coulomb (C)"]
-        self.Log_file = ["","","","","",""]
         self.Log_date = [0,0,0,0,0,0]
         self.is_logging = False
         self.statustext = ""

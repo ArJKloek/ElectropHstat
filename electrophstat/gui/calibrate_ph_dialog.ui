@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>dlgCalibratePH</class>
+ <widget class="QDialog" name="dlgCalibratePH">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>198</width>
+    <height>183</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>pH Calibrate</string>
+  </property>
+  <property name="statusTip">
+   <string>Mid -&gt; Low -&gt; High</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="0">
+    <widget class="QPushButton" name="btnCalHighPH">
+     <property name="statusTip">
+      <string>Calibrate the High level pH</string>
+     </property>
+     <property name="text">
+      <string>Cal. high</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="btnCalLowPH">
+     <property name="statusTip">
+      <string>Calibrate the Low level pH</string>
+     </property>
+     <property name="text">
+      <string>Cal. low</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QPushButton" name="btnCalMidPH">
+     <property name="statusTip">
+      <string>Calibrate the mid level of pH</string>
+     </property>
+     <property name="text">
+      <string>Cal. mid</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QDoubleSpinBox" name="sbMidPH">
+     <property name="maximum">
+      <double>14.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.010000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QDoubleSpinBox" name="sbHighPH">
+     <property name="maximum">
+      <double>14.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.010000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QDoubleSpinBox" name="sbLowPH">
+     <property name="maximum">
+      <double>14.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.010000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLineEdit" name="leCalStatus">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

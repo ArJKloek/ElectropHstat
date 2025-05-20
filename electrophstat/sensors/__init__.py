@@ -27,8 +27,8 @@ def register_sensor(name: str, address: int, kind: str) -> None:
     _SENSOR_REGISTRY[name] = {"address": address, "kind": kind}
 
 # 2) Pre-register the defaults:
-register_sensor("ph",   address=0x63, kind="pH")
-register_sensor("temp", address=0x66, kind="RTD")
+register_sensor("pH",   address=0x63, kind="pH")
+register_sensor("temperature", address=0x66, kind="RTD")
 
 
 def discover_sensor(name: str, prefer_hw: bool = True) -> AtlasSensor:
