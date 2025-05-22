@@ -57,6 +57,7 @@ class VoltcraftPPS(PowerSupply):
 
     # control -------------------------------------------------------
     def voltage(self, volts: float) -> None:
+        print(f'Voltage voltcraft_pps {volts}')
         assert self._pps
         self._pps.voltage(volts)
 
