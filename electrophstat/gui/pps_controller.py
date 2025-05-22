@@ -52,6 +52,7 @@ class PPSController(QObject):
     @pyqtSlot()
     def reconnect(self):
         """Stop the old one and spin up a brand new worker."""
+        print(f'Reconnect started')
         self.stop()
         self._setup_worker()
 
