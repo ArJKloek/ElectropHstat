@@ -47,12 +47,14 @@ class PPSWorker(QObject):
         self.running = False
 
     def set_voltage(self, value):
+        print(f'Voltage Worker {value}')
         try:
             self.psu.voltage(value)
         except Exception as e:
             print(f"Failed to set voltage: {e}")
 
     def set_current(self, value):
+        print(f'Current Worker {value}')
         try:
             self.psu.current(value)
         except Exception as e:

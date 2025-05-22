@@ -52,7 +52,6 @@ class PPSConnections(QObject):
             return
         voltage = self.win.voltageDial.value() / 10.0
         current = self.win.currentDial.value() / 10.0
-        print(f'Voltage {voltage} and Currunte {current}')
         self.pps_worker.set_voltage(voltage)
         self.pps_worker.set_current(current)
 
