@@ -170,6 +170,7 @@ class PPS:
     
     def voltage(self, voltage: float) -> None:
         """set voltage: silently saturates at VMIN and VMAX"""
+        print(f'pps {voltage}')
         voltage = min(
             max(int(self._vmin * 10), int(voltage * 10)), int(self._vmax * 10)
         )
