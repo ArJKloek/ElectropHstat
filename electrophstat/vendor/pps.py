@@ -173,7 +173,6 @@ class PPS:
         voltage = min(
             max(int(self._vmin * 10), int(voltage * 10)), int(self._vmax * 10)
         )
-        print(f'{voltage}')
         self._query("VOLT%03d" % voltage)
 
     def current(self, current: float) -> None:
