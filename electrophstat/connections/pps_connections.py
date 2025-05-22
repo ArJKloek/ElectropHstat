@@ -19,8 +19,8 @@ class PPSConnections(QObject):
         self.pps_worker = worker
     
     @pyqtSlot()
-    def reconnect_PSU():
-        self.win.pps_ctrl.reconnect()
+    def reconnect_PSU(self):
+        self.win.pps_ctrl.reconnect_psu()
     
     @pyqtSlot(float)
     def update_pps_voltage(self, voltage: float):

@@ -50,7 +50,7 @@ class PPSController(QObject):
         self.thread.wait()
     
     @pyqtSlot()
-    def reconnect(self):
+    def reconnect_psu(self):
         """Stop the old one and spin up a brand new worker."""
         print(f'Reconnect started')       
         try:
