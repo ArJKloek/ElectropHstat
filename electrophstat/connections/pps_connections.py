@@ -47,11 +47,10 @@ class PPSConnections(QObject):
     
     @pyqtSlot()
     def apply_ps_settings(self):
-        print(f'worker {self.pps_worker}')
         if not self.pps_worker:
             print("[WARNING] PPS worker not initialized.")
             return
-
+        print("Set button should work here")
         voltage = self.win.voltageDial.value() / 10.0
         current = self.win.currentDial.value() / 10.0
         self.pps_worker.set_voltage(voltage)
