@@ -1,8 +1,9 @@
 # electrophstat/gui/pps_controller.py
-from PyQt5.QtCore    import QObject, QThread, pyqtSlot
+from PyQt5.QtCore    import QObject, QTimer, QThread, pyqtSlot
 from PyQt5.QtWidgets import QMessageBox
 from electrophstat.hardware import discover_power_supply
 from electrophstat.hardware.PPSWorker import PPSWorker
+from electrophstat.control.timer_control import monoTimer
 
 class PPSController(QObject):
     """
@@ -16,6 +17,7 @@ class PPSController(QObject):
         self.interval = interval
         self.reset = reset
         self._setup_worker()
+        self.initCoulombTimer()
         
     def _setup_worker(self):
         # 1) Probe for a real PPS (or get a DummyPPS)
@@ -65,4 +67,19 @@ class PPSController(QObject):
             self.win._apply_scaling()
         except Exception as e:
             print(f"[PPS] Reconnect failed: {e}")
+    
+    def initCoulombTimer(self):
+        # Coulomb integration timer
+        self.coulombTimer = QTimer(self)
+        self.coulombTimer.setInterval(1000)  # 1 second updates
+        self.coulombTimer.timeout.connect(self.updateCoulombs)
+        
+        self.coulombClock = monoTimer()
 
+    def updateCoulombs(self):
+        dt = self.coulombClock.lap()  # Time since last update
+        amps = getattr(self, 'latest_current', 0)
+        self.coulombs += amps * dt
+        self.win.button_cont.update_gui("coulombs",self.coulombs)
+        #print(f"Coulombs: {self.coulombs:.2f}")
+        #self.coulombLabel.setText(f"Coulombs: {self.coulombs:.2f}")
