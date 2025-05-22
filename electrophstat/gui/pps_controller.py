@@ -81,6 +81,6 @@ class PPSController(QObject):
         dt = self.coulombClock.lap()  # Time since last update
         amps = self.win.valueData["current"]
         self.coulombs += amps * dt
-        self.win.button_cont.update_gui("coulombs",self.coulombs)
+        self.win.button_cont.update_gui("coulomb",self.coulombs)
         #print(f"Coulombs: {self.coulombs:.2f}")
         #self.coulombLabel.setText(f"Coulombs: {self.coulombs:.2f}")
