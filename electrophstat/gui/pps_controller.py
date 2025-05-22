@@ -42,8 +42,6 @@ class PPSController(QObject):
         # 5) fire one initial limits‐read so the dials get properly ranged
         self.pps_worker.emit_limits()
 
-
-
     @pyqtSlot()
     def stop(self):
         """Call this when you want to shut down cleanly."""
@@ -51,6 +49,12 @@ class PPSController(QObject):
         self.thread.quit()
         self.thread.wait()
     
+    @pyqtSlot()
+    def reconnect(self):
+        """Stop the old one and spin up a brand new worker."""
+        self.stop()
+        self._setup_worker()
+
     def enable_psu(self):
         """Re‐start polling and re‐enable the UI."""
         if not self.thread.isRunning():

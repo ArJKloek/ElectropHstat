@@ -13,7 +13,7 @@ class PPSConnections(QObject):
         self.win.powerButton.clicked.connect(self.togglePowerSupply)
         self.win.setButton.clicked.connect(self.apply_ps_settings)
         self.win.actionEnable_PSU_control.toggled.connect(self.on_toggle_psu)
-
+        self.win.reconnect_pps_action.toggled.connect(self.win.pps_ctrl.reconnect)
     def set_worker(self, worker):
         self.pps_worker = worker
 
