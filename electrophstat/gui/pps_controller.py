@@ -16,9 +16,10 @@ class PPSController(QObject):
         self.connections = pps_connections
         self.interval = interval
         self.reset = reset
+        self.coulombs = 0.0
         self._setup_worker()
         self.initCoulombTimer()
-        
+
     def _setup_worker(self):
         # 1) Probe for a real PPS (or get a DummyPPS)
         port = discover_power_supply(reset=self.reset)
@@ -78,7 +79,7 @@ class PPSController(QObject):
 
     def updateCoulombs(self):
         dt = self.coulombClock.lap()  # Time since last update
-        amps = getattr(self, 'latest_current', 0)
+        amps = self.win.valueData["current"]
         self.coulombs += amps * dt
         self.win.button_cont.update_gui("coulombs",self.coulombs)
         #print(f"Coulombs: {self.coulombs:.2f}")
