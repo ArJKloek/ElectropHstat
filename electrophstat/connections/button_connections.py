@@ -22,9 +22,7 @@ class ButtonConnections(QObject):
         self.win.actionCalibrate_pH.triggered.connect(self.openCalibratepHWindow)
         self.win.action_datewindow.triggered.connect(self.openDateTimeWindow)
 
-    def log_active(self):
-        self.win.logging_ctrl.start()
-
+    
     @pyqtSlot()
     def start_stat(self):
         # 1) Kick off your control loop & logging
@@ -42,7 +40,10 @@ class ButtonConnections(QObject):
         self.win.pps_ctrl.coulombClock.start()
         self.win.pps_ctrl.coulombTimer.start()
         self.win.statusBar().showMessage("pH-stat/logging started")
-        
+    
+    def log_active(self):
+        self.win.logging_ctrl.start()
+
 
     @pyqtSlot()
     def stop_stat(self):
@@ -56,9 +57,13 @@ class ButtonConnections(QObject):
         #2) Logging and pH pump logic stop
         if self.win.toggle_pH_control:
             self.win.phstat_ctrl.on_pumpToggle(False)
-        self.win.logging_ctrl.stop()
+        self.log_deactive()
         # 3) Status
         self.win.statusBar().showMessage("pH-stat stopped")
+    
+    def log_deactive(self):
+        self.win.logging_ctrl.stop()
+
 
     @pyqtSlot()
     def reset_stat(self):
@@ -71,15 +76,8 @@ class ButtonConnections(QObject):
         self.win.resetbutton.setEnabled(False)
         # 3) Status
         self.win.logger.reset()
-        self.win.valueData = {
-            "pump":             0.0,
-            "pH":               0.0,
-            "temperature":      0.0,
-            "voltage":          0.0,
-            "current":          0.0,
-            "coulomb":          0.0,
-            "mode":             "",
-        }
+        self.reset_value_data()
+       
         QMessageBox.information(self.win, "Reset", "pH-stat has been reset")
     
     
@@ -205,3 +203,15 @@ class ButtonConnections(QObject):
             self.win.phstat_ctrl.disable()
             self.win.logging_ctrl.disable_logging(["pump"])
             self.win.graph_ctrl.set_pH_enabled(False)
+
+    def reset_value_data(self):
+        """
+        Zero‐out all numeric entries in self.valueData,
+        and clear any string entries.
+        """
+        for key, val in self.win.valueData.items():
+            if isinstance(val, str):
+                self.win.valueData[key] = ""
+            else:
+                # assume numeric
+                self.win.valueData[key] = 0.0

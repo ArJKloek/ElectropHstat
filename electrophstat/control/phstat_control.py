@@ -50,7 +50,7 @@ class pHStatLoop:
             val = float(pH)
         except (TypeError, ValueError):
             val = self.target_pH
-        if self.select == 0:
+        if self.select == 1:
             status = (val > self.target_pH)
         else:
             status = (val < self.target_pH)
