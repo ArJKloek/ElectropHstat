@@ -47,6 +47,7 @@ class PPSConnections(QObject):
     
     @pyqtSlot()
     def apply_ps_settings(self):
+        print(f'worker {self.pps_worker}')
         if not self.pps_worker:
             print("[WARNING] PPS worker not initialized.")
             return
