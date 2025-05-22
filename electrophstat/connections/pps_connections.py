@@ -51,18 +51,10 @@ class PPSConnections(QObject):
             print("[WARNING] PPS worker not initialized.")
             return
 
-        mode = "CC" if self.win.modeToggle.isChecked() else "CV"
         voltage = self.win.voltageDial.value() / 10.0
         current = self.win.currentDial.value() / 10.0
-
-        if mode == "CV":
-            self.pps_worker.set_current(self.pps_worker.psu.IMAX)
-            self.pps_worker.set_voltage(voltage)
-        else:  # "CC"
-            self.pps_worker.set_voltage(self.pps_worker.psu.VMAX)
-            self.pps_worker.set_current(current)
-
-        print(f"[SET] Mode: {mode}, Voltage: {voltage:.1f} V, Current: {current:.1f} A")
+        self.pps_worker.set_voltage(voltage)
+        self.pps_worker.set_current(current)
 
     @pyqtSlot(bool)
     def togglePowerSupply(self, checked:bool):
