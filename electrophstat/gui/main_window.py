@@ -110,11 +110,12 @@ class MainWindow(QMainWindow):
         #self.ppsWorker.disconnected_signal.connect(self.pps_controller.on_pps_disconnect)
 
         
-        self.pps_connections = PPSConnections(self)
 
         self.pps_ctrl = PPSController(self, self.pps_connections,
                                       interval=1.0,  # poll every second
                                       reset=True)    # whether to reset on open
+        
+        self.pps_connections = PPSConnections(self)
 
         # This will spin up worker+thread for each key
         # Initialize PPS Connections for updating the GUI
