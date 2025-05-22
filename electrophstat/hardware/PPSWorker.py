@@ -27,6 +27,7 @@ class PPSWorker(QObject):
         while self.running:
             try:
                 v, a, mode = self.psu.read_output()
+                print(f'Voltage run {v}')
                 mode  = "CC" if a else "CV"  # or your own logic
                 self.voltage_signal.emit(v)
                 self.current_signal.emit(a)
@@ -47,14 +48,12 @@ class PPSWorker(QObject):
         self.running = False
 
     def set_voltage(self, value):
-        print(f'Voltage Worker {value}')
         try:
             self.psu.voltage(value)
         except Exception as e:
             print(f"Failed to set voltage: {e}")
 
     def set_current(self, value):
-        print(f'Current Worker {value}')
         try:
             self.psu.current(value)
         except Exception as e:
