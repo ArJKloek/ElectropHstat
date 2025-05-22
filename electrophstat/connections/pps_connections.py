@@ -13,11 +13,15 @@ class PPSConnections(QObject):
         self.win.powerButton.clicked.connect(self.togglePowerSupply)
         self.win.setButton.clicked.connect(self.apply_ps_settings)
         self.win.actionEnable_PSU_control.toggled.connect(self.on_toggle_psu)
-        self.win.reconnect_pps_action.toggled.connect(lambda: self.win.pps_ctrl.reconnect)
+        self.win.reconnect_pps_action.toggled.connect(self.reconnect_PSU)
 
     def set_worker(self, worker):
         self.pps_worker = worker
-
+    
+    @pyqtSlot()
+    def reconnect_PSU():
+        self.win.pps_ctrl.reconnect()
+    
     @pyqtSlot(float)
     def update_pps_voltage(self, voltage: float):
         self.win.voltagelabel.setText(f"{voltage:.1f} V")
