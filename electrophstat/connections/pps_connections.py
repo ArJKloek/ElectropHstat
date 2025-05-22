@@ -114,7 +114,7 @@ class PPSConnections(QObject):
             lbl.setStyleSheet(gray)
 
         for w in (self.win.voltageDial, self.win.currentDial,
-                self.win.setButton, self.win.modeToggle, self.win.powerButton):
+                self.win.setButton, self.win.powerButton):
             w.setDisabled(True)
         self.win.reconnect_pps_action.setEnabled(True)
 
@@ -125,7 +125,7 @@ class PPSConnections(QObject):
         for lbl in (self.win.voltagelabel, self.win.currentlabel, self.win.modelabel):
             lbl.setStyleSheet("color: black;")
         for w in (self.win.voltageDial, self.win.currentDial,
-                self.win.setButton, self.win.modeToggle, self.win.powerButton):
+                self.win.setButton, self.win.powerButton):
             w.setEnabled(True)
         self.win.reconnect_pps_action.setEnabled(False)
 

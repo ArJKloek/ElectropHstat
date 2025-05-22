@@ -250,22 +250,6 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="ToggleSwitch" name="modeToggle">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="3">
         <widget class="PowerButton" name="powerButton">
          <property name="sizePolicy">
@@ -580,11 +564,6 @@
   <customwidget>
    <class>Round3DButton</class>
    <extends>QPushButton</extends>
-   <header>electrophstat/gui/widgets</header>
-  </customwidget>
-  <customwidget>
-   <class>ToggleSwitch</class>
-   <extends>QCheckBox</extends>
    <header>electrophstat/gui/widgets</header>
   </customwidget>
   <customwidget>
