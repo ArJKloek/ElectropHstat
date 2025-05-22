@@ -116,6 +116,8 @@ class PPSConnections(QObject):
         for w in (self.win.voltageDial, self.win.currentDial,
                 self.win.setButton, self.win.modeToggle, self.win.powerButton):
             w.setDisabled(True)
+        self.win.reconnect_pps_action.setEnabled(True)
+
     
     @pyqtSlot()
     def _enable_pps_controls(self):
@@ -125,7 +127,8 @@ class PPSConnections(QObject):
         for w in (self.win.voltageDial, self.win.currentDial,
                 self.win.setButton, self.win.modeToggle, self.win.powerButton):
             w.setEnabled(True)
-    
+        self.win.reconnect_pps_action.setEnabled(False)
+
     @pyqtSlot(bool)
     def on_toggle_psu(self, checked):
         print(checked)
