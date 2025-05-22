@@ -2,7 +2,7 @@
 from PyQt5.QtCore    import QObject, QThread, pyqtSlot
 from PyQt5.QtWidgets import QMessageBox
 from electrophstat.hardware import discover_power_supply
-from electrophstat.workers.pps_worker import PPSWorker
+from electrophstat.hardware.PPSWorker import PPSWorker
 
 class PPSController(QObject):
     """
@@ -44,3 +44,28 @@ class PPSController(QObject):
         self.pps_worker.stop()
         self.thread.quit()
         self.thread.wait()
+    
+    def enable_psu(self):
+        """Re‐start polling and re‐enable the UI."""
+        if not self.thread.isRunning():
+            # restart the worker thread
+            self.pps_worker.running = True
+            self.thread.start()
+        # unfreeze the controls
+        self.win.voltageDial.setEnabled(True)
+        self.win.currentDial.setEnabled(True)
+        self.win.modeToggle  .setEnabled(True)
+        self.win.powerButton .setEnabled(True)
+        self.win.PowerGroup.setEnabled(True)
+
+    def disable_psu(self):
+        """Stop polling and grey‐out the UI."""
+        self.pps_worker.stop()
+        if self.thread.isRunning():
+            self.thread.quit()
+            self.thread.wait()
+        self.win.voltageDial.setEnabled(False)
+        self.win.currentDial.setEnabled(False)
+        self.win.modeToggle  .setEnabled(False)
+        self.win.powerButton .setEnabled(False)
+        self.win.PowerGroup.setEnabled(False)

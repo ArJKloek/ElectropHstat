@@ -12,6 +12,7 @@ class PPSConnections(QObject):
         self.pps_worker = None
         self.win.powerButton.clicked.connect(self.togglePowerSupply)
         self.win.setButton.clicked.connect(self.apply_ps_settings)
+        self.win.actionEnable_PSU_control.toggled.connect(self.on_toggle_psu)
 
     def set_worker(self, worker):
         self.pps_worker = worker
@@ -119,3 +120,18 @@ class PPSConnections(QObject):
         for w in (self.win.voltageDial, self.win.currentDial,
                 self.win.setButton, self.win.modeToggle, self.win.powerButton):
             w.setEnabled(True)
+    
+    @pyqtSlot(bool)
+    def on_toggle_psu(self, checked):
+        print(checked)
+        if checked:
+            print("PSU control & logging ENABLED")
+            self.win.pps_ctrl.enable_psu()
+            self.win.logging_ctrl.enable_logging(["voltage","current","coulomb"])
+            self.win.graph_ctrl.set_psu_enabled(True)
+
+        else:
+            print("PSU control & logging DISABLED")
+            self.win.pps_ctrl.disable_psu()
+            self.win.logging_ctrl.disable_logging(["voltage","current","coulomb"])
+            self.win.graph_ctrl.set_psu_enabled(False)

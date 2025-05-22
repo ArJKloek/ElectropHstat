@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>960</width>
-    <height>600</height>
+    <height>614</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,9 @@
            <pointsize>14</pointsize>
           </font>
          </property>
+         <property name="statusTip">
+          <string/>
+         </property>
          <property name="prefix">
           <string>pH </string>
          </property>
@@ -55,6 +58,9 @@
            <family>MS Shell Dlg 2</family>
            <pointsize>14</pointsize>
           </font>
+         </property>
+         <property name="statusTip">
+          <string/>
          </property>
          <item>
           <property name="text">
@@ -79,6 +85,9 @@
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="2">
         <widget class="QLabel" name="RTDlabel">
+         <property name="statusTip">
+          <string>Temperature measured</string>
+         </property>
          <property name="text">
           <string>25 °C</string>
          </property>
@@ -86,6 +95,9 @@
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="pHNumber">
+         <property name="statusTip">
+          <string>pH measured</string>
+         </property>
          <property name="text">
           <string>pH 7.0</string>
          </property>
@@ -115,6 +127,12 @@
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QPushButton" name="startbutton">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string>Start logging</string>
+         </property>
          <property name="text">
           <string>Start</string>
          </property>
@@ -125,6 +143,9 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="statusTip">
+          <string>Stop logging</string>
+         </property>
          <property name="text">
           <string>Stop</string>
          </property>
@@ -134,6 +155,9 @@
         <widget class="QPushButton" name="resetbutton">
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="statusTip">
+          <string>Reset logging</string>
          </property>
          <property name="text">
           <string>Reset</string>
@@ -151,6 +175,9 @@
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="1" column="1">
         <widget class="QLabel" name="currentlabel">
+         <property name="statusTip">
+          <string>Current measured</string>
+         </property>
          <property name="text">
           <string>0.0 A</string>
          </property>
@@ -158,6 +185,9 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="voltagelabel">
+         <property name="statusTip">
+          <string>Voltage measured</string>
+         </property>
          <property name="text">
           <string>12 V</string>
          </property>
@@ -177,6 +207,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="statusTip">
+          <string>Change dial for the voltage</string>
+         </property>
          <property name="notchesVisible">
           <bool>true</bool>
          </property>
@@ -184,6 +217,9 @@
        </item>
        <item row="1" column="2">
         <widget class="QLabel" name="modelabel">
+         <property name="statusTip">
+          <string>Mode of the PSU </string>
+         </property>
          <property name="text">
           <string>CV</string>
          </property>
@@ -203,6 +239,9 @@
            <height>5000</height>
           </size>
          </property>
+         <property name="statusTip">
+          <string>Change dial for the current</string>
+         </property>
          <property name="notchesVisible">
           <bool>true</bool>
          </property>
@@ -210,11 +249,17 @@
        </item>
        <item row="0" column="2">
         <widget class="ToggleSwitch" name="modeToggle">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string/>
          </property>
          <property name="checkable">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -231,6 +276,9 @@
            <width>50</width>
            <height>50</height>
           </size>
+         </property>
+         <property name="statusTip">
+          <string>Turn PSU on/off</string>
          </property>
          <property name="text">
           <string/>
@@ -256,6 +304,12 @@
          </property>
          <property name="mouseTracking">
           <bool>false</bool>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string>Set the selected PSU Voltage or Amperage</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -285,6 +339,9 @@
       <property name="focusPolicy">
        <enum>Qt::WheelFocus</enum>
       </property>
+      <property name="statusTip">
+       <string>Copy data to USB</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -304,7 +361,11 @@
      </widget>
     </item>
     <item row="2" column="1" rowspan="2" colspan="4">
-     <widget class="QTabWidget" name="tabWidget"/>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="statusTip">
+       <string/>
+      </property>
+     </widget>
     </item>
     <item row="0" column="3">
      <spacer name="horizontalSpacer">
@@ -369,28 +430,21 @@
      <addaction name="separator"/>
      <addaction name="menuLog_Options"/>
     </widget>
-    <addaction name="datewindow"/>
+    <addaction name="action_datewindow"/>
     <addaction name="menupHstat_settings"/>
     <addaction name="separator"/>
+    <addaction name="actionEnable_PSU_control"/>
     <addaction name="toggle_pH_control"/>
     <addaction name="separator"/>
     <addaction name="reconnect_pps_action"/>
     <addaction name="separator"/>
     <addaction name="actionFullscreen"/>
    </widget>
-   <widget class="QMenu" name="menuView">
-    <property name="title">
-     <string>View</string>
-    </property>
-    <addaction name="togglepHAction"/>
-    <addaction name="toggleTempAction"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSettings"/>
-   <addaction name="menuView"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="datewindow">
+  <action name="action_datewindow">
    <property name="text">
     <string>Change Date/Time</string>
    </property>
@@ -497,6 +551,17 @@
    </property>
    <property name="text">
     <string>Temp curve</string>
+   </property>
+  </action>
+  <action name="actionEnable_PSU_control">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable PSU control</string>
    </property>
   </action>
  </widget>

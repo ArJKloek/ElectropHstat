@@ -48,39 +48,36 @@ class Logger:
         active_labels: Optional[List[str]] = None,
         initial_values: Optional[Dict[str, float]] = None
     ) -> None:
-        """
-        Initialize a new logging session:
-          • create date/time directories
-          • create one CSV file per label with pre-headers and headers
-        """
-        now = datetime.now()
+        print(active_labels)
+        now    = datetime.now()
         date_s = now.strftime("%d_%m_%Y")
         time_s = now.strftime("%H_%M_%S")
         self.log_dir = self.base_dir / date_s / time_s
         self.log_dir.mkdir(parents=True, exist_ok=True)
-        
-        # determine which labels to log
-        labels = active_labels if active_labels is not None else self.labels
 
-        # clear previous session state
+        # 1) choose which labels to enable
+        labels_to_use = active_labels if active_labels is not None else self.labels
+
+        # 2) clear any old session
         self.files.clear()
         self.starts.clear()
-        
-        # create files for each active label
-        for lbl in labels:
+
+        # 3) create the files, mapping each label → its column name
+        for lbl in labels_to_use:
             if lbl not in self.labels:
                 continue
-            col = self.columns[self.labels.index(lbl)]
+            idx = self.labels.index(lbl)
+            col = self.columns[idx]
             path = self._make_file(lbl, col, now)
-            self.files[lbl] = path
+            self.files[lbl]  = path
             self.starts[lbl] = time.monotonic()
-        
-        # insert initial zero‑point rows if provided
+
+        # 4) write out your zero-point rows (elapsed=0)
         if initial_values:
             for lbl, val in initial_values.items():
                 if lbl in self.files:
-                    # write with elapsed=0
                     self._write_row(lbl, 0.0, val)
+
 
     def reset(self) -> None:
         """

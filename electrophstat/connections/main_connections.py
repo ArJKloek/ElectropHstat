@@ -31,3 +31,5 @@ def setup_mainwindow_signals(win):
     lg.triggered.connect(win.button_cont.on_log_option_changed)
 
     
+    
+    

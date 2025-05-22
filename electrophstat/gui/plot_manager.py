@@ -84,50 +84,48 @@ class PlotManager:
             self.update_coulomb_plot()
 
     def update_plot_from_logger(self, plot_index, curves, show_right_axis=False):
-        """
-        curves: list of dicts:
-          {"label": str, "curve_attr": str, "pen": str, "use_right_axis": bool}
-        """
         widget = self.main.graphWidgets[plot_index]
-        max_points = 1000
         logger = self.main.logger
+
+        # We'll set the bottom label exactly once, based on the first curve's data
+        bottom_labeled = False
 
         for cfg in curves:
             label = cfg["label"]
             times, values = logger.read(label)
 
-            # clear old curve
-            attr = cfg["curve_attr"]
-            old = getattr(self.main, attr, None)
-            if old is not None:
-                if cfg.get("use_right_axis"):
-                    vb = self.main.rightViewBoxes.get(plot_index)
-                    if vb: vb.removeItem(old)
-                else:
-                    widget.removeItem(old)
-                setattr(self.main, attr, None)
+            # remove any old curve
+            old = getattr(self.main, cfg["curve_attr"], None)
+            if old:
+                container = ( self.main.rightViewBoxes[plot_index]
+                              if cfg["use_right_axis"] else widget )
+                container.removeItem(old)
+                setattr(self.main, cfg["curve_attr"], None)
 
-            if times and values:
-                x = np.array(times)
-                y = np.array(values)
-                if len(x) > max_points:
-                    x = x[-max_points:]
-                    y = y[-max_points:]
+            if not times:
+                continue
 
-                pen = pg.mkPen(cfg["pen"], width=2)
-                curve = pg.PlotCurveItem(x, y, pen=pen)
+            # scale & get unit label
+            x, y, time_label = self.scale_time_data(times, values)
+            pen = pg.mkPen(cfg["pen"], width=2)
+            curve = pg.PlotCurveItem(x, y, pen=pen)
 
-                if cfg.get("use_right_axis"):
-                    vb = self.main.rightViewBoxes.get(plot_index)
-                    if vb:
-                        vb.addItem(curve)
-                        vb.enableAutoRange(axis=pg.ViewBox.YAxis)
-                else:
-                    widget.getAxis('bottom').setLabel('Time (s)', **self.labelStyle)
-                    widget.addItem(curve)
+            # set bottom label once
+            if not bottom_labeled:
+                widget.getAxis('bottom').setLabel(time_label, **self.labelStyle)
+                bottom_labeled = True
 
-                setattr(self.main, attr, curve)
+            # draw on the correct axis
+            if cfg["use_right_axis"]:
+                vb = self.main.rightViewBoxes.get(plot_index)
+                vb.addItem(curve)
+                vb.enableAutoRange(axis=pg.ViewBox.YAxis)
+            else:
+                widget.addItem(curve)
 
+            setattr(self.main, cfg["curve_attr"], curve)
+
+        # show/hide right axis
         widget.showAxis('right' if show_right_axis else 'left')
 
     def update_pump_plot(self):
@@ -194,3 +192,28 @@ class PlotManager:
                 curves           = cfgs,
                 show_right_axis  = show_right
             )
+
+    @staticmethod
+    def scale_time_data(times, values, max_points=1000):
+        """
+        times: list[float] in seconds
+        values: list[float]
+        returns: (x_scaled, y, time_label)
+        """
+        if not times:
+            return [], [], "Time (s)"
+        # truncate
+        if len(times) > max_points:
+            times  = times[-max_points:]
+            values = values[-max_points:]
+        t_max = times[-1]
+        if t_max >= 3600:
+            scale, time_label = 3600.0, "Time (hr)"
+        elif t_max >= 60:
+            scale, time_label = 60.0,   "Time (min)"
+        else:
+            scale, time_label = 1.0,    "Time (s)"
+        x = [t/scale for t in times]
+        return x, values, time_label
+
+    

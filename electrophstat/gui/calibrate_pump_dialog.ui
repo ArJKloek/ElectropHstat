@@ -61,6 +61,9 @@
      <property name="suffix">
       <string> (s)</string>
      </property>
+     <property name="singleStep">
+      <double>0.010000000000000</double>
+     </property>
     </widget>
    </item>
   </layout>

@@ -20,7 +20,7 @@
    <item row="2" column="0">
     <widget class="QPushButton" name="btnCalHighPH">
      <property name="statusTip">
-      <string>Calibrate the High level pH</string>
+      <string>Calibrate the high level pH</string>
      </property>
      <property name="text">
       <string>Cal. high</string>
@@ -29,8 +29,11 @@
    </item>
    <item row="1" column="0">
     <widget class="QPushButton" name="btnCalLowPH">
+     <property name="toolTip">
+      <string/>
+     </property>
      <property name="statusTip">
-      <string>Calibrate the Low level pH</string>
+      <string>Calibrate the low level pH</string>
      </property>
      <property name="text">
       <string>Cal. low</string>
@@ -39,6 +42,9 @@
    </item>
    <item row="0" column="0">
     <widget class="QPushButton" name="btnCalMidPH">
+     <property name="toolTip">
+      <string/>
+     </property>
      <property name="statusTip">
       <string>Calibrate the mid level of pH</string>
      </property>
@@ -91,6 +97,9 @@
    </item>
    <item row="3" column="0" colspan="2">
     <widget class="QLineEdit" name="leCalStatus">
+     <property name="statusTip">
+      <string>Status return</string>
+     </property>
      <property name="readOnly">
       <bool>true</bool>
      </property>

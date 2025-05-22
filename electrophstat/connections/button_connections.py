@@ -19,36 +19,10 @@ class ButtonConnections(QObject):
         self.win.toggle_pH_control.triggered.connect(self.toggle_pHStat)
         self.win.togglepHAction.toggled.connect(self.updateCurrentTabPlot)
         self.win.toggleTempAction.toggled.connect(self.updateCurrentTabPlot)
-    
+        self.win.actionCalibrate_pH.triggered.connect(self.openCalibratepHWindow)
+        self.win.action_datewindow.triggered.connect(self.openDateTimeWindow)
+
     def log_active(self):
-        # Determine which logs we actually need
-        active = []
-        initial = {}
-
-        # pH-stat only if its thread is alive
-        if self.win.phstat_ctrl.worker.running:
-
-            # pump volume always starts at zero
-            active += ["pump"]
-            initial["pump"] = self.win.valueData["pump"]
-
-        active += ["pH"]
-        initial["pH"] = float(self.win.valueData["pH"])
-    
-        # temp always on via SensorController
-        active += ["temperature"]
-        initial["temperature"] = float(self.win.valueData["temperature"])
-
-        # PPS only if connected
-        if self.win.pps_ctrl.pps_worker.psu.connected:
-            # record voltage & current
-            active += ["voltage", "current", "coulomb"]
-            initial["voltage"]  = float(self.win.valueData["voltage"])
-            initial["current"]  = float(self.win.valueData["current"])
-            initial["coulomb"]  = float(self.win.valueData["coulomb"])  # coulomb counter reset
-
-        # Start the session
-        self.win.logger.start_session(active_labels=active, initial_values=initial)   
         self.win.logging_ctrl.start()
 
     @pyqtSlot()
@@ -56,7 +30,8 @@ class ButtonConnections(QObject):
         # 1) Kick off your control loop & logging
         #self.win.control_loop.should_start = True
         #self.win.logging_timer.start()
-        self.win.phstat_ctrl.on_pumpToggle(True)
+        if self.win.toggle_pH_control:
+            self.win.phstat_ctrl.on_pumpToggle(True)
         # 2) UI tweaks
         self.win.startbutton.setEnabled(False)
         self.win.stopbutton.setEnabled(True)
@@ -68,8 +43,6 @@ class ButtonConnections(QObject):
         self.win.statusBar().showMessage("pH-stat/logging started")
         
 
-
-
     @pyqtSlot()
     def stop_stat(self):
   
@@ -78,7 +51,8 @@ class ButtonConnections(QObject):
         self.win.stopbutton.setEnabled(False)
         self.win.resetbutton.setEnabled(True)
         #2) Logging and pH pump logic stop
-        self.win.phstat_ctrl.on_pumpToggle(False)
+        if self.win.toggle_pH_control:
+            self.win.phstat_ctrl.on_pumpToggle(False)
         self.win.logging_ctrl.stop()
         # 3) Status
         self.win.statusBar().showMessage("pH-stat stopped")
@@ -163,53 +137,6 @@ class ButtonConnections(QObject):
             self.win.showFullScreen()
             self.win.actionFullscreen.setText("Fullscreen off")
     
-    @pyqtSlot(bool)
-    def toggle_pHStat(self, checked: bool):
-        self.win.pH_control_enabled = checked
-        if self.win.pH_control_enabled:
-            print("pH Control enabled")
-            try:
-                # Connect signals
-                # Enable clickalble labels
-                self.win.phSpin.setDisabled(False)
-                self.win.keepSelector.setDisabled(False)
-                #self.pHSelectLabel.setEnabled(checked)
-                
-            except Exception as e:
-                print(f"Reconnect error (probably already connected): {e}")
-        
-             # Re-add Pump plot if missing
-            if self.win.tabWidget.indexOf(self.graphTabs[0]) == -1:
-                self.win.tabWidget.insertTab(0, self.graphTabs[0], "Pump Plot")
-        
-        else:
-            print("pH Control disabled")
-            try:
-                #Disable clickable labels
-                self.win.phSpin.setDisabled(True)
-                self.win.keepSelector.setDisabled(True)
-                #self.pHSelectLabel.setEnabled(checked)
-               
-            except Exception as e:
-                print(f"Disconnect error (probably already disconnected): {e}")
-
-            # Extra: If pump is running, deactivate it immediately
-            #self.pump_deactivated(test=False)
-
-            # Also stop the StatWorker if needed
-            try:
-                self.StatWorker.stop()
-                print("StatWorker stopped.")
-            except Exception as e:
-                print(f"Error stopping StatWorker: {e}")
-            # Manage the graph tabs (disable Pump plot, focus on pH+Temp plot)
-            pump_index = self.tabWidget.indexOf(self.graphTabs[0])
-            if pump_index != -1:
-                self.tabWidget.removeTab(pump_index)
-
-            ph_index = self.tabWidget.indexOf(self.graphTabs[1])
-            if ph_index != -1:
-                self.tabWidget.setCurrentIndex(ph_index)
     @pyqtSlot()
     def updatePlot(self, tab):
         self.win.plot_manager.update(tab)
@@ -224,15 +151,17 @@ class ButtonConnections(QObject):
     def on_log_option_changed(self, action):
         """action.objectName() tells us which interval to use."""
         ms_map = {
-            "option1":  5_000,
-            "option2": 30_000,
-            "option3": 60_000,
-            "option4":  5 * 60_000,
+            "option1":  5,
+            "option2": 30,
+            "option3": 60,
+            "option4":  300,
         }
         interval = ms_map.get(action.objectName())
         if interval is not None:
             print("New log interval:", interval)
             # … apply interval to your logging timer …
+        self.win.logging_ctrl.set_interval(int(interval))
+
     
     @pyqtSlot(str, float)
     def update_gui(self, sensor_type: str, received_data: float):
@@ -253,4 +182,23 @@ class ButtonConnections(QObject):
         #elif sensor_type == 5:   
         #    self.win.valueData[5] = received_data
     
-    
+    @pyqtSlot() 
+    def openCalibratepHWindow(self):
+        self.win.pH_calibrate_dialog.exec_()
+
+    @pyqtSlot() 
+    def openDateTimeWindow(self):
+        self.win.date_time_dialog.exec_()
+
+    @pyqtSlot(bool)
+    def toggle_pHStat(self, checked: bool):
+        if checked:
+            print("pH-stat logic & logging ENABLED")
+            self.win.phstat_ctrl.enable()
+            self.win.logging_ctrl.enable_logging(["pump"])
+            self.win.graph_ctrl.set_pH_enabled(True)
+        else:
+            print("pH-stat logic & logging DISABLED")
+            self.win.phstat_ctrl.disable()
+            self.win.logging_ctrl.disable_logging(["pump"])
+            self.win.graph_ctrl.set_pH_enabled(False)

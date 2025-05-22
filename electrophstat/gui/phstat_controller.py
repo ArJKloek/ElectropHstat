@@ -88,3 +88,30 @@ class pHStatController(QObject):
         self.worker.stop()
         self.thread.quit()
         self.thread.wait()
+    
+    def enable(self):
+        # 1) Start the control worker again
+        if not self.thread.isRunning():
+            # reset the flag so run() will loop
+            self.worker.running = True
+            # (re)start the thread
+            self.thread.start()
+
+        # 2) Re-enable the widgets
+        self.win.phSpin      .setEnabled(True)
+        self.win.keepSelector.setEnabled(True)
+        # (leave PPS, sensor, logger alone)
+
+        
+    def disable(self):
+        # 1) Stop the control worker
+        self.worker.stop()
+        if self.thread.isRunning():
+            self.thread.quit()
+            self.thread.wait()
+
+        # 2) Disable the widgets
+        self.win.phSpin      .setEnabled(False)
+        self.win.keepSelector.setEnabled(False)
+       
+        

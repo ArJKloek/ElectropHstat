@@ -25,6 +25,9 @@ class PumpController(QObject):
         self._dose_timer = QTimer(self)
         self._dose_timer.setSingleShot(True)
         self._dose_timer.timeout.connect(self.dose_finished)
+        self._test_timer   = QTimer(self)
+        self._test_timer.setSingleShot(True)
+        self._test_timer.timeout.connect(self._end_test)
 
     @pyqtSlot(PumpAction)
     def dose(self, action: PumpAction):
@@ -38,6 +41,28 @@ class PumpController(QObject):
             # immediate stop and cancel any pending timeout
             self._stop()
             self._timer.stop()
+    
+    @pyqtSlot(bool,float)
+    def on_test_pump(self, turn_on: bool, duration_s: float):
+        """Called when the user clicks ‘Test’ on the dialog."""
+        if turn_on:
+            # start hardware output
+            self.hw.set(0,1,1)
+            # schedule turn‐off after the dialog’s interval
+            interval_ms = int(duration_s * 1000)
+            self._test_timer.start(interval_ms)
+
+    def _end_test(self):
+        # stop hardware output
+        self.hw.set(0,1,0)
+
+    @pyqtSlot(float, float)
+    def on_set_calibration(self, ml_per_cycle: float, interval_s: float):
+        """Called when the user clicks ‘Set’ on the dialog."""
+        self.ml_per_cycle = ml_per_cycle
+        self.duration_ms   = int(interval_s * 1000)
+        print(f"[PumpController] Calibrated: {ml_per_cycle} mL per cycle, {interval_s}s interval")
+        # Optionally persist to your config here
 
     def _start(self):
         # 1) activate hardware gate

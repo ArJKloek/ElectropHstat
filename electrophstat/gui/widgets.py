@@ -1,108 +1,9 @@
 from PyQt5.QtWidgets import (QVBoxLayout, QPushButton, 
                              QWidget, QHBoxLayout, QSpinBox, QLabel, QCheckBox, QHBoxLayout, QSizePolicy, QDial, QGridLayout)
-from PyQt5.QtCore import Qt, QSize, QPoint, QRectF, QPointF, pyqtSlot as Slot, pyqtProperty as Property
+from PyQt5.QtCore import Qt, QSize, QPoint, QRectF, QPointF, QPropertyAnimation,QSequentialAnimationGroup,QEasingCurve, pyqtSlot, pyqtSignal, pyqtProperty as Property
 from PyQt5.QtGui import QPainter, QColor, QFont, QFontMetrics, QPen, QPaintEvent, QBrush, QLinearGradient
 
-
-
-class CustomTextWidget(QWidget):
-    def __init__(self, normalText, shadowText, color, size):#, shadowColor="#000000"):
-        super().__init__()
-        self.normalText = normalText
-        self.shadowText = shadowText
-        self.color = color
-        self.normalTextColor = Qt.black  # Default normal text color is black
-
-        #self.shadowColor = shadowColor
-        self.size = size
-        self.font = QFont("Arial", self.size)  # Define the font as a class attribute
-        metrics = QFontMetrics(self.font)
-
-        # Precompute maximum expected width
-        self.max_normalText = "pH Stat "  # This doesn't change
-        self.max_shadowText = "Inactive"  # Assume "Inactive" is the longest shadow text
-
-        # Precompute total width
-        normal_size = metrics.size(Qt.TextSingleLine, self.max_normalText)
-        shadow_size = metrics.size(Qt.TextSingleLine, self.max_shadowText)
-        self.fixed_total_width = normal_size.width() + shadow_size.width()
-        self.fixed_total_height = metrics.height()
-        
-        
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setFont(self.font)
-
-        metrics = QFontMetrics(self.font)
-        normalTextSize = metrics.size(Qt.TextSingleLine, self.normalText)
-        shadowTextSize = metrics.size(Qt.TextSingleLine, self.shadowText)
-
-        # Use fixed precomputed width
-        x_normal = round((self.width() - self.fixed_total_width) / 2)
-        x_shadow = round(x_normal + metrics.size(Qt.TextSingleLine, self.normalText).width())
-
-        y = round((self.height() + self.fixed_total_height) / 2)
-
-        # Draw normal text
-        painter.setPen(QColor(self.normalTextColor))
-        painter.drawText(x_normal, y, self.normalText)
-
-        # Calculate shadow offset for shadow text
-        shadowOffset = QPoint(1, 1)
-
-        # Draw shadow text
-        painter.setPen(QColor(0, 0, 0, 100))
-        painter.drawText(x_shadow + shadowOffset.x(), y + shadowOffset.y(), self.shadowText)
-
-        # Optionally, draw shadowed text (on top without offset) for stronger effect
-        painter.setPen(QColor(self.color))
-        painter.drawText(x_shadow, y, self.shadowText)
-
-        painter.end()
-    
-    def setFlash(self, a0: bool):
-        if a0:
-            self.setColor("#1E8449")
-        else:
-            self.setColor("#F1C40F")
-
-
-    def setEnabled(self, a0: bool) -> None:
-        if a0:
-            self.setColor("#F1C40F")
-        else:
-            self.setColor("#DCDCDC")
-    
-    def setFontsize(self, size):
-        self.size = size
-        self.font = QFont("Arial", int(self.size))  # update the font
-
-        metrics = QFontMetrics(self.font)
-        normal_size = metrics.size(Qt.TextSingleLine, self.max_normalText)
-        shadow_size = metrics.size(Qt.TextSingleLine, self.max_shadowText)
-        self.fixed_total_width = normal_size.width() + shadow_size.width()
-        self.fixed_total_height = metrics.height()
-
-        self.setMinimumHeight(self.fixed_total_height + 10)  # Add a little padding
-
-        self.update()
-
-    
-    def setColor(self, color):
-        self.color = color
-        self.update()  # Trigger a repaint with the new color
-    
-    def updateText(self, new_shadow_text):
-        self.shadowText = new_shadow_text
-        self.update()  # Trigger repaint
-    def updateNormalColor(self, new_normal_color):
-        if new_normal_color is not None:
-            self.normalTextColor = new_normal_color  # Normal text color
-            self.update()
-        
-    def sizeHint(self):
-        return QSize(self.fixed_total_width, self.fixed_total_height + 10)
+from PyQt5.QtWidgets import QCheckBox, QSizePolicy
 
 class ToggleSwitch(QCheckBox):
 
@@ -124,7 +25,7 @@ class ToggleSwitch(QCheckBox):
         # Save our properties on the object via self, so we can access them later
         # in the paintEvent.
         self._bar_cv_brush = QBrush(QColor("#BBDEFB"))  # Blue for CV
-        self._bar_brush = QBrush(QColor(bar_color))
+        self._bar_brush = QBrush(self._bar_cv_brush)
         self._bar_checked_brush = QBrush(QColor(checked_color).lighter())
 
         self._handle_brush = QBrush(handle_color)
@@ -147,7 +48,7 @@ class ToggleSwitch(QCheckBox):
         return self.contentsRect().contains(pos)
 
     def paintEvent(self, e: QPaintEvent):
-        super().paintEvent(e)
+
         contRect = self.contentsRect()
         width =  contRect.width() * self._h_scale
         height = contRect.height() * self._v_scale
@@ -179,7 +80,7 @@ class ToggleSwitch(QCheckBox):
 
             # Optional: draw text inside handle
             p.setPen(QColor("white"))
-            p.setFont(QFont('Helvetica', int(self._fontSize), 75))
+            p.setFont(QFont('Helvetica', self._fontSize, 75))
             p.drawText(QRectF(
                 barRect.center().x() - handleRadius,
                 yPos - handleRadius,
@@ -214,7 +115,7 @@ class ToggleSwitch(QCheckBox):
             handleRadius, handleRadius)
         # Draw text on handle
         p.setPen(self._black_pen)
-        p.setFont(QFont('Helvetica', int(self._fontSize), 75))
+        p.setFont(QFont('Helvetica', self._fontSize, 75))
 
         text = "CC" if self.isChecked() else "CV"
         text_rect = QRectF(
@@ -227,7 +128,7 @@ class ToggleSwitch(QCheckBox):
 
         p.end()
 
-    @Slot(int)
+    @pyqtSlot(int)
     def handle_state_change(self, value):
         self._handle_position = 1 if value else 0
 
@@ -255,7 +156,7 @@ class ToggleSwitch(QCheckBox):
 
     def setFontSize(self,value):
         self._fontSize = value
-        self.update()
+        self.update()     
 
 class PHSelectorWidget(QWidget):
     def __init__(self, parent=None):
@@ -352,7 +253,9 @@ class PowerButton(QCheckBox):
 
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-
+        # <-- Add these two lines -->
+        if not self.isEnabled():
+            painter.setOpacity(0.4)
         # Bar background with bevel
         bar_rect = QRectF(0, 0, bar_width, bar_height)
         bar_rect.moveCenter(self.rect().center())
@@ -425,6 +328,9 @@ class Round3DButton(QPushButton):
         size = min(rect.width(), rect.height())
         radius = size / 2 - 2
         center = rect.center()
+        # if pressed, offset everything
+        offset = QPointF(1.5, 1.5) if self.isDown() else QPointF(0,0)
+        center += offset
 
         # Background color
         
@@ -450,15 +356,26 @@ class Round3DButton(QPushButton):
             painter.setPen(Qt.NoPen)
             painter.drawEllipse(center, radius, radius)
 
-            bg_color = QColor("#a6a6a6")
-            pen = QPen(bg_color, 1)
-            painter.setPen(pen)
-            inner_radius = radius-1
-            painter.drawEllipse(center, inner_radius, inner_radius)
+            
+            
+            # 1) define the diagonal gradient:
+            grad = QLinearGradient(
+                QPointF(center.x() - radius, center.y() - radius),  # top-left of circle
+                QPointF(center.x() + radius, center.y() + radius)   # bottom-right
+            )
+            grad.setColorAt(0.0, QColor("#ffffff"))  # highlight at top
+            grad.setColorAt(1.0, QColor("#888888"))  # shadow at bottom
 
-            border_pen.setColor(QColor("#c8c8c8"))
-            painter.setPen(border_pen)
-            painter.drawArc(rect.adjusted(2, 2, -2, -2), 225 * 16, 180 * 16)
+            # 2) create a pen that strokes with that gradient
+            pen = QPen(QBrush(grad), 2.0)
+            painter.setBrush(Qt.NoBrush)
+            painter.setPen(pen)
+
+            # 3) draw a true circle (rx == ry)
+            painter.drawEllipse(center, radius, radius)
+            #border_pen.setColor(QColor("#c8c8c8"))
+            #painter.setPen(border_pen)
+            #painter.drawArc(rect.adjusted(2, 2, -2, -2), 225 * 16, 180 * 16)
             
         
         else:
@@ -479,7 +396,27 @@ class Round3DButton(QPushButton):
         
             border_pen.setColor(QColor("#c8c8c8"))
             painter.setPen(border_pen)
-            painter.drawArc(rect.adjusted(4, 4, -4, -4), 45 * 16, 180 * 16)
+            inner_radius = radius
+            painter.drawEllipse(center, inner_radius, inner_radius)
+
+            
+            
+            #border_pen.setColor(QColor("#c8c8c8"  # 1) define the diagonal gradient:
+            grad = QLinearGradient(
+                QPointF(center.x() - radius, center.y() - radius),  # top-left of circle
+                QPointF(center.x() + radius, center.y() + radius)   # bottom-right
+            )
+            grad.setColorAt(0.0, QColor("#888888"))  # highlight at top
+            grad.setColorAt(1.0, QColor("#ffffff"))  # shadow at bottom
+
+            # 2) create a pen that strokes with that gradient
+            pen = QPen(QBrush(grad), 2.0)
+            painter.setBrush(Qt.NoBrush)
+            painter.setPen(pen)
+            painter.drawEllipse(center, radius, radius)
+            
+            #painter.setPen(border_pen)
+            #painter.drawArc(rect.adjusted(4, 4, -4, -4), 45 * 16, 180 * 16)
             
 
         #bg_color = QColor("#a6a6a6")
@@ -494,7 +431,11 @@ class Round3DButton(QPushButton):
         # Draw text centered, but slightly shifted if pressed
         text_rect = self.rect().translated(offset.toPoint())
         
-        painter.setPen(Qt.black)
+        if not self.isEnabled():
+            painter.setPen(Qt.gray)
+        else:
+            painter.setPen(Qt.black)
+            
         font = painter.font()
         font.setPointSizeF(radius * 0.5)
         painter.setFont(font)
@@ -522,7 +463,7 @@ class DialWithLabel(QDial):
         #layout.setContentsMargins(0,0,0,0)
         #self.setLayout(layout)
 
-    @Slot(int)
+    @pyqtSlot(int)
     def _on_value_change(self, val):
         num = val / 10.0
         self.label.setText(str(num))

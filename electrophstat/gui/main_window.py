@@ -3,12 +3,10 @@ import time
 import os
 import getpass
 from electrophstat.hardware.dummy_switcher import MockLib8MosInd
-#from electrophstat.control.phstat_control import ControlLoop, PumpAction
 from electrophstat.io.logger import Logger
 from electrophstat.control.pump_control import PumpController
 from electrophstat.io.usb_monitor import USBWorker
 from electrophstat.gui.dialogs import DatePickerDialog, CalibratepHDialog, CalibratePumpDialog
-from electrophstat.gui.widgets import CustomTextWidget, ToggleSwitch
 from electrophstat.control.timer_control import monoTimer
 from electrophstat.io.power_logger import PowerLogger
 from electrophstat.connections.main_connections import setup_mainwindow_signals
@@ -55,8 +53,9 @@ class MainWindow(QMainWindow):
 
         self.setupVariables()
 
-        self.calibrate_pump_window = CalibratePumpDialog(float(self.ml), float(self.addtime))
+        self.calibrate_pump_dialog = CalibratePumpDialog(float(self.ml), float(self.addtime))
         self.pH_calibrate_dialog = CalibratepHDialog(float(self.lowpH),float(self.midpH),float(self.highpH))
+        self.date_time_dialog = DatePickerDialog()
         
         #self.time_settings_window.select_changed.connect(self.handle_time)
         #self.time_settings_window.test_pump.connect(self.pumpInput)
@@ -76,7 +75,7 @@ class MainWindow(QMainWindow):
         REPO_ROOT = HERE.parents[2]                   # ...\GitHub\ElectroPHstat
         LOG_BASE  = REPO_ROOT / "ElectroPHData"       # ...\GitHub\ElectroPHstat\ElectroPHData
         #LOG_BASE=Path.home()/"ElectroPHData",
-
+        
         self.logger = Logger(
             base_dir=LOG_BASE,
             labels=["pump","pH", "temperature","voltage","current", "coulomb"],
@@ -84,6 +83,7 @@ class MainWindow(QMainWindow):
 
         )
         self.logging_ctrl = LoggingController(self, interval=5.0)
+        self.logging_ctrl.active_labels = set(self.logger.labels)
 
         #self.logger = Logger(
         #    filepath="ph_control_log.csv",
@@ -92,8 +92,8 @@ class MainWindow(QMainWindow):
         self.pump_ctrl = PumpController(
             hw=lib8mosind,
             logger=self.logger,
-            duration_s=self.pumpDurationSeconds,
-            ml_per_cylce = 10,
+            duration_s=float(self.addtime),
+            ml_per_cylce = float(self.ml),
             parent=self
         )
         
@@ -130,9 +130,7 @@ class MainWindow(QMainWindow):
         self.pHstat_cont.handle_select(self.keepSelector.currentIndex())
         self.pHstat_cont.handle_pH    (self.phSpin.value())
         
-        self.pH_calibrate_dialog = CalibratepHDialog(
-            float(self.lowpH), float(self.midpH), float(self.highpH)
-        )
+        
         pH_worker = self.sensor_ctrl.pH_worker
         # connect your dialog
         self.pH_calibrate_dialog.calibrate_changed.connect(
@@ -140,7 +138,14 @@ class MainWindow(QMainWindow):
         )
         # Initialize PPS controller with proper interval (e.g., 1 second) and reset condition
 
+        self.calibrate_pump_dialog.test_pump.connect(
+            self.pump_ctrl.on_test_pump
+        )
 
+        # wire “Set” → PumpController
+        self.calibrate_pump_dialog.select_changed.connect(
+            self.pump_ctrl.on_set_calibration
+        )
         # 2) Now wire up every signal/slot in one place
         setup_mainwindow_signals(self)
         
@@ -207,13 +212,23 @@ class MainWindow(QMainWindow):
         self.voltageDial.setFixedSize(dial_size, dial_size)
         self.currentDial.setFixedSize(dial_size, dial_size)
         
-        self.modeToggle.setH_scale(0.55*scale)
-        self.modeToggle.setV_scale(0.55*scale)
-        self.modeToggle.setFontSize(9*scale)
+        #self.modeToggle.setH_scale(0.55*scale)
+        #self.modeToggle.setV_scale(0.55*scale)
+        modeToggle_size = (0,55*scale)
+        #self.modeToggle.setHitSize(modeToggle_size,modeToggle_size)
+        
+        #self.modeToggle.setFontSize(9*scale)
+
         powerButton_width = int(60 * scale)
         powerButton_height = int(40 * scale)
         self.powerButton.setFixedSize(powerButton_width, powerButton_height)
         
+
+        usb_button_size = int(60 * scale)
+        usb_button_icon = int(55 * scale)
+        self.usb_button.setMinimumSize(usb_button_size, usb_button_size)
+        self.usb_button.setIconSize(QSize(usb_button_icon, usb_button_icon))
+
         button_size = int(60 * scale)  # scale from window size
         #self.toolButton.setFixedSize(button_size,button_size)
         
