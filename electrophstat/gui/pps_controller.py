@@ -61,6 +61,7 @@ class PPSController(QObject):
         try:
             self._setup_worker()
             print("[PPS] Reconnected.")
+            self.connections._enable_pps_controls()
             self.win._apply_scaling()
         except Exception as e:
             print(f"[PPS] Reconnect failed: {e}")
@@ -77,6 +78,7 @@ class PPSController(QObject):
         self.win.modeToggle  .setEnabled(True)
         self.win.powerButton .setEnabled(True)
         self.win.PowerGroup.setEnabled(True)
+        self.win.reconnect_pps_action.setEnabled(False)
 
     def disable_psu(self):
         """Stop polling and grey‐out the UI."""
@@ -89,3 +91,5 @@ class PPSController(QObject):
         self.win.modeToggle  .setEnabled(False)
         self.win.powerButton .setEnabled(False)
         self.win.PowerGroup.setEnabled(False)
+        self.win.reconnect_pps_action.setEnabled(True)
+

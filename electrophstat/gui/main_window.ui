@@ -223,6 +223,9 @@
          <property name="text">
           <string>CV</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
         </widget>
        </item>
        <item row="0" column="1">
@@ -519,6 +522,9 @@
    </property>
   </action>
   <action name="reconnect_pps_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Reconnect Powersupply</string>
    </property>
