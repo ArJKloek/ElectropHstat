@@ -52,9 +52,18 @@ class PPSController(QObject):
     @pyqtSlot()
     def reconnect(self):
         """Stop the old one and spin up a brand new worker."""
-        print(f'Reconnect started')
-        self.stop()
-        self._setup_worker()
+        print(f'Reconnect started')       
+        try:
+            self.stop()
+            print("[PPS] Existing PPSWorker stopped.")
+        except Exception as e:
+            print(f"[PPS] Error stopping old PPSWorker: {e}")        
+        try:
+            self._setup_worker()
+            print("[PPS] Reconnected.")
+            self.win._apply_scaling()
+        except Exception as e:
+            print(f"[PPS] Reconnect failed: {e}")
 
     def enable_psu(self):
         """Re‐start polling and re‐enable the UI."""
