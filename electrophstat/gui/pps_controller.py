@@ -13,15 +13,19 @@ class PPSController(QObject):
         super().__init__(window)
         self.win = window
         self.connections = pps_connections
-
+        self.interval = interval
+        self.reset = reset
+        self._setup_worker()
+        
+    def _setup_worker(self):
         # 1) Probe for a real PPS (or get a DummyPPS)
-        port = discover_power_supply(reset=reset)
-        self.pps_worker = PPSWorker(port, interval, reset=False)
+        port = discover_power_supply(reset=self.reset)
+        self.pps_worker = PPSWorker(port, self.interval, reset=False)
 
         self.connections.set_worker(self.pps_worker)
 
         # 2) Move it into its own thread
-        self.thread = QThread(window)
+        self.thread = QThread(self.win)
         self.pps_worker.moveToThread(self.thread)
         self.thread.started.connect(self.pps_worker.run)
 
@@ -37,6 +41,8 @@ class PPSController(QObject):
 
         # 5) fire one initial limits‐read so the dials get properly ranged
         self.pps_worker.emit_limits()
+
+
 
     @pyqtSlot()
     def stop(self):

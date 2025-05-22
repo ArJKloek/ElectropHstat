@@ -135,3 +135,5 @@ class PPSConnections(QObject):
             self.win.pps_ctrl.disable_psu()
             self.win.logging_ctrl.disable_logging(["voltage","current","coulomb"])
             self.win.graph_ctrl.set_psu_enabled(False)
+
+     
