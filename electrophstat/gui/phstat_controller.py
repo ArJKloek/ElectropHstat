@@ -17,7 +17,7 @@ class pHStatController(QObject):
         self.win.pump_ctrl.dose_finished.connect(self._on_dose_finished)
         self.loop = pHStatLoop(
             select=self.win.pHSelectMode,
-            target_pH=self.win.pHSelect
+            target_pH=self.win.pH_target
         )
         self._last_pump_on = False
 

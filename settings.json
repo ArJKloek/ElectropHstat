@@ -1,0 +1,11 @@
+{
+  "pH_control_mode": 0,
+  "pH_target": 9.0,
+  "pump_volume_per_cycle_ml": 0.098,
+  "pump_cycle_duration_s": 0.24,
+  "pump_cooldown_duration_s": 5.0,
+  "pH_calibration_low": 4.010000000000001,
+  "pH_calibration_mid": 7.0,
+  "pH_calibration_high": 10.0,
+  "reference_file_path": ""
+}

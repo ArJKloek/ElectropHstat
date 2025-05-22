@@ -1,6 +1,8 @@
 # electrophstat/gui/connections.py
 from PyQt5.QtCore    import pyqtSlot
 from PyQt5.QtWidgets import QAction, QActionGroup
+import platform, os
+from pathlib import Path
 
 def setup_mainwindow_signals(win):
 
@@ -31,5 +33,24 @@ def setup_mainwindow_signals(win):
     lg.triggered.connect(win.button_cont.on_log_option_changed)
 
     
-    
+def find_data_directory():
+    # 1) figure out where we’re running
+    is_windows = platform.system() == "Windows"
+    is_rpi     = (platform.system() == "Linux"
+                and Path("/home/pi").exists())
+
+    # 2) build your base‐dir accordingly
+    if is_rpi:
+        # on a Pi, put it on the Desktop/Data folder
+        LOG_BASE = Path.home() / "Desktop" / "Data"
+    else:
+        # on Windows (or any non‐Pi), use the repo root
+        HERE      = Path(__file__).resolve()
+        REPO_ROOT = HERE.parents[2]     # .../GitHub/ElectroPHstat
+        LOG_BASE  = REPO_ROOT / "ElectroPHData"
+
+    # 3) make sure it exists
+    LOG_BASE.mkdir(parents=True, exist_ok=True)
+
+    return LOG_BASE   
     

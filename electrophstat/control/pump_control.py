@@ -59,9 +59,8 @@ class PumpController(QObject):
     @pyqtSlot(float, float)
     def on_set_calibration(self, ml_per_cycle: float, interval_s: float):
         """Called when the user clicks ‘Set’ on the dialog."""
-        self.ml_per_cycle = ml_per_cycle
-        self.duration_ms   = int(interval_s * 1000)
-        print(f"[PumpController] Calibrated: {ml_per_cycle} mL per cycle, {interval_s}s interval")
+        self.ml_per_cycle   = ml_per_cycle
+        self.duration_ms    = int(interval_s * 1000)
         # Optionally persist to your config here
 
     def _start(self):
@@ -84,8 +83,8 @@ class PumpController(QObject):
         self.total_ml = 0 
 
     @pyqtSlot(float, float)
-    def set_calibration(self, ml: float, duration_s: float):
-        self.ml_per_cycle = ml
+    def set_calibration(self, pump_volume_per_cycle_ml: float, duration_s: float):
+        self.ml_per_cycle = pump_volume_per_cycle_ml
         self.duration_ms  = int(duration_s * 1000) 
     
     

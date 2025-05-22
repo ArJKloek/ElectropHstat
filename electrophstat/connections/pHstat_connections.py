@@ -17,29 +17,27 @@ class pHStatConnections(QObject):
         # Pump calibration
         self.win.actionCalibrate_Pump.triggered.connect(self.openCalibratePumpWindow)
         # update the loop whenever the user flips the selector
+        
     @pyqtSlot(int)
     def handle_select(self, select):
             if select == 0:
                 self.win.statustext = "above"
             else:
                 self.win.statustext = "below"
-            self.win.keepSelector.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.win.statustext} a pH of {self.win.pHSelect}')
+            self.win.keepSelector.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.win.statustext} a pH of {self.win.pH_target}')
             self.win.phstat_ctrl.loop.set_select(select)
-
-            #ConfigWriter(self)
-
+            self.win.config.pH_control_mode = select
+            
     @pyqtSlot(float) 
     def handle_pH(self,pH):
 
         self.win.phSpin.setValue(pH)
-        self.win.pHSelect = float(pH)
-        self.win.phSpin.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.win.statustext} a pH of {self.win.pHSelect}')
+        self.win.pH_target = float(pH)
+        self.win.phSpin.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.win.statustext} a pH of {self.win.pH_target}')
         self.win.phstat_ctrl.loop.set_target_pH(pH)
+        self.win.config.pH_target = round(pH,2)
 
-        #ConfigWriter(self)
-        #print(f"Received signal with value: {value}")
-        # Handle the change in the main GUI here
-    
+       
     @pyqtSlot() 
     def openCalibratePumpWindow(self):
         self.win.calibrate_pump_dialog.exec_()

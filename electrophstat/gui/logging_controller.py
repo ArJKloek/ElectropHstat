@@ -83,3 +83,30 @@ class LoggingController(QObject):
         if self._worker is not None:
             self._worker.interval = self.interval
         print(f"[LoggingController] interval set to {self.interval}s")
+    
+    def disable_logging(self, labels):
+        """
+        Prevent the given labels from being logged:
+          • remove them from the active_labels set
+          • drop any in-flight CSV file + start time so the worker skips them
+        """
+        for lbl in labels:
+            self.active_labels.discard(lbl)
+            self.win.logger.files .pop(lbl, None)
+            self.win.logger.starts.pop(lbl, None)
+
+    def enable_logging(self, labels):
+        """
+        Re-allow the given labels to be logged:
+          • add them back to active_labels
+          • if the session is running, create fresh CSV files for each
+        """
+        for lbl in labels:
+            self.active_labels.add(lbl)
+            # if mid-session and we haven’t made a file yet:
+            if self.win.logger.log_dir and lbl not in self.win.logger.files:
+                idx  = self.win.logger.labels.index(lbl)
+                col  = self.win.logger.columns[idx]
+                path = self.win.logger._make_file(lbl, col, datetime.now())
+                self.win.logger.files[lbl]  = path
+                self.win.logger.starts[lbl] = time.monotonic()

@@ -125,13 +125,13 @@ class PPSConnections(QObject):
         print(checked)
         if checked:
             print("PSU control & logging ENABLED")
-            self.win.pps_ctrl.enable_psu()
+            self._enable_pps_controls()
             self.win.logging_ctrl.enable_logging(["voltage","current","coulomb"])
             self.win.graph_ctrl.set_psu_enabled(True)
 
         else:
             print("PSU control & logging DISABLED")
-            self.win.pps_ctrl.disable_psu()
+            self._disable_pps_controls()
             self.win.logging_ctrl.disable_logging(["voltage","current","coulomb"])
             self.win.graph_ctrl.set_psu_enabled(False)
 

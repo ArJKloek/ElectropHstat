@@ -28,15 +28,15 @@ class CalibratePumpDialog(QDialog):
     select_changed = pyqtSignal(float,float)
     test_pump = pyqtSignal(bool,float)
 
-    def __init__(self, ml: float, addtime: float):
-        super().__init__(flags=Qt.WindowCloseButtonHint)
+    def __init__(self, ml: float, pump_cycle_duration_s: float, parent=None):
+        super().__init__(parent, flags=Qt.WindowCloseButtonHint)
         uic.loadUi("electrophstat/gui/calibrate_pump_dialog.ui", self)
 
         self._ml = ml
-        self._addtime = addtime
+        self._pump_cycle_duration_s = pump_cycle_duration_s
 
         self.dsMlperCycle.setValue(self._ml)
-        self.dsTimeInterval.setValue(self._addtime)
+        self.dsTimeInterval.setValue(self._pump_cycle_duration_s)
         
         self.btnSet.clicked.connect(self.accept)
         self.btnTest.clicked.connect(self.startTest)
@@ -58,9 +58,18 @@ class CalibratePumpDialog(QDialog):
         self.btnTest.setEnabled(True)
       
     def accept(self):
-        newml = self.dsMlperCycle.value()
-        newaddtime = self.dsTimeInterval.value() 
-        self.select_changed.emit(newml, newaddtime)
+         # 1) emit the usual select_changed signal for any existing logic
+        new_ml       = float(self.dsMlperCycle.value())
+        new_duration = float(self.dsTimeInterval.value())
+        self.select_changed.emit(round(new_ml,3), round(new_duration,2))
+
+        # 2) write immediately into MainWindow.config
+        mw = self.parent()  # type: MainWindow
+        if mw is not None and hasattr(mw, "config"):
+            # these keys must match what you named in DEFAULT_CONFIG
+            mw.config.pump_volume_per_cycle_ml  = round(new_ml,3)
+            mw.config.pump_cycle_duration_s     = round(new_duration,2)
+        # 3) close the dialog
         super().accept()  # Close the dialog
 
 # electrophstat/gui/dialogs.py
@@ -81,12 +90,24 @@ class CalibratepHDialog(QDialog):
         self.btnCalLowPH.clicked .connect(lambda: self.emitCalibration("low",  self.sbLowPH.value()))
         self.btnCalMidPH.clicked .connect(lambda: self.emitCalibration("mid",  self.sbMidPH.value()))
         self.btnCalHighPH.clicked.connect(lambda: self.emitCalibration("high", self.sbHighPH.value()))
-
+        
     def emitCalibration(self, calibrationType: str, pH: float):
+                # grab main window & its Config
+        mw = self.parent()
+        cfg = mw.config
+
+        # update the JSON‐backed setting immediately
+        if calibrationType == "low":
+            cfg.pH_calibration_low = round(pH,2)
+        elif calibrationType == "mid":
+            cfg.pH_calibration_mid = round(pH,2)
+        else:  # "high"
+            cfg.pH_calibration_high = round(pH,2)
+
         data = [self.sbLowPH.value(),
                 self.sbMidPH.value(),
                 self.sbHighPH.value()]
-        self.calibrate_changed.emit(calibrationType, pH, data)
-
+        self.calibrate_changed.emit(calibrationType, round(pH,2), data)
+    
     def updateInfo(self, newInfo: str):
         self.leCalStatus.setText(newInfo)

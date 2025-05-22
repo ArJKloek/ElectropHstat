@@ -9,7 +9,7 @@ from electrophstat.io.usb_monitor import USBWorker
 from electrophstat.gui.dialogs import DatePickerDialog, CalibratepHDialog, CalibratePumpDialog
 from electrophstat.control.timer_control import monoTimer
 from electrophstat.io.power_logger import PowerLogger
-from electrophstat.connections.main_connections import setup_mainwindow_signals
+from electrophstat.connections.main_connections import setup_mainwindow_signals, find_data_directory
 from electrophstat.connections.button_connections import ButtonConnections
 from electrophstat.connections.pHstat_connections import pHStatConnections
 from electrophstat.gui.graph_controller import GraphController
@@ -19,7 +19,8 @@ from electrophstat.gui.pps_controller import PPSController
 from electrophstat.connections.pps_connections import PPSConnections
 from electrophstat.gui.phstat_controller import pHStatController
 from electrophstat.gui.logging_controller import LoggingController
-
+#from electrophstat.io.config import Config
+from electrophstat.connections.config_connections import init_config
 from pathlib import Path
 
 
@@ -36,7 +37,6 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QGridLayout,
 from PyQt5.QtGui import QFont, QColor, QIcon, QPen, QTransform, QPalette
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint, QDateTime, QEvent
 
-from scripts.pHstat_config import ConfigReader, ConfigWriter
 #import lib8mosind
 
 
@@ -53,8 +53,10 @@ class MainWindow(QMainWindow):
 
         self.setupVariables()
 
-        self.calibrate_pump_dialog = CalibratePumpDialog(float(self.ml), float(self.addtime))
-        self.pH_calibrate_dialog = CalibratepHDialog(float(self.lowpH),float(self.midpH),float(self.highpH))
+        init_config(self)
+
+        self.calibrate_pump_dialog = CalibratePumpDialog(float(self.pump_volume_per_cycle_ml), float(self.pump_cycle_duration_s), self)
+        self.pH_calibrate_dialog = CalibratepHDialog(float(self.pH_calibration_low),float(self.pH_calibration_mid),float(self.pH_calibration_high),self)
         self.date_time_dialog = DatePickerDialog()
         
         #self.time_settings_window.select_changed.connect(self.handle_time)
@@ -71,9 +73,7 @@ class MainWindow(QMainWindow):
         #)
 
         
-        HERE      = Path(__file__).resolve()          # ...\GitHub\ElectroPHstat\electrophstat\gui\main_window.py
-        REPO_ROOT = HERE.parents[2]                   # ...\GitHub\ElectroPHstat
-        LOG_BASE  = REPO_ROOT / "ElectroPHData"       # ...\GitHub\ElectroPHstat\ElectroPHData
+        LOG_BASE  = find_data_directory()       # ...\GitHub\ElectroPHstat\ElectroPHData
         #LOG_BASE=Path.home()/"ElectroPHData",
         
         self.logger = Logger(
@@ -92,8 +92,8 @@ class MainWindow(QMainWindow):
         self.pump_ctrl = PumpController(
             hw=lib8mosind,
             logger=self.logger,
-            duration_s=float(self.addtime),
-            ml_per_cylce = float(self.ml),
+            duration_s=float(self.pump_cycle_duration_s),
+            ml_per_cylce = float(self.pump_volume_per_cycle_ml),
             parent=self
         )
         
@@ -127,9 +127,9 @@ class MainWindow(QMainWindow):
         }
 
         self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
-        self.phstat_ctrl = pHStatController(self, interval=1.0)
-        self.pHstat_cont.handle_select(self.keepSelector.currentIndex())
-        self.pHstat_cont.handle_pH    (self.phSpin.value())
+        self.phstat_ctrl = pHStatController(self, interval=1.0, cooldown=self.pump_cooldown_duration_s)
+        self.pHstat_cont.handle_select(self.config.pH_control_mode)
+        self.pHstat_cont.handle_pH    (self.config.pH_target)
         
         
         pH_worker = self.sensor_ctrl.pH_worker
@@ -229,7 +229,7 @@ class MainWindow(QMainWindow):
         usb_button_icon = int(55 * scale)
         self.usb_button.setMinimumSize(usb_button_size, usb_button_size)
         self.usb_button.setIconSize(QSize(usb_button_icon, usb_button_icon))
-
+        
         button_size = int(60 * scale)  # scale from window size
         #self.toolButton.setFixedSize(button_size,button_size)
         
@@ -348,27 +348,12 @@ class MainWindow(QMainWindow):
         self.tabWidget.setStyleSheet(tab_style)
 
     def setupVariables(self):
-        self.pump_start_time = None  # Initialize a variable to store the start time
-        self.elapsed_time = None
-        self.totalml = 0
-        self.pH_label = []
-        self.send_counter = time.time()
-        self.read = False
-        self.test_time = time.time()
-        self.pHdata = 9.9
-        self.temp = 20
-        #self.dev = 1#atlas_i2c(address=address)
-        #self.pHdev = atlas_i2c(address=99)
-        #self.RTDdev = atlas_i2c(address=102)
-        #self.log_interval = 0
         self.Ref_path = ''
-        self.pHSelect = 0.0
-        self.Select = 0
-        self.ml = 0
+        self.pH_target = 0.0
+        self.pH_control_mode = 0
+        self.pump_volume_per_cycle_ml = 0
         self.injections = 0
-        self.addtime = 0
-        #self.pHvalue = 0
-        #self.RTDvalue = 0
+        self.pump_cycle_duration_s = 0
         self.valueData = {
             "pump":             0.0,
             "pH":               0.0,
@@ -378,18 +363,13 @@ class MainWindow(QMainWindow):
             "coulomb":          0.0,
             "mode":             "",
         }
-        self.cooldown = 0
+        self.pump_cooldown_duration_s = 0
         self.currentActiveTabIndex = 0  # Track the current tab index
         self.graphTabs = []
         self.graphWidgets = []
-        self.plotindex = ["Pump", "pH" , "RTD", "Volt", "Amp", "Coulomb"]
-        self.headerindex = ["Pumped (ml)", "pH", "Temperature (°C)", "Voltage (V)", "Current (A)", "Coulomb (C)"]
-        self.Log_date = [0,0,0,0,0,0]
-        self.is_logging = False
-        self.statustext = ""
-        self.lowpH = 0.0
-        self.midpH = 0.0
-        self.highpH = 0.0
+        self.pH_calibration_low = 0.0
+        self.pH_calibration_mid = 0.0
+        self.pH_calibration_high = 0.0
         self.copy_path = ""
         #self.log_interval = 500
         self.viewBoxes = {}  # In __init__ or setupVariables()
@@ -398,7 +378,7 @@ class MainWindow(QMainWindow):
         self.start = False
         self.pHSelectMode = 1 
         self.pumpDurationSeconds = 1
-        ConfigReader(self)
+        #ConfigReader(self)
 
     def changeEvent(self, event):
         """
@@ -414,9 +394,6 @@ class MainWindow(QMainWindow):
                 self.actionFullscreen.setText("Maximized")
             else:
                 self.actionFullscreen.setText("Normal")
-
-        
-    
 
     def exitApplication(self,event):
         # Create a confirmation dialog
