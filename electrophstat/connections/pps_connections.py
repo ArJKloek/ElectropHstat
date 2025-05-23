@@ -128,13 +128,13 @@ class PPSConnections(QObject):
             self._enable_pps_controls()
             self.win.logging_ctrl.enable_logging(["voltage","current","coulomb"])
             self.win.graph_ctrl.set_psu_enabled(True)
-            self.win.PowerGroup.currentIndex(0)
+            self.win.PowerGroup.setCurrentIndex(0)
 
         else:
             print("PSU control & logging DISABLED")
             self._disable_pps_controls()
             self.win.logging_ctrl.disable_logging(["voltage","current","coulomb"])
             self.win.graph_ctrl.set_psu_enabled(False)
-            self.win.PowerGroup.currentIndex(1)
+            self.win.PowerGroup.setCurrentIndex(1)
 
      
