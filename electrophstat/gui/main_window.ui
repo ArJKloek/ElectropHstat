@@ -20,7 +20,14 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="1" colspan="2">
+    <item row="1" column="2" rowspan="3" colspan="5">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="statusTip">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2" colspan="2">
      <widget class="QGroupBox" name="groupBox_4">
       <property name="title">
        <string/>
@@ -91,35 +98,15 @@
          <property name="text">
           <string>pH 7.0</string>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="RTDlabel">
-         <property name="statusTip">
-          <string>Temperature measured</string>
-         </property>
-         <property name="text">
-          <string>25 °C</string>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
-       </item>
-       <item row="0" column="1">
-        <spacer name="hor_spacer1">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="0" column="3">
+    <item row="0" column="4">
      <spacer name="hor_spacer2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -132,7 +119,7 @@
       </property>
      </spacer>
     </item>
-    <item row="0" column="5">
+    <item row="0" column="6">
      <spacer name="hor_spacer3">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -148,7 +135,7 @@
       </property>
      </spacer>
     </item>
-    <item row="0" column="4">
+    <item row="0" column="5">
      <widget class="QPushButton" name="usb_button">
       <property name="enabled">
        <bool>false</bool>
@@ -189,61 +176,32 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QGroupBox" name="buttonGroup">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>1</verstretch>
-       </sizepolicy>
-      </property>
+    <item row="0" column="1">
+     <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
        <string/>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="startbutton">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="statusTip">
-          <string>Start logging</string>
-         </property>
-         <property name="text">
-          <string>Start</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="stopbutton">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="RTDlabel">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="statusTip">
-          <string>Stop logging</string>
+          <string>Temperature measured</string>
          </property>
          <property name="text">
-          <string>Stop</string>
+          <string>25 °C</string>
          </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="resetbutton">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="statusTip">
-          <string>Reset logging</string>
-         </property>
-         <property name="text">
-          <string>Reset</string>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item row="1" column="0" colspan="2">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
        <string/>
@@ -263,14 +221,7 @@
       </widget>
      </widget>
     </item>
-    <item row="1" column="1" rowspan="3" colspan="5">
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="statusTip">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
+    <item row="2" column="0" colspan="2">
      <widget class="QGroupBox" name="PowerGroup">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -409,6 +360,60 @@
          </property>
          <property name="text">
           <string>Set</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QGroupBox" name="buttonGroup">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="title">
+       <string/>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="startbutton">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string>Start logging</string>
+         </property>
+         <property name="text">
+          <string>Start</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="stopbutton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="statusTip">
+          <string>Stop logging</string>
+         </property>
+         <property name="text">
+          <string>Stop</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="resetbutton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="statusTip">
+          <string>Reset logging</string>
+         </property>
+         <property name="text">
+          <string>Reset</string>
          </property>
         </widget>
        </item>
