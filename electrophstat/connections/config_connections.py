@@ -21,16 +21,16 @@ def init_config(self):
         "pH_calibration_high":       10.00,
         "reference_file_path":       "",
         "features": {
-            "enable_psu":               true,
-            "enable_ph":                true,
-            "enable_temp":              true,
-            "enable_turbidity":         true
+            "enable_psu":               True,
+            "enable_ph":                True,
+            "enable_temp":              True,
+            "enable_turbidity":         True
         }
     }
 
     # 2) instantiate & merge any on‐disk overrides
     self.config = Config(cfg_path, DEFAULT_CONFIG)
-    features = self.config.get('features', {})
+    features = self.config.features
     ENABLE_PSU = features.enable_psu
     print(ENABLE_PSU)
     # 3) pull them into window attributes
