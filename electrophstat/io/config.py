@@ -17,7 +17,7 @@ class Config:
                  defaults: Dict[str, Any]):
         self.path     = Path(path)
         self.defaults = defaults.copy()
-        self._data    = {}#defaults.copy()
+        self._data    = defaults.copy()
         self.load()
 
     def load(self) -> None:
