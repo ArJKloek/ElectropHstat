@@ -42,7 +42,7 @@ class Config:
     def __getitem__(self, key: str) -> Any:
         if key in self._data: 
             return self._data[key]
-        return self.defaults.get(key))
+        return self.defaults.get(key)
 
     def __setitem__(self, key: str, value: Any) -> None:
         self._data[key] = value
