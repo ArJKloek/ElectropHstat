@@ -90,16 +90,6 @@
        <string/>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="2">
-        <widget class="QLabel" name="RTDlabel">
-         <property name="statusTip">
-          <string>Temperature measured</string>
-         </property>
-         <property name="text">
-          <string>25 °C</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="pHNumber">
          <property name="statusTip">
@@ -107,6 +97,16 @@
          </property>
          <property name="text">
           <string>pH 7.0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="RTDlabel">
+         <property name="statusTip">
+          <string>Temperature measured</string>
+         </property>
+         <property name="text">
+          <string>25 °C</string>
          </property>
         </widget>
        </item>
@@ -122,6 +122,13 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>0000 NTSU</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -259,7 +266,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="PowerGroup" native="true">
        <layout class="QGridLayout" name="gridLayout_4">
@@ -451,11 +458,20 @@
      <addaction name="separator"/>
      <addaction name="menuLog_Options"/>
     </widget>
+    <widget class="QMenu" name="menuEnable_Senors">
+     <property name="title">
+      <string>Enable Senors</string>
+     </property>
+     <addaction name="actionpH"/>
+     <addaction name="actionTemperature"/>
+     <addaction name="actionTurbidity"/>
+    </widget>
     <addaction name="action_datewindow"/>
     <addaction name="menupHstat_settings"/>
     <addaction name="separator"/>
     <addaction name="actionEnable_PSU_control"/>
     <addaction name="toggle_pH_control"/>
+    <addaction name="menuEnable_Senors"/>
     <addaction name="separator"/>
     <addaction name="reconnect_pps_action"/>
     <addaction name="separator"/>
@@ -586,6 +602,21 @@
    </property>
    <property name="text">
     <string>Enable PSU control</string>
+   </property>
+  </action>
+  <action name="actionpH">
+   <property name="text">
+    <string>pH</string>
+   </property>
+  </action>
+  <action name="actionTemperature">
+   <property name="text">
+    <string>Temperature</string>
+   </property>
+  </action>
+  <action name="actionTurbidity">
+   <property name="text">
+    <string>Turbidity</string>
    </property>
   </action>
  </widget>
