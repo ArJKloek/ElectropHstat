@@ -206,19 +206,18 @@
       <property name="title">
        <string/>
       </property>
-      <widget class="QLabel" name="label">
-       <property name="geometry">
-        <rect>
-         <x>90</x>
-         <y>0</y>
-         <width>196</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>0000 NTSU</string>
-       </property>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>0000 NTSU</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item row="2" column="0" colspan="2">
