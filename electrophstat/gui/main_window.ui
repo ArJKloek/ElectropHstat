@@ -246,6 +246,12 @@
     </item>
     <item row="2" column="0">
      <widget class="QStackedWidget" name="PowerGroup">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <widget class="QWidget" name="PowerGroupPage1" native="true">
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="1" column="1">
