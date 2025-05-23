@@ -4,8 +4,18 @@
   "pump_volume_per_cycle_ml": 0.098,
   "pump_cycle_duration_s": 0.24,
   "pump_cooldown_duration_s": 5.0,
-  "pH_calibration_low": 4.010000000000001,
+  "pH_calibration_low": 4.01,
   "pH_calibration_mid": 7.0,
   "pH_calibration_high": 10.0,
-  "reference_file_path": ""
+  "reference_file_path": "",
+  "features": {
+  // Master switch for PSU controls & logging
+  "enable_psu": true,
+  // Enable pH sensor, graph & logging
+  "enable_ph": true,
+  // Enable Temperature sensor, graph & logging
+  "enable_temp": true,
+  // Enable turbidity sensor, graph & logging
+  "enable_turbidity": true
+  }
 }
