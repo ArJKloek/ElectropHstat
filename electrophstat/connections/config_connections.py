@@ -42,7 +42,8 @@ def init_config(self):
     self.pH_calibration_mid             = float(self.config.pH_calibration_mid)
     self.pH_calibration_high            = float(self.config.pH_calibration_high)
     self.Ref_path                       = self.config.reference_file_path
-
+    
+    print(self.config.pH_target)
     # 4) hook UI elements → config so that any user change persists
     #self.keepSelector.currentIndexChanged.connect(self._on_mode_change)
     #self.phSpin.valueChanged.connect(self._on_target_pH_change)
