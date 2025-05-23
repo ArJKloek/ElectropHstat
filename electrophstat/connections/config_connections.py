@@ -24,8 +24,8 @@ def init_config(self):
 
     # 2) instantiate & merge any on‐disk overrides
     self.config = Config(cfg_path, DEFAULT_CONFIG)
-    self.features = self.config.features
-    ENABLE_PSU = self.features.enable_psu
+    features = self.config.get('features', {})
+    ENABLE_PSU = features.enable_psu
     print(ENABLE_PSU)
     # 3) pull them into window attributes
     self.pH_control_mode                = int(self.config.pH_control_mode)
