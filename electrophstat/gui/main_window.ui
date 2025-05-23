@@ -258,7 +258,10 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <widget class="QWidget" name="PowerGroupPage1" native="true">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="PowerGroup" native="true">
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="1" column="1">
          <widget class="QLabel" name="currentlabel">
@@ -395,6 +398,7 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="page"/>
      </widget>
     </item>
    </layout>
