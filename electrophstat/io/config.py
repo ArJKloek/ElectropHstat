@@ -17,7 +17,7 @@ class Config:
                  defaults: Dict[str, Any]):
         self.path     = Path(path)
         self.defaults = defaults.copy()
-        self._data    = defaults.copy()
+        self._data    = {}
         self.load()
 
     def load(self) -> None:
@@ -40,7 +40,9 @@ class Config:
 
     # dict‐style
     def __getitem__(self, key: str) -> Any:
-        return self._data.get(key, self.defaults.get(key))
+        if key in self._data: 
+            return self._data[key]
+        return self.defaults.get(key))
 
     def __setitem__(self, key: str, value: Any) -> None:
         self._data[key] = value
@@ -50,6 +52,8 @@ class Config:
     def __getattr__(self, name: str) -> Any:
         if name in self._data:
             return self._data[name]
+        if name in self.defaults:
+            return self.defaults[name]
         raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
 
     def __setattr__(self, name: str, value: Any) -> None:
