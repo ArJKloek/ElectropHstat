@@ -1,7 +1,7 @@
 from __future__ import annotations
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 class Config:
     """
@@ -12,12 +12,12 @@ class Config:
       • dict-style access (cfg['foo'])
       • attribute-style access (cfg.foo)
     """
-    def __init__(self,
-                 path: str | Path,
-                 defaults: Dict[str, Any]):
-        self.path     = Path(path)
-        self.defaults = defaults.copy()
-        self._data    = {}
+    def __init__(self, path: Union[str, Path], defaults: Dict[str, Any]):
+        # store path and defaults
+        super().__setattr__('path', Path(path))
+        super().__setattr__('defaults', defaults.copy())
+        # _data holds ONLY values explicitly set or loaded from JSON
+        super().__setattr__('_data', {})
         self.load()
 
     def load(self) -> None:
