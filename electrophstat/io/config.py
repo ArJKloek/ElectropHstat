@@ -1,3 +1,8 @@
+from __future__ import annotations
+import json
+from pathlib import Path
+from typing import Any, Dict, Union
+
 class Config:
     """
     JSON-backed config that only persists explicit changes.
