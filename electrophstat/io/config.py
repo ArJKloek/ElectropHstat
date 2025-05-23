@@ -10,21 +10,24 @@ class Section:
     writing changes back into the parent dict.
     """
     def __init__(self, data: dict, parent: dict, key: str):
-        # Keep references to the nested data and its parent
+        # Internal references
         super().__setattr__('_data', data)
         super().__setattr__('_parent', parent)
         super().__setattr__('_key', key)
-        # Wrap deeper dicts recursively
+        # Initialize attributes for existing keys
         for k, v in data.items():
             if isinstance(v, dict):
                 v = Section(v, data, k)
-            setattr(self, k, v)
+            # Use super to bypass custom __setattr__
+            super().__setattr__(k, v)
 
     def __setattr__(self, name: str, value: Any):
         # Update the nested dict
         self._data[name] = value
         # Propagate update to parent dict
         self._parent[self._key] = self._data
+        # Also set attribute on this Section instance
+        super().__setattr__(name, value)
 
     def __getitem__(self, name: str) -> Any:
         return getattr(self, name)
@@ -103,7 +106,6 @@ class Config:
         Wrap dicts in Section, leave other types unchanged.
         """
         if isinstance(value, dict):
-            # Should not normally be called here for nested dicts,
-            # but kept for safety.
+            # Wrap top-level dict sections
             return Section(value, {}, '')
         return value
