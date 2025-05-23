@@ -8,7 +8,6 @@
   "pH_calibration_mid": 7.0,
   "pH_calibration_high": 10.0,
   "reference_file_path": "",
-  "features": {
   // Master switch for PSU controls & logging
   "enable_psu": false,
   // Enable pH sensor, graph & logging
@@ -17,5 +16,4 @@
   "enable_temp": true,
   // Enable turbidity sensor, graph & logging
   "enable_turbidity": true
-  }
 }

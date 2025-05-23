@@ -20,17 +20,15 @@ def init_config(self):
         "pH_calibration_mid":        7.00,
         "pH_calibration_high":       10.00,
         "reference_file_path":       "",
-        "features": {
-            "enable_psu":               True,
-            "enable_ph":                True,
-            "enable_temp":              True,
-            "enable_turbidity":         True
-        }
+        "enable_psu":               True,
+        "enable_ph":                True,
+        "enable_temp":              True,
+        "enable_turbidity":         True
     }
 
     # 2) instantiate & merge any on‐disk overrides
     self.config = Config(cfg_path, DEFAULT_CONFIG)
-    print(self.config.features.enable_psu)  # reads nested flag
+    print(self.config.enable_psu)  # reads nested flag
 
     #ENABLE_PSU = bool(self.config.features.enable_psu)
     #print(ENABLE_PSU)

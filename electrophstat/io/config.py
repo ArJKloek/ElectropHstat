@@ -1,100 +1,61 @@
+from __future__ import annotations
 import json
 from pathlib import Path
-from typing import Any, Dict, Union
-
-
-class Section:
-    """
-    Wraps a nested dict to support attribute-style get/set,
-    writing changes back into the parent dict and auto-saving.
-    """
-    def __init__(self, data: dict, parent: dict, key: str, config: 'Config'):
-        # store references
-        super(Section, self).__setattr__('_data', data)
-        super(Section, self).__setattr__('_parent', parent)
-        super(Section, self).__setattr__('_key', key)
-        super(Section, self).__setattr__('_config', config)
-        # wrap nested dicts
-        for k, v in data.items():
-            if isinstance(v, dict):
-                v = Section(v, data, k, config)
-            super(Section, self).__setattr__(k, v)
-
-    def __setattr__(self, name: str, value: Any):
-        # update nested data
-        self._data[name] = value
-        # propagate to parent dict
-        self._parent[self._key] = self._data
-        # save config
-        self._config.save()
-        # set as attribute
-        super(Section, self).__setattr__(name, value)
-
-    def __getitem__(self, name: str) -> Any:
-        return getattr(self, name)
-
+from typing import Any, Dict
 
 class Config:
     """
-    JSON-backed config with nested attribute access via Section.
+    A JSON‐backed config with:
+      • built-in defaults
+      • load() merges file + defaults
+      • save() writes out current state
+      • dict-style access (cfg['foo'])
+      • attribute-style access (cfg.foo)
     """
     def __init__(self,
-                 path: Union[str, Path],
+                 path: str | Path,
                  defaults: Dict[str, Any]):
-        super(Config, self).__setattr__('_path', Path(path))
-        super(Config, self).__setattr__('_defaults', defaults.copy())
-        super(Config, self).__setattr__('_data', defaults.copy())
+        self.path     = Path(path)
+        self.defaults = defaults.copy()
+        self._data    = defaults.copy()
         self.load()
 
     def load(self) -> None:
-        # merge on-disk over defaults
-        if self._path.exists():
-            try:
-                obj = json.loads(self._path.read_text())
-                if isinstance(obj, dict):
-                    self._data.update(obj)
-            except Exception:
-                pass
+        """Read disk (if exists) and merge over defaults."""
+        if not self.path.exists():
+            return
+        try:
+            text = self.path.read_text()
+            obj  = json.loads(text)
+            if isinstance(obj, dict):
+                self._data.update(obj)
+        except Exception:
+            # you might log a warning here
+            pass
 
     def save(self) -> None:
-        # write current data to disk
-        self._path.parent.mkdir(parents=True, exist_ok=True)
-        self._path.write_text(json.dumps(self._data, indent=2))
+        """Dump the current dict to disk (overwriting)."""
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(self._data, indent=2))
 
+    # dict‐style
     def __getitem__(self, key: str) -> Any:
-        return getattr(self, key)
+        return self._data.get(key, self.defaults.get(key))
 
     def __setitem__(self, key: str, value: Any) -> None:
-        setattr(self, key, value)
+        self._data[key] = value
+        self.save()
 
+    # attribute‐style
     def __getattr__(self, name: str) -> Any:
-        # 1) data store
         if name in self._data:
-            val = self._data[name]
-            if isinstance(val, dict):
-                section = Section(val, self._data, name, self)
-                super(Config, self).__setattr__(name, section)
-                return section
-            return val
-        # 2) defaults
-        if name in self._defaults:
-            val = self._defaults[name]
-            if isinstance(val, dict):
-                # create nested dict in _data if not exist
-                nested = self._data.setdefault(name, val.copy())
-                section = Section(nested, self._data, name, self)
-                super(Config, self).__setattr__(name, section)
-                return section
-            return val
-        # not found
-        raise AttributeError(f"Config has no attribute '{name}'")
+            return self._data[name]
+        raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
 
     def __setattr__(self, name: str, value: Any) -> None:
-        # internal attributes
-        if name in ('_path', '_defaults', '_data'):
-            super(Config, self).__setattr__(name, value)
-            return
-        # simple value or Section
-        self._data[name] = value
-        super(Config, self).__setattr__(name, value)
-        self.save()
+        # redirect real properties to super, otherwise treat as config key
+        if name in ("path", "defaults", "_data"):
+            super().__setattr__(name, value)
+        else:
+            self._data[name] = value
+            self.save()
