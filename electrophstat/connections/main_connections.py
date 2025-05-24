@@ -38,6 +38,7 @@ def find_data_directory():
     is_windows = platform.system() == "Windows"
     is_rpi     = (platform.system() == "Linux"
                 and Path("/home/pi").exists())
+    print(f'Windows {is_windows} and RPI {is_rpi}')
 
     # 2) build your base‐dir accordingly
     if is_rpi:
