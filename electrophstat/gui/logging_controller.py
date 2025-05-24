@@ -19,7 +19,7 @@ class LoggingController(QObject):
             return
 
         # Capture which labels we want to log right now
-        self.active_labels = set(self.win.logger.labels)
+        #self.active_labels = set(self.win.logger.labels)
 
         # Kick off a new session on the Logger
         # We pass initial_values=self.win.valueData so each CSV

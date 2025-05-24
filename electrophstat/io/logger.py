@@ -48,7 +48,6 @@ class Logger:
         active_labels: Optional[List[str]] = None,
         initial_values: Optional[Dict[str, float]] = None
     ) -> None:
-        print(active_labels)
         now    = datetime.now()
         date_s = now.strftime("%d_%m_%Y")
         time_s = now.strftime("%H_%M_%S")
