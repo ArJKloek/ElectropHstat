@@ -4,6 +4,32 @@ from PyQt5.QtWidgets import QAction, QActionGroup
 import platform, os
 from pathlib import Path
 
+def is_raspberry_pi() -> bool:
+    """
+    Return True if we appear to be running on a Raspberry Pi.
+    Checks:
+      1) Linux OS
+      2) ARM CPU
+      3) /proc/device-tree/model contains “Raspberry Pi”
+    """
+    if platform.system() != "Linux":
+        return False
+
+    # Most Pis report an 'arm' machine type
+    if not platform.machine().startswith("arm"):
+        return False
+
+    model_path = Path("/proc/device-tree/model")
+    if model_path.exists():
+        try:
+            content = model_path.read_text(errors="ignore")
+            return "Raspberry Pi" in content
+        except Exception:
+            return False
+
+    return False
+
+
 def setup_mainwindow_signals(win):
 
     #Connect exit to the close
@@ -33,25 +59,26 @@ def setup_mainwindow_signals(win):
     lg.triggered.connect(win.button_cont.on_log_option_changed)
 
     
-def find_data_directory():
-    # 1) figure out where we’re running
+def find_data_directory() -> Path:
+    """
+    Choose a base directory for logs:
+      • On Pi: ~/Desktop/Data
+      • On Windows: ~/Data
+      • Otherwise (e.g. macOS/Linux dev): <repo-root>/ElectroPHData
+    """
     is_windows = platform.system() == "Windows"
-    is_rpi     = (platform.system() == "Linux"
-                and Path("/home/pi").exists())
-    print(f'Windows {is_windows} and RPI {is_rpi}')
+    is_rpi     = is_raspberry_pi()
+    print(f"Windows {is_windows} and RPI {is_rpi}")
 
-    # 2) build your base‐dir accordingly
     if is_rpi:
-        # on a Pi, put it on the Desktop/Data folder
-        LOG_BASE = Path.home() / "Desktop" / "Data"
+        log_base = Path.home() / "Desktop" / "Data"
+    elif is_windows:
+        log_base = Path.home() / "Data"
     else:
-        # on Windows (or any non‐Pi), use the repo root
-        HERE      = Path(__file__).resolve()
-        REPO_ROOT = HERE.parents[2]     # .../GitHub/ElectroPHstat
-        LOG_BASE  = REPO_ROOT / "ElectroPHData"
+        here      = Path(__file__).resolve()
+        repo_root = here.parents[2]      # adjust if your layout differs
+        log_base  = repo_root / "ElectroPHData"
 
-    # 3) make sure it exists
-    LOG_BASE.mkdir(parents=True, exist_ok=True)
-
-    return LOG_BASE   
+    log_base.mkdir(parents=True, exist_ok=True)
+    return log_base  
     
