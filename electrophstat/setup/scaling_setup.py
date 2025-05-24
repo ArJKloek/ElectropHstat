@@ -1,3 +1,6 @@
+from PyQt5.QtCore import QSize
+
+
 def apply_scaling(self):
     # Get current window size
     width = self.width()
