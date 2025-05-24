@@ -113,18 +113,30 @@ class CalibratepHDialog(QDialog):
         self.leCalStatus.setText(newInfo)
 
 class SettingsDialog(QDialog):
-    
     def __init__(self, parent=None):
         super().__init__(parent, flags=Qt.WindowCloseButtonHint)
         uic.loadUi("electrophstat/gui/settings_dialog.ui", self)
-        mw = self.parent()
-        cfg = mw.config
-        self.cb_enable_psu.setChecked(bool(cfg.enable_psu))
-        
-        self.buttonBox.accepted.connect(self.setSettings(cfg))
 
-        
-    def setSettings(self, cfg):
-        cfg.enable_psu = bool(self.cb_enable_psu) 
+        # stash your config on the instance
+        self.cfg = self.parent().config
+
+        # initialize the checkbox
+        self.cb_enable_psu.setChecked(self.cfg.enable_psu)
+
+        # hook up Ok/Cancel
+        self.buttonBox.accepted.connect(self.applySettings)
+        self.buttonBox.rejected.connect(self.reject)
+
+        # make Enter trigger OK
+        ok_btn = self.buttonBox.button(self.buttonBox.Ok)
+        ok_btn.setDefault(True)
+        ok_btn.setAutoDefault(True)
+
+    def applySettings(self):
+        # read actual checked state, write into config
+        self.cfg.enable_psu = self.cb_enable_psu.isChecked()
+
+        # close dialog with Accepted
+        self.accept()
         
     
