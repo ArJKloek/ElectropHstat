@@ -21,6 +21,7 @@ from electrophstat.gui.logging_controller import LoggingController
 from electrophstat.connections.config_connections import init_config
 from electrophstat.setup.pps_setup import init_psu
 from electrophstat.setup.variables_setup import init_variables
+from electrophstat.setup.logging_setup import init_logger
 from pathlib import Path
 
 
@@ -53,6 +54,7 @@ class MainWindow(QMainWindow):
 
 
         init_variables(self)
+        init_logger(self)
         init_config(self)
         init_psu(self)
 
@@ -74,18 +76,7 @@ class MainWindow(QMainWindow):
         #)
 
         
-        LOG_BASE  = find_data_directory()       # ...\GitHub\ElectroPHstat\ElectroPHData
-        #LOG_BASE=Path.home()/"ElectroPHData",
-        
-        self.logger = Logger(
-            base_dir=LOG_BASE,
-            labels=["pump","pH", "temperature","voltage","current", "coulomb"],
-            column_names = ["Pumped (ml)", "pH", "Temperature (°C)", "Voltage (V)", "Current (A)", "Coulomb (C)"]
-
-        )
-        self.logging_ctrl = LoggingController(self, interval=5.0)
-        self.logging_ctrl.active_labels = set(self.logger.labels)
-
+    
         #self.logger = Logger(
         #    filepath="ph_control_log.csv",
         #    fieldnames=["timestamp", "pH", "pump_on", "status"]
