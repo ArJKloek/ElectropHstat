@@ -3,21 +3,14 @@ import time
 import os
 import getpass
 from electrophstat.hardware.dummy_switcher import MockLib8MosInd
-from electrophstat.io.logger import Logger
 from electrophstat.control.pump_control import PumpController
 from electrophstat.io.usb_monitor import USBWorker
 from electrophstat.gui.dialogs import DatePickerDialog, CalibratepHDialog, CalibratePumpDialog
-from electrophstat.control.timer_control import monoTimer
-from electrophstat.io.power_logger import PowerLogger
-from electrophstat.connections.main_connections import setup_mainwindow_signals, find_data_directory
+from electrophstat.connections.main_connections import setup_mainwindow_signals
 from electrophstat.connections.button_connections import ButtonConnections
 from electrophstat.connections.pHstat_connections import pHStatConnections
-from electrophstat.gui.graph_controller import GraphController
-from electrophstat.gui.plot_manager import PlotManager
 from electrophstat.gui.sensor_controller import SensorController
 from electrophstat.gui.phstat_controller import pHStatController
-from electrophstat.gui.logging_controller import LoggingController
-#from electrophstat.io.config import Config
 from electrophstat.connections.config_connections import init_config
 from electrophstat.setup.pps_setup import init_psu
 from electrophstat.setup.variables_setup import init_variables
@@ -32,12 +25,8 @@ if sys.platform.startswith(("linux", "darwin")):
         os.environ["XDG_RUNTIME_DIR"] = f"/run/user/{os.getuid()}"
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QGridLayout, 
-                             QLabel, QMenuBar, QAction, QStatusBar, 
-                             QComboBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, 
-                             QPushButton, QTabWidget, QFrame, QMenu, QMessageBox, QActionGroup, QDial, QToolTip, QCheckBox, QSizePolicy, QToolButton)
-from PyQt5.QtGui import QFont, QColor, QIcon, QPen, QTransform, QPalette
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QMetaObject, pyqtSlot, QTimer, QMutex, QSize, QPoint, QDateTime, QEvent
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
+from PyQt5.QtCore import pyqtSignal, QSize, QEvent
 
 #import lib8mosind
 
