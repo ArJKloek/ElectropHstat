@@ -85,7 +85,6 @@ class MainWindow(QMainWindow):
         }
 
         self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
-        self.phstat_ctrl = pHStatController(self, interval=1.0, cooldown=self.pump_cooldown_duration_s)
         
         
         pH_worker = self.sensor_ctrl.pH_worker
