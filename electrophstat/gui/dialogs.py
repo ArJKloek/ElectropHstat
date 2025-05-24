@@ -149,16 +149,22 @@ class SettingsDialog(QDialog):
         phstat_enabled = self.cb_enable_phstat.isChecked()
         ph_sensor_enabled = self.cb_enable_ph_sensor.isChecked()
 
-        # validate interdependency
         if phstat_enabled and not ph_sensor_enabled:
-            QMessageBox.warning(
+            # show an OK/Cancel box
+            reply = QMessageBox.warning(
                 self,
                 "Invalid Configuration",
-                "pH Stat mode requires the pH sensor to be enabled.\n"
-                "Please enable the pH sensor or disable pH Stat."
+                "pH Stat mode requires the pH sensor to be enabled.\n\n"
+                "Press OK to enable the pH sensor, or Cancel to go back and adjust.",
+                QMessageBox.Ok   | QMessageBox.Cancel,
+                QMessageBox.Ok
             )
-            return  # abort closing
-        
+            if reply == QMessageBox.Ok:
+                # user chose OK → auto–enable the pH sensor checkbox
+                self.cb_enable_ph_sensor.setChecked(True)
+            # in either case, we return without closing the dialog so they can adjust
+            return
+            
         # read actual checked state, write into config
         self.cfg.pHstat_mode                = int(self.cb_cfg_pHstatmode.currentIndex())
         self.cfg.pH_target                  = round(self.ds_cfg_pHtarget.Value(), 2)
