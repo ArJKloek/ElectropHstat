@@ -125,5 +125,6 @@ class SettingsDialog(QDialog):
 
         
     def setSettings(self):
-       print(f'Settings accepted')
+        self.config.enable_psu = bool(self.cb_enable_psu) 
+        
     
