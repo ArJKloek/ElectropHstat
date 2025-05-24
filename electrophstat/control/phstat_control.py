@@ -39,8 +39,7 @@ class pHStatLoop:
     def toggle_start(self) -> None:
         """Flip the manual override switch."""
         self.should_start = not self.should_start
-        print(f'control loop toggle is {self.should_start}')
-
+        
     def process(self, pH: float) -> PumpAction:
         """
         Decide pump_on and status based on current pH.

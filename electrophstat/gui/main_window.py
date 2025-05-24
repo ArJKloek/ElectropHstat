@@ -48,7 +48,7 @@ class MainWindow(QMainWindow):
         init_logger(self)
         init_config(self)
         init_psu(self)
-
+        
         self.calibrate_pump_dialog = CalibratePumpDialog(float(self.pump_volume_per_cycle_ml), float(self.pump_cycle_duration_s), self)
         self.pH_calibrate_dialog = CalibratepHDialog(float(self.pH_calibration_low),float(self.pH_calibration_mid),float(self.pH_calibration_high),self)
         self.date_time_dialog = DatePickerDialog()
