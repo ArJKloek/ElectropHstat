@@ -447,7 +447,7 @@
      <bool>false</bool>
     </property>
     <property name="title">
-     <string>Settings</string>
+     <string>Options</string>
     </property>
     <widget class="QMenu" name="menupHstat_settings">
      <property name="title">
@@ -481,6 +481,7 @@
     <addaction name="actionEnable_PSU_control"/>
     <addaction name="toggle_pH_control"/>
     <addaction name="menuEnable_Senors"/>
+    <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="reconnect_pps_action"/>
     <addaction name="separator"/>
@@ -626,6 +627,11 @@
    </property>
    <property name="text">
     <string>5 min</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Startup Settings</string>
    </property>
   </action>
  </widget>
