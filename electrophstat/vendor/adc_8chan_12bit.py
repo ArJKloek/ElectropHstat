@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 import time
-from grove.i2c import Bus
+from adc_i2c import Bus
 
 ADC_DEFAULT_IIC_ADDR = 0X04
 
