@@ -38,7 +38,6 @@ def init_config(self):
     self.pH_calibration_low             = float(self.config.pH_calibration_low)
     self.pH_calibration_mid             = float(self.config.pH_calibration_mid)
     self.pH_calibration_high            = float(self.config.pH_calibration_high)
-    self.Ref_path                       = self.config.reference_file_path
     self.enable_psu                     = bool(self.config.enable_psu)
     self.enable_phstat                 = bool(self.config.enable_phstat)
     # 4) hook UI elements → config so that any user change persists
