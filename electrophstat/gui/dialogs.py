@@ -1,9 +1,6 @@
-from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QDateTimeEdit, QPushButton, 
-                            QHBoxLayout, QLabel, QDoubleSpinBox, QLineEdit, QHBoxLayout)
-from PyQt5.QtCore import Qt, QDateTime, pyqtSlot, pyqtSignal, QTimer
-from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QDialog, QMessageBox
+from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QTimer
 from PyQt5 import uic
-
 import os
 
 class DatePickerDialog(QDialog):
