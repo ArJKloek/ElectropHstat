@@ -46,9 +46,10 @@ class MainWindow(QMainWindow):
         init_config(self)
         init_psu(self)
         init_phstat(self)
-        init_sensors(self)
          
         self.button_cont = ButtonConnections(self)
+        
+        init_sensors(self)
 
         self.date_time_dialog = DatePickerDialog()
         # 2) Now wire up every signal/slot in one place
