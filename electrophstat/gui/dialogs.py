@@ -121,7 +121,12 @@ class SettingsDialog(QDialog):
         self.cfg = self.parent().config
 
         # initialize the checkbox
+        self.cb_cfg_pHstatmode.setIndex(self.cfg.pHstat_mode)
+        self.cb_cfg_pHtarget.setValue(self.cfg.pH_target)
         self.cb_enable_psu.setChecked(self.cfg.enable_psu)
+
+
+
 
         # hook up Ok/Cancel
         self.buttonBox.accepted.connect(self.applySettings)
