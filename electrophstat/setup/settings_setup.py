@@ -1,10 +1,10 @@
 from electrophstat.gui.dialogs import SettingsDialog
 
 
-def init_settings(self):
+def init_settings(win):
 
-    self.settings_dialog =  SettingsDialog(self)
-    self.actionSettings.triggered.connect(openSettingsDialog)
+    win.settings_dialog =  SettingsDialog(win)
+    win.actionSettings.triggered.connect(win.openSettingsDialog)
 
 def openSettingsDialog(self):
-    self.settings_dialog.exec_()
+    self.win.settings_dialog.exec_()
