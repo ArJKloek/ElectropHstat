@@ -56,7 +56,7 @@ class MainWindow(QMainWindow):
         setup_mainwindow_signals(self)
 
         self.show()
-        self.apply_scaling = apply_scaling
+        self.apply_scaling = apply_scaling(self)
         self.apply_scaling()
 
     def resizeEvent(self, event):
