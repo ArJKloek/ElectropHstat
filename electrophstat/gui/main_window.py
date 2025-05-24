@@ -3,19 +3,17 @@ import time
 import os
 import getpass
 from electrophstat.hardware.dummy_switcher import MockLib8MosInd
-from electrophstat.control.pump_control import PumpController
 from electrophstat.io.usb_monitor import USBWorker
-from electrophstat.gui.dialogs import DatePickerDialog, CalibratepHDialog, CalibratePumpDialog
+from electrophstat.gui.dialogs import DatePickerDialog, CalibratepHDialog
 from electrophstat.connections.main_connections import setup_mainwindow_signals
 from electrophstat.connections.button_connections import ButtonConnections
-from electrophstat.connections.pHstat_connections import pHStatConnections
 from electrophstat.gui.sensor_controller import SensorController
-from electrophstat.gui.phstat_controller import pHStatController
 from electrophstat.connections.config_connections import init_config
 from electrophstat.setup.pps_setup import init_psu
 from electrophstat.setup.variables_setup import init_variables
 from electrophstat.setup.logging_setup import init_logger
 from electrophstat.setup.graphs_setup import init_graphs
+from electrophstat.setup.phstat_setup import init_phstat
 from pathlib import Path
 
 
@@ -48,8 +46,10 @@ class MainWindow(QMainWindow):
         init_logger(self)
         init_config(self)
         init_psu(self)
+        init_phstat(self)
         
-        self.calibrate_pump_dialog = CalibratePumpDialog(float(self.pump_volume_per_cycle_ml), float(self.pump_cycle_duration_s), self)
+        
+        
         self.pH_calibrate_dialog = CalibratepHDialog(float(self.pH_calibration_low),float(self.pH_calibration_mid),float(self.pH_calibration_high),self)
         self.date_time_dialog = DatePickerDialog()
         
@@ -72,13 +72,7 @@ class MainWindow(QMainWindow):
         #    filepath="ph_control_log.csv",
         #    fieldnames=["timestamp", "pH", "pump_on", "status"]
         #) 
-        self.pump_ctrl = PumpController(
-            hw=lib8mosind,
-            logger=self.logger,
-            duration_s=float(self.pump_cycle_duration_s),
-            ml_per_cylce = float(self.pump_volume_per_cycle_ml),
-            parent=self
-        )
+       
         
 
          # Map each registry key to the slot you already have
@@ -86,14 +80,6 @@ class MainWindow(QMainWindow):
         # 1) Load the .ui file
 
         self.button_cont = ButtonConnections(self)
-        self.pHstat_cont = pHStatConnections(self)
-       # instantiate controllers (they subclass QObject)
-        #self.pps_controller = PPSController(self)
-        #self.ppsWorker.disconnected_signal.connect(self.pps_controller.on_pps_disconnect)
-
-        # This will spin up worker+thread for each key
-        # Initialize PPS Connections for updating the GUI
-        self.phstat_ctrl = pHStatController(self, interval=1.0)
         
         slots = {
             "pH":   [self.button_cont.update_gui],
@@ -102,8 +88,6 @@ class MainWindow(QMainWindow):
 
         self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
         self.phstat_ctrl = pHStatController(self, interval=1.0, cooldown=self.pump_cooldown_duration_s)
-        self.pHstat_cont.handle_select(self.config.pH_control_mode)
-        self.pHstat_cont.handle_pH    (self.config.pH_target)
         
         
         pH_worker = self.sensor_ctrl.pH_worker
@@ -113,14 +97,6 @@ class MainWindow(QMainWindow):
         )
         # Initialize PPS controller with proper interval (e.g., 1 second) and reset condition
 
-        self.calibrate_pump_dialog.test_pump.connect(
-            self.pump_ctrl.on_test_pump
-        )
-
-        # wire “Set” → PumpController
-        self.calibrate_pump_dialog.select_changed.connect(
-            self.pump_ctrl.on_set_calibration
-        )
         # 2) Now wire up every signal/slot in one place
         setup_mainwindow_signals(self)
         
