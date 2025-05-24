@@ -22,6 +22,7 @@ from electrophstat.connections.config_connections import init_config
 from electrophstat.setup.pps_setup import init_psu
 from electrophstat.setup.variables_setup import init_variables
 from electrophstat.setup.logging_setup import init_logger
+from electrophstat.setup.graphs_setup import init_graphs
 from pathlib import Path
 
 
@@ -54,6 +55,7 @@ class MainWindow(QMainWindow):
 
 
         init_variables(self)
+        init_graphs(self)
         init_logger(self)
         init_config(self)
         init_psu(self)
@@ -133,10 +135,6 @@ class MainWindow(QMainWindow):
         # 2) Now wire up every signal/slot in one place
         setup_mainwindow_signals(self)
         
-        self.plot_manager = PlotManager(self)
-        self.graph_ctrl = GraphController(self.tabWidget, self.plot_manager)
-        self.logging_timer = monoTimer()
-
         #ph_worker = self.sensor_ctrl.ph_worker
         #ph_worker.data_signal.connect(self.phstat_ctrl.on_pH_read)
 

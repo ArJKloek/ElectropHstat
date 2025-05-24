@@ -30,3 +30,4 @@ def init_psu(win):
         win.PowerGroup.setVisible(False)
         # disable PSU logging
         win.logging_ctrl.disable_logging(['voltage', 'current', 'coulomb'])
+        
