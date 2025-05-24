@@ -120,9 +120,10 @@ class SettingsDialog(QDialog):
         mw = self.parent()
         cfg = mw.config
         self.cb_enable_psu.setChecked(bool(cfg.enable_psu))
+        
+        self.buttonBox.accepted.connect(self.setSettings)
 
-        self.buttonBox.accept(self.setSettings)
-    
+        
     def setSettings(self):
        print(f'Settings accepted')
     
