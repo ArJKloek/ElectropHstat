@@ -55,9 +55,9 @@ class GraphController(QObject):
 
         # 2) re-add in the order you like, testing flags
         for title, widget in self._all_tabs:
-            if title == "Pump Plot" and not self.pH_enabled:
+            if title == "Pump" and not self.pH_enabled:
                 continue
-            if title in ("Power Plot", "Coulomb") and not self.psu_enabled:
+            if title in ("Power", "Coulomb") and not self.psu_enabled:
                 continue
             # otherwise always show pH+Temp, or if the flags say so
             self.tabWidget.addTab(widget, title)
