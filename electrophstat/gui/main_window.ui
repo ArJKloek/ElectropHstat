@@ -451,29 +451,11 @@
     </property>
     <widget class="QMenu" name="menupHstat_settings">
      <property name="title">
-      <string>pHstat settings</string>
+      <string>Calibrate</string>
      </property>
-     <widget class="QMenu" name="menuLog_Options">
-      <property name="geometry">
-       <rect>
-        <x>697</x>
-        <y>263</y>
-        <width>164</width>
-        <height>158</height>
-       </rect>
-      </property>
-      <property name="title">
-       <string>Log Options</string>
-      </property>
-      <addaction name="option1"/>
-      <addaction name="option2"/>
-      <addaction name="option3"/>
-      <addaction name="option4"/>
-     </widget>
      <addaction name="actionCalibrate_Pump"/>
      <addaction name="actionCalibrate_pH"/>
      <addaction name="separator"/>
-     <addaction name="menuLog_Options"/>
     </widget>
     <widget class="QMenu" name="menuEnable_Senors">
      <property name="title">
@@ -483,8 +465,18 @@
      <addaction name="actionTemperature"/>
      <addaction name="actionTurbidity"/>
     </widget>
+    <widget class="QMenu" name="menuLog_options">
+     <property name="title">
+      <string>Log Options</string>
+     </property>
+     <addaction name="action5_sec"/>
+     <addaction name="action30_sec"/>
+     <addaction name="action1_min"/>
+     <addaction name="action5_min"/>
+    </widget>
     <addaction name="action_datewindow"/>
     <addaction name="menupHstat_settings"/>
+    <addaction name="menuLog_options"/>
     <addaction name="separator"/>
     <addaction name="actionEnable_PSU_control"/>
     <addaction name="toggle_pH_control"/>
@@ -634,6 +626,41 @@
   <action name="actionTurbidity">
    <property name="text">
     <string>Turbidity</string>
+   </property>
+  </action>
+  <action name="action5_sec">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>5 sec</string>
+   </property>
+  </action>
+  <action name="action30_sec">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>30 sec</string>
+   </property>
+  </action>
+  <action name="action1_min">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>1 min</string>
+   </property>
+  </action>
+  <action name="action5_min">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>5 min</string>
    </property>
   </action>
  </widget>

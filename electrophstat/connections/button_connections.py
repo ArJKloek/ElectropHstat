@@ -154,10 +154,10 @@ class ButtonConnections(QObject):
     def on_log_option_changed(self, action):
         """action.objectName() tells us which interval to use."""
         ms_map = {
-            "option1":  5,
-            "option2": 30,
-            "option3": 60,
-            "option4":  300,
+            "action5_sec":  5,
+            "action30_sec": 30,
+            "action1_min": 60,
+            "action5_min":  300,
         }
         interval = ms_map.get(action.objectName())
         if interval is not None:

@@ -41,10 +41,10 @@ def setup_mainwindow_signals(win):
 
     # 2) Grab each QAction by the objectName you set in Designer
     for act_name in (
-        "option1",
-        "option2",
-        "option3",
-        "option4",
+        "action5_sec",
+        "action30_sec",
+        "action1_min",
+        "action5_min",
     ):
         act: QAction = getattr(win, act_name, None)
         if not act:

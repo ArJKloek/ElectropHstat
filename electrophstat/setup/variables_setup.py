@@ -30,3 +30,4 @@ def init_variables(main):
         main.pHSelectMode = 1 
         main.pumpDurationSeconds = 1
         main.enable_psu : bool
+        main.enable_phstat : bool

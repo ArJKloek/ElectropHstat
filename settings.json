@@ -9,7 +9,8 @@
   "pH_calibration_high": 10.0,
   "reference_file_path": "",
   "enable_psu": false,
-  "enable_ph": true,
-  "enable_temp": true,
-  "enable_turbidity": true
+  "enable_phstat": false,
+  "enable_ph_sensor": true,
+  "enable_temp_senor": true,
+  "enable_turbidity_sensor": true
 }
