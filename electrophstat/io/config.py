@@ -8,7 +8,6 @@ class Config:
         super().__setattr__('path', Path(path))
         super().__setattr__('defaults', defaults.copy())
         super().__setattr__('_data', {})  # only explicit overrides
-        print(self.path.read_text())
         self.load()
 
     def load(self) -> None:
@@ -16,6 +15,7 @@ class Config:
             return
         try:
             obj = json.loads(self.path.read_text())
+            print(obj)
             if isinstance(obj, dict):
                 self._data.update(obj)
         except Exception:
