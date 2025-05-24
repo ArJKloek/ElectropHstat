@@ -37,8 +37,9 @@ class ButtonConnections(QObject):
         # 3) (Optionally) show a status message
         self.log_active()
         #self.win.logger.start_session()
-        self.win.pps_ctrl.coulombClock.start()
-        self.win.pps_ctrl.coulombTimer.start()
+        if self.win.enable_psu:
+            self.win.pps_ctrl.coulombClock.start()
+            self.win.pps_ctrl.coulombTimer.start()
         self.win.statusBar().showMessage("pH-stat/logging started")
     
     def log_active(self):
@@ -52,8 +53,9 @@ class ButtonConnections(QObject):
         self.win.startbutton.setEnabled(True)
         self.win.stopbutton.setEnabled(False)
         self.win.resetbutton.setEnabled(True)
-        self.win.pps_ctrl.coulombClock.stop()
-        self.win.pps_ctrl.coulombTimer.stop()
+        if self.win.enable_psu:
+            self.win.pps_ctrl.coulombClock.stop()
+            self.win.pps_ctrl.coulombTimer.stop()
         #2) Logging and pH pump logic stop
         if self.win.toggle_pH_control:
             self.win.phstat_ctrl.on_pumpToggle(False)
