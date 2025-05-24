@@ -15,7 +15,7 @@ from electrophstat.setup.phstat_setup import init_phstat
 from electrophstat.setup.sensor_setup import init_sensors
 from electrophstat.setup.scaling_setup import apply_scaling
 from electrophstat.setup.settings_setup import init_settings
-
+from electrophstat.setup.adc_setup import init_adc
 from pathlib import Path
 
 
@@ -49,6 +49,7 @@ class MainWindow(QMainWindow):
         init_psu(self)
         init_phstat(self)
         init_settings(self) 
+        init_adc(self)
         self.button_cont = ButtonConnections(self)
         
         init_sensors(self)
