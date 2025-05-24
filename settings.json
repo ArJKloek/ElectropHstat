@@ -7,7 +7,7 @@
   "pH_calibration_low": 4.01,
   "pH_calibration_mid": 7.0,
   "pH_calibration_high": 10.0,
-  "enable_psu": false,
+  "enable_psu": true,
   "enable_phstat": false,
   "enable_ph_sensor": true,
   "enable_temp_senor": true,
