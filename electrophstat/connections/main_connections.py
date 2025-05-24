@@ -53,7 +53,7 @@ def setup_mainwindow_signals(win):
         lg.addAction(act)        # add it to the exclusive group
 
     # 3) Pick a default
-    win.option2.setChecked(True)
+    win.action30_sec.setChecked(True)
 
     # 4) Connect the group's triggered signal back to the window's slot
     lg.triggered.connect(win.button_cont.on_log_option_changed)
