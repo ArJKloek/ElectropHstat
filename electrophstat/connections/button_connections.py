@@ -178,7 +178,8 @@ class ButtonConnections(QObject):
             self.win.pHNumber.setText(f'{str("pH {:.2f}".format(received_data))}')
         elif sensor_type == 'temperature':
             self.win.RTDlabel.setText(f"{received_data:.2f} °C")
-        #elif sensor_type == 'voltage':   
+        elif sensor_type == 'turbidity':
+            self.win.lb_turbidity.setText(f'{received_data:.4f}')   
         #    self.win.valueData[3] = received_data 
         #elif sensor_type == 4:   
         #    self.win.valueData[4] = received_data

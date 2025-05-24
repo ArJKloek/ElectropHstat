@@ -15,7 +15,7 @@ else:
 
 import subprocess
 
-class USB_Worker(QObject):
+class USBWorker(QObject):
     update_usb = pyqtSignal(bool, object)
     
     def __init__(self):

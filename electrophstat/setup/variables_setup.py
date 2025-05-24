@@ -14,6 +14,7 @@ def init_variables(main):
             "current":          0.0,
             "coulomb":          0.0,
             "mode":             "",
+            "turbidity":        0.0,
         }
         main.pump_cooldown_duration_s = 0
         main.currentActiveTabIndex = 0  # Track the current tab index
