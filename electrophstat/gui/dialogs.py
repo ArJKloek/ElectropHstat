@@ -111,3 +111,16 @@ class CalibratepHDialog(QDialog):
     
     def updateInfo(self, newInfo: str):
         self.leCalStatus.setText(newInfo)
+
+class SettingsDialog(QDialog):
+    
+    def __init__(self, parent=None):
+        super().__init__(parent, flags=Qt.WindowCloseButtonHint)
+        uic.loadUi("electrophstat/gui/settings_dialog.ui", self)
+        mw = self.parent()
+        cfg = mw.config
+        self.cb_enable_psu.setChecked(bool(cfg.enable_psu))
+
+    #def setSettings(self):
+       
+    

@@ -14,6 +14,8 @@ from electrophstat.setup.graphs_setup import init_graphs
 from electrophstat.setup.phstat_setup import init_phstat
 from electrophstat.setup.sensor_setup import init_sensors
 from electrophstat.setup.scaling_setup import apply_scaling
+from electrophstat.setup.settings_setup import init_settings
+
 from pathlib import Path
 
 
@@ -46,7 +48,7 @@ class MainWindow(QMainWindow):
         init_config(self)
         init_psu(self)
         init_phstat(self)
-         
+        init_settings(self) 
         self.button_cont = ButtonConnections(self)
         
         init_sensors(self)
@@ -54,6 +56,7 @@ class MainWindow(QMainWindow):
         self.date_time_dialog = DatePickerDialog()
         # 2) Now wire up every signal/slot in one place
         setup_mainwindow_signals(self)
+        
 
         self.show()
         apply_scaling(self)

@@ -11,7 +11,7 @@ def init_config(self):
     
     cfg_path = REPO_ROOT / "settings.json"
     DEFAULT_CONFIG = {
-        "pH_control_mode":           0,
+        "pHstat_mode":           0,
         "pH_target":                 7.00,
         "pump_volume_per_cycle_ml":  0.0,
         "pump_cycle_duration_s":     1.0,
@@ -30,7 +30,7 @@ def init_config(self):
     self.config = Config(cfg_path, DEFAULT_CONFIG)
 
     # 3) pull them into window attributes
-    self.pH_control_mode                = int(self.config.pH_control_mode)
+    self.pHstat_mode                    = int(self.config.pHstat_mode)
     self.pH_target                      = float(self.config.pH_target)
     self.pump_volume_per_cycle_ml       = float(self.config.pump_volume_per_cycle_ml)
     self.pump_cycle_duration_s          = float(self.config.pump_cycle_duration_s)
@@ -48,8 +48,8 @@ def init_config(self):
 
 @pyqtSlot(int)
 def _on_mode_change(self, idx: int):
-    self.pH_control_mode = idx
-    self.config.pH_control_mode = idx  # auto‐saves
+    self.pHstat_mode = idx
+    self.config.pHstat_mode = idx  # auto‐saves
 
 @pyqtSlot(float)
 def _on_target_pH_change(self, val: float):

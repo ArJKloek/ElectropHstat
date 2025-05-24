@@ -18,7 +18,7 @@ def init_phstat(self):
             )
         self.pHstat_cont = pHStatConnections(self)
         self.phstat_ctrl = pHStatController(self, interval=1.0)
-        self.pHstat_cont.handle_select(self.config.pH_control_mode)
+        self.pHstat_cont.handle_select(self.config.pHstat_mode)
         self.pHstat_cont.handle_pH    (self.config.pH_target)
   
         self.calibrate_pump_dialog.test_pump.connect(
@@ -31,5 +31,4 @@ def init_phstat(self):
         self.pump_ctrl = None
         self.pHstat_cont = None
         self.pHstatGroup.setVisible(False)
-        self.actionEnable_PSU_control.setEnabled(False)
-        
+        self.toggle_pH_control.setEnabled(False)

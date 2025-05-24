@@ -2,7 +2,7 @@
 def init_variables(main):
         main.Ref_path = ''
         main.pH_target = 0.0
-        main.pH_control_mode = 0
+        main.pHstat_mode = 0
         main.pump_volume_per_cycle_ml = 0
         main.injections = 0
         main.pump_cycle_duration_s = 0

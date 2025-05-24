@@ -26,7 +26,7 @@ class pHStatConnections(QObject):
                 self.win.statustext = "below"
             self.win.keepSelector.setStatusTip(f'Settings of pH Stat, Keep the experiment {self.win.statustext} a pH of {self.win.pH_target}')
             self.win.phstat_ctrl.loop.set_select(select)
-            self.win.config.pH_control_mode = select
+            self.win.config.pHstat_mode = select
             
     @pyqtSlot(float) 
     def handle_pH(self,pH):
