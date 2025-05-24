@@ -29,7 +29,6 @@ def init_config(self):
 
     # 2) instantiate & merge any on‐disk overrides
     self.config = Config(cfg_path, DEFAULT_CONFIG)
-    print(self.config.enable_psu)  # reads nested flag
 
     #ENABLE_PSU = bool(self.config.features.enable_psu)
     #print(ENABLE_PSU)
@@ -43,8 +42,7 @@ def init_config(self):
     self.pH_calibration_mid             = float(self.config.pH_calibration_mid)
     self.pH_calibration_high            = float(self.config.pH_calibration_high)
     self.Ref_path                       = self.config.reference_file_path
-    
-    print(self.config.pH_target)
+    self.enable_psu                     = bool(self.config.enable_psu)
     # 4) hook UI elements → config so that any user change persists
     #self.keepSelector.currentIndexChanged.connect(self._on_mode_change)
     #self.phSpin.valueChanged.connect(self._on_target_pH_change)
