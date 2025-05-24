@@ -67,16 +67,36 @@
       </item>
       <item row="1" column="1">
        <widget class="QDoubleSpinBox" name="ds_cfg_pHtarget">
+        <property name="prefix">
+         <string>pH </string>
+        </property>
+        <property name="suffix">
+         <string/>
+        </property>
         <property name="singleStep">
          <double>0.010000000000000</double>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QDoubleSpinBox" name="ds_cfg_pump_ml"/>
+       <widget class="QDoubleSpinBox" name="ds_cfg_pump_ml">
+        <property name="decimals">
+         <number>3</number>
+        </property>
+        <property name="singleStep">
+         <double>0.001000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QDoubleSpinBox" name="ds_cfg_pump_time"/>
+       <widget class="QDoubleSpinBox" name="ds_cfg_pump_time">
+        <property name="suffix">
+         <string> (s)</string>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="lb_cfg_cooldown">
@@ -93,7 +113,14 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QSpinBox" name="sp_cfg_cooldown"/>
+       <widget class="QSpinBox" name="sp_cfg_cooldown">
+        <property name="suffix">
+         <string> (s)</string>
+        </property>
+        <property name="prefix">
+         <string/>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -112,7 +139,17 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="ds_cfg_pH_low"/>
+       <widget class="QDoubleSpinBox" name="ds_cfg_pH_low">
+        <property name="prefix">
+         <string>pH </string>
+        </property>
+        <property name="maximum">
+         <double>14.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="lb_cfg_pH_high">
@@ -129,10 +166,30 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="ds_cfg_pH_mid"/>
+       <widget class="QDoubleSpinBox" name="ds_cfg_pH_mid">
+        <property name="prefix">
+         <string>pH </string>
+        </property>
+        <property name="maximum">
+         <double>14.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QDoubleSpinBox" name="ds_cfg_pH_high"/>
+       <widget class="QDoubleSpinBox" name="ds_cfg_pH_high">
+        <property name="prefix">
+         <string>pH </string>
+        </property>
+        <property name="maximum">
+         <double>14.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
