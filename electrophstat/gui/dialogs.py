@@ -121,6 +121,8 @@ class SettingsDialog(QDialog):
         cfg = mw.config
         self.cb_enable_psu.setChecked(bool(cfg.enable_psu))
 
-    #def setSettings(self):
-       
+        self.buttonBox.accept(self.setSettings)
+    
+    def setSettings(self):
+       print(f'Settings accepted')
     
