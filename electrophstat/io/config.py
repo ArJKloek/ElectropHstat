@@ -11,16 +11,20 @@ class Config:
         self.load()
 
     def load(self) -> None:
+        """Read disk (if exists) and merge over defaults. Prints errors if parse fails."""
         if not self.path.exists():
+            print(f"Config file not found at {self.path}, using defaults.")
             return
         try:
-            obj = json.loads(self.path.read_text())
-            print(obj)
+            text = self.path.read_text()
+            obj  = json.loads(text)
             if isinstance(obj, dict):
+                # Only merge explicit file keys
                 self._data.update(obj)
-        except Exception:
-            pass
-
+                print(f"Loaded config overrides: {obj}")
+        except Exception as e:
+            print(f"Error loading config from {self.path}: {e}")
+        
     def save(self) -> None:
         # Skip writing when _data is empty
         if not self._data:
