@@ -2,7 +2,6 @@ import sys
 import time
 import os
 import getpass
-from electrophstat.hardware.dummy_switcher import MockLib8MosInd
 from electrophstat.io.usb_monitor import USBWorker
 from electrophstat.gui.dialogs import DatePickerDialog, CalibratepHDialog
 from electrophstat.connections.main_connections import setup_mainwindow_signals
@@ -29,7 +28,6 @@ from PyQt5.QtCore import pyqtSignal, QSize, QEvent
 #import lib8mosind
 
 
-lib8mosind = MockLib8MosInd()
 
 class MainWindow(QMainWindow):
     startProcessingSignal = pyqtSignal()

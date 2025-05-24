@@ -2,6 +2,9 @@ from electrophstat.control.pump_control import PumpController
 from electrophstat.connections.pHstat_connections import pHStatConnections
 from electrophstat.gui.phstat_controller import pHStatController
 from electrophstat.gui.dialogs import CalibratePumpDialog
+from electrophstat.hardware.dummy_switcher import MockLib8MosInd
+
+lib8mosind = MockLib8MosInd()
 
 def init_phstat(self):
     self.calibrate_pump_dialog = CalibratePumpDialog(float(self.pump_volume_per_cycle_ml), float(self.pump_cycle_duration_s), self)
