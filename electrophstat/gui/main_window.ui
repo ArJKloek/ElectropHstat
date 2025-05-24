@@ -457,14 +457,6 @@
      <addaction name="actionCalibrate_pH"/>
      <addaction name="separator"/>
     </widget>
-    <widget class="QMenu" name="menuEnable_Senors">
-     <property name="title">
-      <string>Enable Senors</string>
-     </property>
-     <addaction name="actionpH"/>
-     <addaction name="actionTemperature"/>
-     <addaction name="actionTurbidity"/>
-    </widget>
     <widget class="QMenu" name="menuLog_options">
      <property name="title">
       <string>Log Options</string>
@@ -480,7 +472,6 @@
     <addaction name="separator"/>
     <addaction name="actionEnable_PSU_control"/>
     <addaction name="toggle_pH_control"/>
-    <addaction name="menuEnable_Senors"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="reconnect_pps_action"/>
