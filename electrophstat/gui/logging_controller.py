@@ -90,11 +90,10 @@ class LoggingController(QObject):
           • remove them from the active_labels set
           • drop any in-flight CSV file + start time so the worker skips them
         """
-        print(f' in coming labels: {labels}')
         for lbl in labels:
             self.active_labels.discard(lbl)
-            self.win.logger.files .pop(lbl, None)
-            self.win.logger.starts.pop(lbl, None)
+            #self.win.logger.files .pop(lbl, None)
+            #self.win.logger.starts.pop(lbl, None)
 
     def enable_logging(self, labels):
         """
