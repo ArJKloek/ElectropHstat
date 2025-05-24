@@ -92,6 +92,7 @@ class LoggingController(QObject):
         """
         for lbl in labels:
             self.active_labels.discard(lbl)
+            print(f'After removal {self.active_labels}')
             #self.win.logger.files .pop(lbl, None)
             #self.win.logger.starts.pop(lbl, None)
 
