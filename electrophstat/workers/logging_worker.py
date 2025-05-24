@@ -23,6 +23,7 @@ class LoggingWorker(QObject):
             try:
                 # log every channel currently in logger.files
                 labels = getattr(self, "active_labels", self.logger.files.keys())
+                print(f'working labels {labels}')
                 for label in labels:
                     if label == "pump":
                         continue
