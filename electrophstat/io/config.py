@@ -2,6 +2,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any, Dict, Union
+import jsonc
 
 class Config:
     def __init__(self, path: Union[str, Path], defaults: Dict[str, Any]):
@@ -17,7 +18,7 @@ class Config:
             return
         try:
             text = self.path.read_text()
-            obj  = json.loads(text)
+            obj  = jsonc.loads(text)
             if isinstance(obj, dict):
                 # Only merge explicit file keys
                 self._data.update(obj)
