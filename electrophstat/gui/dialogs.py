@@ -148,6 +148,20 @@ class SettingsDialog(QDialog):
         ok_btn.setAutoDefault(True)
 
     def applySettings(self):
+        # read values from the widgets
+        phstat_enabled = self.cb_enable_phstat.isChecked()
+        ph_sensor_enabled = self.cb_enable_ph_sensor.isChecked()
+
+        # validate interdependency
+        if phstat_enabled and not ph_sensor_enabled:
+            QMessageBox.warning(
+                self,
+                "Invalid Configuration",
+                "pH Stat mode requires the pH sensor to be enabled.\n"
+                "Please enable the pH sensor or disable pH Stat."
+            )
+            return  # abort closing
+        
         # read actual checked state, write into config
         self.cfg.pHstat_mode                = int(self.cb_cfg_pHstatmode.currentIndex())
         self.cfg.pH_target                  = round(self.ds_cfg_pHtarget.Value(), 2)
@@ -160,8 +174,8 @@ class SettingsDialog(QDialog):
         self.cfg.pH_calibration_high        = round(self.ds_cfg_pH_high.Value(), 2)
 
         self.cfg.enable_psu                 = self.cb_enable_psu.isChecked()
-        self.cfg.enable_phstat              = self.cb_enable_phstat.isChecked()
-        self.cfg.enable_ph_sensor           = self.cb_enable_ph_sensor.isChecked()
+        self.cfg.enable_phstat              = phstat_enabled
+        self.cfg.enable_ph_sensor           = ph_sensor_enabled
         self.cfg.enable_temp_sensor         = self.cb_enable_temp_sensor.isChecked()
         self.cfg.enable_turbidity_sensor    = self.cb_enable_turbidity_sensor.isChecked()
 
