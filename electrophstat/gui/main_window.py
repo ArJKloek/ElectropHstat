@@ -20,6 +20,7 @@ from electrophstat.gui.logging_controller import LoggingController
 #from electrophstat.io.config import Config
 from electrophstat.connections.config_connections import init_config
 from electrophstat.setup.pps_setup import init_psu
+from electrophstat.setup.variables_setup import init_variables
 from pathlib import Path
 
 
@@ -51,8 +52,7 @@ class MainWindow(QMainWindow):
         uic.loadUi("electrophstat/gui/main_window.ui", self)
 
 
-        self.setupVariables()
-        
+        init_variables(self)
         init_config(self)
         init_psu(self)
 
@@ -339,39 +339,7 @@ class MainWindow(QMainWindow):
         """
         self.tabWidget.setStyleSheet(tab_style)
 
-    def setupVariables(self):
-        self.Ref_path = ''
-        self.pH_target = 0.0
-        self.pH_control_mode = 0
-        self.pump_volume_per_cycle_ml = 0
-        self.injections = 0
-        self.pump_cycle_duration_s = 0
-        self.valueData = {
-            "pump":             0.0,
-            "pH":               0.0,
-            "temperature":      0.0,
-            "voltage":          0.0,
-            "current":          0.0,
-            "coulomb":          0.0,
-            "mode":             "",
-        }
-        self.pump_cooldown_duration_s = 0
-        self.currentActiveTabIndex = 0  # Track the current tab index
-        self.graphTabs = []
-        self.graphWidgets = []
-        self.pH_calibration_low = 0.0
-        self.pH_calibration_mid = 0.0
-        self.pH_calibration_high = 0.0
-        self.copy_path = ""
-        #self.log_interval = 500
-        self.viewBoxes = {}  # In __init__ or setupVariables()
-        self.rightViewBoxes = {}
-        self.PStype = [0,0,0,0]
-        self.start = False
-        self.pHSelectMode = 1 
-        self.pumpDurationSeconds = 1
-        #ConfigReader(self)
-
+    
     def changeEvent(self, event):
         """
         Catch window‐state changes (maximize / minimize / fullscreen)
