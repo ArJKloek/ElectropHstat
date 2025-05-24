@@ -136,7 +136,7 @@ class SettingsDialog(QDialog):
         self.cb_enable_turbidity_sensor.setChecked(self.cfg.enable_turbidity_sensor)
 
         # hook up Ok/Cancel
-        self.buttonBox.accepted.connect(self.applySettings)
+        self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
 
         # make Enter trigger OK
@@ -144,7 +144,7 @@ class SettingsDialog(QDialog):
         ok_btn.setDefault(True)
         ok_btn.setAutoDefault(True)
 
-    def applySettings(self):
+    def accept(self):
         # read values from the widgets
         phstat_enabled = self.cb_enable_phstat.isChecked()
         ph_sensor_enabled = self.cb_enable_ph_sensor.isChecked()
@@ -183,6 +183,6 @@ class SettingsDialog(QDialog):
         self.cfg.enable_turbidity_sensor    = self.cb_enable_turbidity_sensor.isChecked()
 
         # close dialog with Accepted
-        self.accept()
+        super().accept()
         
     
