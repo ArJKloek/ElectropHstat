@@ -8,7 +8,7 @@ class Config:
         super().__setattr__('path', Path(path))
         super().__setattr__('defaults', defaults.copy())
         super().__setattr__('_data', {})  # only explicit overrides
-        print(self.path.read_test())
+        print(self.path.read_text())
         self.load()
 
     def load(self) -> None:
