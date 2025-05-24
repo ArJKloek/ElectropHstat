@@ -10,7 +10,6 @@ def init_config(self):
     #LOG_BASE  = REPO_ROOT / "ElectroPHData"
     
     cfg_path = REPO_ROOT / "settings.json"
-    print(cfg_path)
     DEFAULT_CONFIG = {
         "pH_control_mode":           0,
         "pH_target":                 7.00,

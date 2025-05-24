@@ -21,7 +21,6 @@ class Config:
             if isinstance(obj, dict):
                 # Only merge explicit file keys
                 self._data.update(obj)
-                print(f"Loaded config overrides: {obj}")
         except Exception as e:
             print(f"Error loading config from {self.path}: {e}")
         
