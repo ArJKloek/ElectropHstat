@@ -15,12 +15,11 @@ from electrophstat.connections.pHstat_connections import pHStatConnections
 from electrophstat.gui.graph_controller import GraphController
 from electrophstat.gui.plot_manager import PlotManager
 from electrophstat.gui.sensor_controller import SensorController
-from electrophstat.gui.pps_controller import PPSController
-from electrophstat.connections.pps_connections import PPSConnections
 from electrophstat.gui.phstat_controller import pHStatController
 from electrophstat.gui.logging_controller import LoggingController
 #from electrophstat.io.config import Config
 from electrophstat.connections.config_connections import init_config
+from electrophstat.setup.pps_setup import init_psu
 from pathlib import Path
 
 
@@ -49,11 +48,13 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
 
 
+        uic.loadUi("electrophstat/gui/main_window.ui", self)
 
 
         self.setupVariables()
-
+        
         init_config(self)
+        init_psu(self)
 
         self.calibrate_pump_dialog = CalibratePumpDialog(float(self.pump_volume_per_cycle_ml), float(self.pump_cycle_duration_s), self)
         self.pH_calibrate_dialog = CalibratepHDialog(float(self.pH_calibration_low),float(self.pH_calibration_mid),float(self.pH_calibration_high),self)
@@ -97,7 +98,6 @@ class MainWindow(QMainWindow):
             parent=self
         )
         
-        uic.loadUi("electrophstat/gui/main_window.ui", self)
 
          # Map each registry key to the slot you already have
        
@@ -108,14 +108,6 @@ class MainWindow(QMainWindow):
        # instantiate controllers (they subclass QObject)
         #self.pps_controller = PPSController(self)
         #self.ppsWorker.disconnected_signal.connect(self.pps_controller.on_pps_disconnect)
-
-        
-        self.pps_connections = PPSConnections(self)
-
-        self.pps_ctrl = PPSController(self, self.pps_connections,
-                                      interval=1.0,  # poll every second
-                                      reset=True)    # whether to reset on open
-        
 
         # This will spin up worker+thread for each key
         # Initialize PPS Connections for updating the GUI
