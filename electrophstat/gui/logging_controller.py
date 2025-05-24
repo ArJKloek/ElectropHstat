@@ -92,7 +92,6 @@ class LoggingController(QObject):
         """
         for lbl in labels:
             self.active_labels.discard(lbl)
-            print(f'After removal {self.active_labels}')
             #self.win.logger.files .pop(lbl, None)
             #self.win.logger.starts.pop(lbl, None)
 
@@ -104,8 +103,10 @@ class LoggingController(QObject):
         """
         for lbl in labels:
             self.active_labels.add(lbl)
+            print(f'enable logging {self.active_labels}')
             # if mid-session and we haven’t made a file yet:
             if self.win.logger.log_dir and lbl not in self.win.logger.files:
+                print(f'extra is activated')
                 idx  = self.win.logger.labels.index(lbl)
                 col  = self.win.logger.columns[idx]
                 path = self.win.logger._make_file(lbl, col, datetime.now())
