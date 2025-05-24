@@ -19,11 +19,11 @@ def init_config(self):
         "pH_calibration_low":        4.00,
         "pH_calibration_mid":        7.00,
         "pH_calibration_high":       10.00,
-        "reference_file_path":       "",
         "enable_psu":               True,
-        "enable_ph":                True,
-        "enable_temp":              True,
-        "enable_turbidity":         True
+        "enable_phstat":            True,
+        "enable_ph_sensor":         True,
+        "enable_temp_sensor":       True,
+        "enable_turbidity_sensor":  True
     }
 
     # 2) instantiate & merge any on‐disk overrides

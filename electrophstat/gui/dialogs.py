@@ -120,13 +120,23 @@ class SettingsDialog(QDialog):
         # stash your config on the instance
         self.cfg = self.parent().config
 
-        # initialize the checkbox
-        self.cb_cfg_pHstatmode.setIndex(self.cfg.pHstat_mode)
-        self.cb_cfg_pHtarget.setValue(self.cfg.pH_target)
+        # pHstat settings
+        self.cb_cfg_pHstatmode.setCurrentIndex(self.cfg.pHstat_mode)
+        self.ds_cfg_pHtarget.setValue(self.cfg.pH_target)
+        self.ds_cfg_pump_ml.setValue(self.cfg.pump_volume_per_cycle_ml)
+        self.ds_cfg_pump_time.setValue(self.cfg.pump_cycle_duration_s)
+        self.sp_cfg_cooldown.setValue(self.cfg.pump_cooldown_duration_s)
+        
+        #pH calibration settings
+        self.ds_cfg_pH_low.setValue(self.cfg.pH_calibration_low)
+        self.ds_cfg_pH_mid.setValue(self.cfg.pH_calibration_mid)
+        self.ds_cfg_pH_high.setValue(self.cfg.pH_calibration_high)
+        #Control and sensor enable / Restart needed
         self.cb_enable_psu.setChecked(self.cfg.enable_psu)
-
-
-
+        self.cb_enable_phstat.setChecked(self.cfg.enable_phstat)
+        self.cb_enable_ph_sensor.setChecked(self.cfg.enable_ph_sensor)
+        self.cb_enable_temp_sensor.setChecked(self.cfg.enable_temp_sensor)
+        self.cb_enable_turbidity_sensor.setChecked(self.cfg.enable_turbidity_sensor)
 
         # hook up Ok/Cancel
         self.buttonBox.accepted.connect(self.applySettings)
