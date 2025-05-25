@@ -1,6 +1,6 @@
 # tests/test_dummy_pps.py
 import pytest
-from electrophstat.hardware.dummy_pps import DummyPPS
+from electrophstat.dummy.dummy_pps import DummyPPS
 
 def test_dummy_pps_basic():
     ps = DummyPPS(); ps.connect()

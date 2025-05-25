@@ -1,7 +1,7 @@
 # electrophstat/hardware/dummy_pps.py
 from __future__ import annotations
 import random
-from .interfaces import PowerSupply
+from ..hardware.interfaces import PowerSupply
 
 
 class DummyPPS(PowerSupply):

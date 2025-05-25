@@ -1,5 +1,5 @@
 from typing import Dict
-from .dummy_atlas import DummyAtlas
+from ..dummy.dummy_atlas import DummyAtlas
 from ..vendor.atlas_i2c import AtlasI2C
 from ..hardware.interfaces import AtlasSensor
 

@@ -1,0 +1,33 @@
+import time
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
+from electrophstat.vendor.DFRobot_ADS1115 import ADS1115   # adjust import if you put it under a package
+
+class ADCWorker(QObject):
+    """
+    Polls ADS1115 channel 1 in a background thread and emits its raw reading.
+    """
+    data_ready = pyqtSignal(float)  # emits raw ADC value
+
+    def __init__(self, interval: float = 1.0):
+        super().__init__()
+        self.interval   = interval
+        self.adc        = ADS1115()     # your DFRobot class
+        self.adc.set_gain(ADS1115_REG_CONFIG_PGA_4_096V)  # optional gain
+        self.adc.set_addr_ADS1115(ADS1115_IIC_ADDRESS0)  # optional address
+        self.is_running = False
+
+    @pyqtSlot()
+    def run(self):
+        self.is_running = True
+        while self.is_running:
+            try:
+                # DFRobot returns a dict { 'r': raw_value }
+                resp = self.adc.read_voltage(1)   # channel 1
+                raw  = resp.get('r', 0.0)
+                self.data_ready.emit(raw)
+            except Exception:
+                pass
+            time.sleep(self.interval)
+
+    def stop(self):
+        self.is_running = False

@@ -2,7 +2,7 @@ from electrophstat.control.pump_control import PumpController
 from electrophstat.connections.pHstat_connections import pHStatConnections
 from electrophstat.gui.phstat_controller import pHStatController
 from electrophstat.gui.dialogs import CalibratePumpDialog
-from electrophstat.hardware.dummy_switcher import MockLib8MosInd
+from electrophstat.dummy.dummy_switcher import MockLib8MosInd
 
 lib8mosind = MockLib8MosInd()
 

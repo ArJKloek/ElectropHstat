@@ -62,3 +62,23 @@ class AtlasSensor(Protocol):
     def set_temp_comp(self, celsius: float) -> None: ...
     def clear_cal(self) -> None: ...
     def calibrate(self, *args, **kwargs) -> None: ...
+
+@runtime_checkable
+class ADCSensor(Protocol):
+    """
+    High-level contract for any ADS1115-style ADC (real or dummy).
+    """
+
+    # optional “where” it lives; not strictly required
+    bus: Optional[str]
+    address: Optional[int]
+
+    # lifecycle
+    def connect(self) -> None: ...
+    def disconnect(self) -> None: ...
+    @property
+    def connected(self) -> bool: ...
+
+    # read one channel, return raw ticks or volts
+    def read_voltage(self, channel: int) -> Tuple[float, float]: ...
+    #             └─ channel 0–3             └─ (value, timestamp) or just value
