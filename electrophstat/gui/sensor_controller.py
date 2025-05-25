@@ -12,24 +12,24 @@ class SensorController(QObject):
 
         for key, slot_or_list in update_slots.items():
             atlas, kind = discover_sensor(key)
-            print(kind)
             worker = AtlasSensorWorker(name=key, sensor=atlas, interval=interval)
             thr    = QThread(self.win)
             worker.moveToThread(thr)
 
             # If dummy color groupbox
             # color the box if we're using the dummy
-            #if isinstance(atlas, DummyAtlas):
-                # a light orange border to flag “dummy mode”
-            #    self.win.phGroupBox.setStyleSheet("""
-            #        QGroupBox {
-            #            border: 2px solid orange;
-            #            background-color: #FFF8E1;
-            #        }
-            #    """)
-            #else:
-            #    # reset to default
-            #    self.win.phGroupBox.setStyleSheet("")
+            if isinstance(atlas, DummyAtlas):
+                group_name = f"{kind}Group"
+                # grab the widget from your MainWindow
+                groupbox = getattr(self.win, group_name, None)
+                if groupbox is not None:
+                    groupbox.setStyleSheet("""
+                        QGroupBox {
+                        border: 2px solid orange;
+                        background-color: #FFF8E1;
+                        }
+                    """)
+            
             # normalize to a list
             if callable(slot_or_list):
                 slots = [slot_or_list]
