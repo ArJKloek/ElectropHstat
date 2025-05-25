@@ -41,7 +41,7 @@ class ButtonConnections(QObject):
             self.win.pps_ctrl.coulombClock.start()
             self.win.pps_ctrl.coulombTimer.start()
         self.win.statusBar().showMessage("pH-stat/logging started")
-    
+        self.win.logging_started = True
     def log_active(self):
         self.win.logging_ctrl.start()
 
@@ -78,6 +78,8 @@ class ButtonConnections(QObject):
         self.win.resetbutton.setEnabled(False)
         # 3) Status
         self.win.logger.reset()
+        self.win.logging_started = False
+
         self.reset_value_data()
        
         QMessageBox.information(self.win, "Reset", "pH-stat has been reset")
@@ -181,7 +183,7 @@ class ButtonConnections(QObject):
         elif sensor_type == 'turbidity':
             self.win.lb_turbidity.setText(f'{received_data}')   
     
-        if self.win.usb_present:
+        if self.win.usb_present and self.win.logging_started:
             self.win.usb_button.setEnabled(True)
         #    self.win.valueData[3] = received_data 
         #elif sensor_type == 4:   
