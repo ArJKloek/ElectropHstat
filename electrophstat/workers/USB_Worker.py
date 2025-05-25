@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, pyqtSignal, QThread, pyqtSlot
+from PyQt5.QtCore import QObject, pyqtSignal
 import sys
 import time
 from serial.tools import list_ports
@@ -10,8 +10,6 @@ if USE_PYUDEV:
 else:
     Context = None
     Monitor = MonitorObserver = None
-
-
 
 import subprocess
 
