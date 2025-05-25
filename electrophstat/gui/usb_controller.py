@@ -37,7 +37,7 @@ class UsbController(QObject):
         Enable or disable the usbButton (or other UI) accordingly.
         """
         # e.g. you have a QPushButton named usbButton
-        self.win.usbButton.setEnabled(present)
+        #self.win.usbButton.setEnabled(present)
         if present:
             self.win.statusBar().showMessage(f"USB mounted at {path}")
         else:
