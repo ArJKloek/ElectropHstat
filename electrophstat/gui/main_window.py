@@ -37,10 +37,8 @@ class MainWindow(QMainWindow):
     
     def __init__(self):
         super(MainWindow, self).__init__()
-
-
+        
         uic.loadUi("electrophstat/gui/main_window.ui", self)
-
 
         init_variables(self)
         init_config(self)
@@ -88,20 +86,7 @@ class MainWindow(QMainWindow):
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.No)
 
-        if reply == QMessageBox.Yes:
-            # Stop the worker
-            #self.pHWorker.stop()
-            #self.pHThread.quit()
-
-            #self.RTDWorker.stop()
-            #self.RTDThread.quit()
-
-            #self.StatWorker.stop()
-            #self.StatThread.quit()
-            
-            #self.USBWorker.stop()
-            #self.USBThread.quit()
-            
+        if reply == QMessageBox.Yes:  
             event.accept()  # Accept the close event
 
         else:
