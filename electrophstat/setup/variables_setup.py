@@ -33,3 +33,8 @@ def init_variables(main):
         main.pumpDurationSeconds = 1
         main.enable_psu : bool
         main.enable_phstat : bool
+        main.enable_ph_sensor : bool
+        main.enable_temp_sensor : bool
+        main.enable_turbidity_sensor : bool
+        
+    

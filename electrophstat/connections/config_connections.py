@@ -39,7 +39,10 @@ def init_config(self):
     self.pH_calibration_mid             = float(self.config.pH_calibration_mid)
     self.pH_calibration_high            = float(self.config.pH_calibration_high)
     self.enable_psu                     = bool(self.config.enable_psu)
-    self.enable_phstat                 = bool(self.config.enable_phstat)
+    self.enable_phstat                  = bool(self.config.enable_phstat)
+    self.enable_ph_sensor               = bool(self.config.enable_ph_sensor)
+    self.enable_temp_sensor             = bool(self.config.enable_temp_sensor)
+    self.enable_turbidity_sensor        = bool(self.config.enable_turbidity_sensor)
     # 4) hook UI elements → config so that any user change persists
     #self.keepSelector.currentIndexChanged.connect(self._on_mode_change)
     #self.phSpin.valueChanged.connect(self._on_target_pH_change)
