@@ -163,8 +163,8 @@ class SettingsDialog(QDialog):
                 # user chose OK → auto–enable the pH sensor checkbox
                 self.cb_enable_ph_sensor.setChecked(True)
             # in either case, we return without closing the dialog so they can adjust
-            return
-            
+                return
+        
         # read actual checked state, write into config
         self.cfg.pHstat_mode                = int(self.cb_cfg_pHstatmode.currentIndex())
         self.cfg.pH_target                  = round(self.ds_cfg_pHtarget.Value(), 2)
@@ -181,7 +181,6 @@ class SettingsDialog(QDialog):
         self.cfg.enable_ph_sensor           = ph_sensor_enabled
         self.cfg.enable_temp_sensor         = self.cb_enable_temp_sensor.isChecked()
         self.cfg.enable_turbidity_sensor    = self.cb_enable_turbidity_sensor.isChecked()
-
         # close dialog with Accepted
         super().accept()
         
