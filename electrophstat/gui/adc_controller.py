@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSlot
-from electrophstat.workers.adc_worker import ADCWorker
-
+#from electrophstat.workers.adc_worker import ADCWorker
+from ..workers.adc_DFRobot_worker import ADCWorker
 class ADCController(QObject):
     """
     Spins up the ADCWorker and routes its data_ready signal
