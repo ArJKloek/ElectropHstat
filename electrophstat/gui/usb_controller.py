@@ -22,7 +22,7 @@ class UsbController(QObject):
         self.thread.started.connect(self.worker.run)
 
         # 3) Connect the signal to our slot
-        self.worker.update_usb.connect(self.on_usb_changed)
+        #self.worker.update_usb.connect(self.on_usb_changed)
 
         # 4) Clean up when the window closes
         self.win.destroyed.connect(self.stop)
