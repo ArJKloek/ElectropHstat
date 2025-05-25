@@ -83,6 +83,8 @@ class PlotManager:
             self.update_power_plot()
         elif plot_index == 3:
             self.update_coulomb_plot()
+        elif plot_index ==4:
+            self.update_turibity_plot()
 
     def update_plot_from_logger(self, plot_index, curves, show_right_axis=False):
         widget = self.main.graphWidgets[plot_index]
@@ -154,6 +156,10 @@ class PlotManager:
     def update_coulomb_plot(self):
         curves = [{"label": "coulomb", "curve_attr": "coulomb_curve", "pen": "m", "use_right_axis": False}]
         self.update_plot_from_logger(3, curves)
+
+    def update_turbidity_plot(self):
+        curves = [{"label": "turbidity", "curve_attr": "turbidity_curve", "pen": "m", "use_right_axis": False}]
+        self.update_plot_from_logger(4, curves)
 
     def _scale_graph_fonts(self, widget, label_size, tick_size):
         if widget is None:
