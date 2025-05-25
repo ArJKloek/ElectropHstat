@@ -28,7 +28,7 @@ class ButtonConnections(QObject):
         # 1) Kick off your control loop & logging
         #self.win.control_loop.should_start = True
         #self.win.logging_timer.start()
-        if self.win.toggle_pH_control:
+        if self.win.toggle_pH_control and self.win.enable_phstat:
             self.win.phstat_ctrl.on_pumpToggle(True)
         # 2) UI tweaks
         self.win.startbutton.setEnabled(False)
@@ -57,7 +57,7 @@ class ButtonConnections(QObject):
             self.win.pps_ctrl.coulombClock.stop()
             self.win.pps_ctrl.coulombTimer.stop()
         #2) Logging and pH pump logic stop
-        if self.win.toggle_pH_control:
+        if self.win.toggle_pH_control and self.win.enable_phstat:
             self.win.phstat_ctrl.on_pumpToggle(False)
         self.log_deactive()
         # 3) Status
