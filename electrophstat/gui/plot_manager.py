@@ -93,11 +93,15 @@ class PlotManager:
         for cfg in curves:
             label = cfg["label"]
             #times, values = logger.read(label)
-            data = logger.read(label)
-            if label == 'turbidity':
-                times, values, raw_vals = data
-            else:
-                times, values = data
+            
+            try:
+                data = logger.read(label)
+                if label == 'turbidity':
+                    times, values, raw_vals = data
+                else:
+                    times, values = data
+            except Exception as e:
+                print(f'Error for {label} as {e}')
             # remove any old curve
             old = getattr(self.main, cfg["curve_attr"], None)
             if old:
