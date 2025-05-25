@@ -18,7 +18,7 @@ class PlotManager:
             "temperature":  (1, "temp_curve",       "b", True),
             "voltage":      (2, "volt_curve",       "g", False),
             "current":      (2, "amp_curve",        "b", True),
-            "coulomb":      (3, "coulomb_curve",    "m", False),,
+            "coulomb":      (3, "coulomb_curve",    "m", False),
             "turbidity":    (4, "turbidity_curve",  "b", False)
         }
 
