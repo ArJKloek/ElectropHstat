@@ -12,9 +12,12 @@ class GraphController(QObject):
         self.plot_manager = plot_manager
         self.win          = parent  # assume parent is your MainWindow
         
-        # flags (driven by your toggles in MainWindow)
-        self.pH_enabled  = True
-        self.psu_enabled = True
+         # ←—— Read your config flags here —→
+        cfg = self.win.config
+        self.pHstat_enabled    = bool(cfg.enable_phstat)
+        self.temp_enabled      = bool(cfg.enable_temp_sensor)
+        self.psu_enabled       = bool(cfg.enable_psu)
+        self.turbidity_enabled = bool(cfg.enable_turbidity_sensor)
 
         # 1) Build all four tabs (but don't add them yet)
         self._build_all_tabs()
@@ -29,49 +32,59 @@ class GraphController(QObject):
 
     def _build_all_tabs(self):
         specs = [
-            ("Pump",       dict(plot_index=0, left_label="Added (ml)")),
-            ("pH/Temp",  dict(plot_index=1, left_label="pH",
-                                     right_label="Temperature", right_units="°C")),
-            ("Power",      dict(plot_index=2, left_label="Voltage (V)",
-                                     right_label="Amperage",     right_units="A")),
-            ("Coulomb",         dict(plot_index=3, left_label="Coulomb (C)")),
-            ("Turbidity",    dict(plot_index=4, left_label="Turbidity")),
+            ("Pump",        dict(plot_index=0, left_label="Added (ml)")),
+            ("pH/Temp",     dict(plot_index=1, 
+                                left_label="pH",
+                                right_label="Temperature", right_units="°C")),
+            ("Power",       dict(plot_index=2, 
+                                left_label="Voltage (V)",
+                                right_label="Amperage",     right_units="A")),
+            ("Coulomb",     dict(plot_index=3, left_label="Coulomb (C)")),
+            ("Turbidity",   dict(plot_index=4, left_label="Turbidity")),
         ]
         self._all_tabs = []
         for title, kwargs in specs:
             # ask PlotManager to build the tab
-            tab = QWidget()
-            tab.plot_index = kwargs["plot_index"]
+            #tab = QWidget()
+            #tab.plot_index = kwargs["plot_index"]
             self.plot_manager.addGraphTab(title=title, **kwargs)
             # retrieve the newly created tab widget
-            tab_widget = self.tabWidget.widget(self.tabWidget.count()-1)
+            tw = self.tabWidget.widget(self.tabWidget.count()-1)
             # remove it immediately; we'll re-insert in refresh_tabs()
             self.tabWidget.removeTab(self.tabWidget.count()-1)
 
-            self._all_tabs.append((title, tab_widget))
+            self._all_tabs.append((title, tw))
 
     def refresh_tabs(self):
         # 1) clear out everything
         self.tabWidget.clear()
 
-        # 2) re-add in the order you like, testing flags
         for title, widget in self._all_tabs:
-            if title == "Pump" and not self.pH_enabled:
-                continue
-            if title in ("Power", "Coulomb") and not self.psu_enabled:
-                continue
-            # otherwise always show pH+Temp, or if the flags say so
-            self.tabWidget.addTab(widget, title)
+            if title == "Pump":
+                # always show pump?
+                self.tabWidget.addTab(widget, title)
+            elif title == "pH/Temp":
+                if self.pHstat_enabled or self.temp_enabled:
+                    self.tabWidget.addTab(widget, title)
+            elif title in ("Power", "Coulomb"):
+                if self.psu_enabled:
+                    self.tabWidget.addTab(widget, title)
+            elif title == "Turbidity":
+                if self.turbidity_enabled:
+                    self.tabWidget.addTab(widget, title)
 
         # optional: restore the previously‐active tab index if you saved it
 
-    def set_pH_enabled(self, on: bool):
-        self.pH_enabled = on
-        print(f' pH_enabled is {self.pH_enabled}')
+    def set_pHstat_enabled(self, on: bool):
+        self.pHstat_enabled = on
         self.refresh_tabs()
 
     def set_psu_enabled(self, on: bool):
         self.psu_enabled = on
+        self.refresh_tabs()
+
+    def set_turbidity_enabled(self, on: bool):
+        self.turbidity_enabled = on
         self.refresh_tabs()
 
     @pyqtSlot()

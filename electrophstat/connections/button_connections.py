@@ -205,7 +205,7 @@ class ButtonConnections(QObject):
             print("pH-stat logic & logging DISABLED")
             self.win.phstat_ctrl.disable()
             self.win.logging_ctrl.disable_logging(["pump"])
-            self.win.graph_ctrl.set_pH_enabled(False)
+            self.win.graph_ctrl.set_pHstat_enabled(False)
 
     def reset_value_data(self):
         """
