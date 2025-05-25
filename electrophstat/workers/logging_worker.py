@@ -26,9 +26,16 @@ class LoggingWorker(QObject):
                 for label in labels:
                     if label == "pump":
                         continue
-                    val = self.value_data.get(label, None)
-                    if val is not None:
-                        self.logger.log(label, val)
+                    if label == "turbidity":
+                        # pull both values out
+                        proc = self.value_data.get("turbidity", 0.0)
+                        raw  = self.value_data.get("turbidity_raw", 0.0)
+                        # emit both in one go (your Logger._write_turbidity_row handles this)
+                        self.logger.log("turbidity", (proc, raw))
+                    else:
+                        val = self.value_data.get(label, None)
+                        if val is not None:
+                            self.logger.log(label, val)
             except Exception as e:
                 self.error.emit(str(e))
             time.sleep(self.interval)

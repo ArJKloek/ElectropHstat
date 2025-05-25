@@ -61,15 +61,19 @@ class Logger:
         self.files.clear()
         self.starts.clear()
 
-        # 3) create the files, mapping each label → its column name
+        # 3) create the files, mapping each label → its column name (and raw_data for turbidity)
         for lbl in labels_to_use:
             if lbl not in self.labels:
                 continue
-            idx = self.labels.index(lbl)
-            col = self.columns[idx]
-            path = self._make_file(lbl, col, now)
+            idx   = self.labels.index(lbl)
+            col   = self.columns[idx]
+            if lbl == "turbidity":
+                path = self._make_double_file(lbl, col, now)
+            else:
+                path = self._make_file(lbl, col, now)
             self.files[lbl]  = path
             self.starts[lbl] = time.monotonic()
+
 
         # 4) write out your zero-point rows (elapsed=0)
         if initial_values:
@@ -114,6 +118,27 @@ class Logger:
             dict_w = csv.DictWriter(f, fieldnames=['Reaction time (s)', column], delimiter=';')
             dict_w.writeheader()
         return p
+    
+    def _make_double_file(
+        self,
+        label: str,
+        column: str,
+        now: datetime
+    ) -> Path:
+        """
+        Special version for turbidity: adds a Raw Data column.
+        """
+        p = self.log_dir / f"{label}_log_{now.strftime('%d%m%Y_%H%M%S')}.csv"
+        with open(p, 'w', newline='') as f:
+            csv.writer(f, delimiter=';').writerow([label])
+            csv.writer(f, delimiter=';').writerow([f"Date {now.strftime('%d-%m-%Y')}"])
+            csv.writer(f, delimiter=';').writerow([f"Start Time {now.strftime('%H:%M:%S')}"])
+            dict_w = csv.DictWriter(f,
+                                    fieldnames=['Reaction time (s)', column, 'Raw Data'],
+                                    delimiter=';')
+            dict_w.writeheader()
+        return p
+
 
     def log(
         self,
@@ -142,8 +167,13 @@ class Logger:
         #    val_s = str(value)
         #time_s = locale.format_string("%.1f", elapsed, grouping=True)
 
-        self._write_row(label, elapsed, value)
-
+        #self._write_row(label, elapsed, value)
+                # for turbidity we expect a (processed, raw) tuple:
+        if label == "turbidity" and isinstance(value, tuple):
+            proc, raw = value
+            self._write_double_row(label, elapsed, proc, raw)
+        else:
+            self._write_row(label, elapsed, value)
 
     def _write_row(
         self,
@@ -165,7 +195,27 @@ class Logger:
             dict_w = csv.DictWriter(f, fieldnames=['Reaction time (s)', label], delimiter=';')
             dict_w.writerow({'Reaction time (s)': time_s, label: val_s})
     
-    
+    def _write_double_row(
+        self,
+        label: str,
+        elapsed: float,
+        processed,
+        raw
+    ) -> None:
+        """Write a turbidity row with both processed and raw values."""
+        path  = self.files[label]
+        # format both numbers
+        proc_s = locale.format_string("%.3f", processed, grouping=True) if isinstance(processed, (int,float)) else str(processed)
+        raw_s  = locale.format_string("%.3f", raw, grouping=True)       if isinstance(raw, (int,float))       else str(raw)
+        time_s = locale.format_string("%.1f", elapsed, grouping=True)
+
+        with open(path, 'a', newline='') as f:
+            dict_w = csv.DictWriter(f,
+                                    fieldnames=['Reaction time (s)', label, 'Raw Data'],
+                                    delimiter=';')
+            dict_w.writerow({'Reaction time (s)': time_s,
+                             label: proc_s,
+                             'Raw Data': raw_s})
     def read(
         self,
         label: str
@@ -179,14 +229,31 @@ class Logger:
             reader = csv.reader(f, delimiter=';')
             for _ in range(4):
                 next(reader, None)
-            for row in reader:
-                if len(row) < 2:
-                    continue
-                t_s = row[0].replace(',', '.')
-                v_s = row[1].replace(',', '.')
-                try:
-                    times.append(float(t_s))
-                    vals.append(float(v_s))
-                except ValueError:
-                    continue
-        return times, vals
+ # if turbidity, pull out both data and raw_data
+            if label == "turbidity":
+                raw_vals: List[float] = []
+                for row in reader:
+                    if len(row) < 3:
+                        continue
+                    t_s   = row[0].replace(',', '.')
+                    v_s   = row[1].replace(',', '.')
+                    r_s   = row[2].replace(',', '.')
+                    try:
+                        times.append(float(t_s))
+                        vals.append(float(v_s))
+                        raw_vals.append(float(r_s))
+                    except ValueError:
+                        continue
+                return times, vals, raw_vals
+            else:
+                for row in reader:
+                    if len(row) < 2:
+                        continue
+                    t_s = row[0].replace(',', '.')
+                    v_s = row[1].replace(',', '.')
+                    try:
+                        times.append(float(t_s))
+                        vals.append(float(v_s))
+                    except ValueError:
+                        continue
+                return times, vals, []            
