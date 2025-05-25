@@ -136,15 +136,16 @@ class SettingsDialog(QDialog):
         self.cb_enable_turbidity_sensor.setChecked(self.cfg.enable_turbidity_sensor)
 
         # hook up Ok/Cancel
-        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.accepted.connect(self.on_ok_clicked)
         self.buttonBox.rejected.connect(self.reject)
 
         # make Enter trigger OK
         ok_btn = self.buttonBox.button(self.buttonBox.Ok)
         ok_btn.setDefault(True)
         ok_btn.setAutoDefault(True)
-
-    def accept(self):
+    
+    @pyqtSlot()
+    def on_ok_clicked(self):
         # read values from the widgets
         phstat_enabled = self.cb_enable_phstat.isChecked()
         ph_sensor_enabled = self.cb_enable_ph_sensor.isChecked()
@@ -159,12 +160,11 @@ class SettingsDialog(QDialog):
                 QMessageBox.Ok   | QMessageBox.Cancel,
                 QMessageBox.Ok
             )
-            if reply == QMessageBox.Ok:
-                # user chose OK → auto–enable the pH sensor checkbox
-                self.cb_enable_ph_sensor.setChecked(True)
-            # in either case, we return without closing the dialog so they can adjust
+            if reply == QMessageBox.Cancel:
                 return
-        
+                # user chose OK → auto–enable the pH sensor checkbox
+            self.cb_enable_ph_sensor.setChecked(True)
+            
         # read actual checked state, write into config
         self.cfg.pHstat_mode                = int(self.cb_cfg_pHstatmode.currentIndex())
         self.cfg.pH_target                  = round(self.ds_cfg_pHtarget.Value(), 2)
@@ -182,6 +182,6 @@ class SettingsDialog(QDialog):
         self.cfg.enable_temp_sensor         = self.cb_enable_temp_sensor.isChecked()
         self.cfg.enable_turbidity_sensor    = self.cb_enable_turbidity_sensor.isChecked()
         # close dialog with Accepted
-        super().accept()
+        self.accept()
         
     
