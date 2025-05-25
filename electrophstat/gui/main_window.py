@@ -42,7 +42,6 @@ class MainWindow(QMainWindow):
 
         init_variables(self)
         init_config(self)
-        print(f'Config loaded{self.config}')
         init_graphs(self)
         init_logger(self)
         init_psu(self)

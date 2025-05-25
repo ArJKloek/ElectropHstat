@@ -4,5 +4,5 @@ from electrophstat.control.timer_control import monoTimer
 
 def init_graphs(main):
     main.plot_manager = PlotManager(main)
-    main.graph_ctrl = GraphController(main.tabWidget, main.plot_manager)
+    main.graph_ctrl = GraphController(main.tabWidget, main.plot_manager, main)
     main.logging_timer = monoTimer()
