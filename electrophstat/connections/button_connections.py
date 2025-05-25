@@ -1,7 +1,7 @@
 # electrophstat/gui/phstat_controller.py
 from pathlib import Path
-from PyQt5.QtCore    import QObject, pyqtSlot
-from PyQt5.QtWidgets import QMessageBox, QAction
+from PyQt5.QtCore    import QObject, pyqtSlot, QTimer
+from PyQt5.QtWidgets import QMessageBox, QAction, QLabel
 import os, re, shutil                      
 
 class ButtonConnections(QObject):
@@ -133,14 +133,16 @@ class ButtonConnections(QObject):
             return
 
         # 7) Inform the user
-        self.win.statusBar().showMessage(
-                f"Logs copied to {dest_dir}", 
-                10_000  # timeout in ms (10 seconds)
-                )
-        
+        msg = f'Logs copied to {dest_dir}'
+        label = QLabel(msg, self.win)
+        # add as a permanent widget so status-tips won’t replace it
+        self.win.statusBar().addPermanentWidget(label)
+        # remove it after 10 s
+        QTimer.singleShot(10_000, lambda: self.win.statusBar().removeWidget(label))
+            
     def log_deactive(self):
         self.win.logging_ctrl.stop()
-    
+        
     @pyqtSlot()
     def openCalibratePumpWindow(self):
         self.win.calibrate_pump_window.exec_()
