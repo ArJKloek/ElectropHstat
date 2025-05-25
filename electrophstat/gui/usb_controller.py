@@ -1,7 +1,7 @@
 # electrophstat/gui/usb_controller.py
 
 from PyQt5.QtCore import QObject, QThread, pyqtSlot
-from electrophstat.io.usb_monitor import USBWorker
+from electrophstat.workers.usb_worker import USBWorker
 
 class UsbController(QObject):
     """
