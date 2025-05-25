@@ -92,7 +92,7 @@ class PlotManager:
 
         for cfg in curves:
             label = cfg["label"]
-            times, values, raw = logger.read(label)
+            times, values = logger.read(label)
 
             # remove any old curve
             old = getattr(self.main, cfg["curve_attr"], None)
