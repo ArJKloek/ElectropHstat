@@ -2,6 +2,7 @@
 
 from PyQt5.QtCore import QObject, QThread
 from electrophstat.sensors.atlas_worker import AtlasSensorWorker
+from ..dummy.dummy_atlas import DummyAtlas
 from electrophstat.sensors import discover_sensor
 
 class SensorController(QObject):
@@ -11,11 +12,24 @@ class SensorController(QObject):
 
         for key, slot_or_list in update_slots.items():
             atlas = discover_sensor(key)
-            print(atlas)
+            print(key)
             worker = AtlasSensorWorker(name=key, sensor=atlas, interval=interval)
             thr    = QThread(self.win)
             worker.moveToThread(thr)
 
+            # If dummy color groupbox
+            # color the box if we're using the dummy
+            if isinstance(atlas, DummyAtlas):
+                # a light orange border to flag “dummy mode”
+                self.win.phGroupBox.setStyleSheet("""
+                    QGroupBox {
+                        border: 2px solid orange;
+                        background-color: #FFF8E1;
+                    }
+                """)
+            else:
+                # reset to default
+                self.win.phGroupBox.setStyleSheet("")
             # normalize to a list
             if callable(slot_or_list):
                 slots = [slot_or_list]
