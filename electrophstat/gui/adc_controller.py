@@ -33,7 +33,6 @@ class ADCController(QObject):
         Received a new reading from channel 1.
         Display it or log it as you wish.
         """
-        print(f'ADC value {value}')
         # e.g. if you have a QLCDNumber named lcd_adc in your UI:
         try:
             #self.win.lcd_adc.display(value)

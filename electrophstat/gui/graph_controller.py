@@ -61,11 +61,11 @@ class GraphController(QObject):
 
         for title, widget in self._all_tabs:
             if title == "Pump":
-                # always show pump?
-                self.tabWidget.addTab(widget, title)
-            elif title == "pH/Temp":
-                if self.pHstat_enabled or self.temp_enabled:
+                if self.pHstat_enabled:
+                    # always show pump?
                     self.tabWidget.addTab(widget, title)
+            elif title == "pH/Temp":
+                self.tabWidget.addTab(widget, title)
             elif title in ("Power", "Coulomb"):
                 if self.psu_enabled:
                     self.tabWidget.addTab(widget, title)

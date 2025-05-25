@@ -31,4 +31,5 @@ def init_phstat(self):
         self.pump_ctrl = None
         self.pHstat_cont = None
         self.pHstatGroup.setVisible(False)
+        self.logging_ctrl.disable_logging(['pump'])
         self.toggle_pH_control.setEnabled(False)
