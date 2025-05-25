@@ -35,7 +35,7 @@ class GraphController(QObject):
             ("Power",      dict(plot_index=2, left_label="Voltage (V)",
                                      right_label="Amperage",     right_units="A")),
             ("Coulomb",         dict(plot_index=3, left_label="Coulomb (C)")),
-            ("Turbidity",    dict(plot_index=4, lef_label="Turbidity")),
+            ("Turbidity",    dict(plot_index=4, left_label="Turbidity")),
         ]
         self._all_tabs = []
         for title, kwargs in specs:
