@@ -48,7 +48,7 @@ def discover_sensor(name: str, prefer_hw: bool = True) -> AtlasSensor:
             s = AtlasI2C(address=address, kind=kind)
             s.read()  # “ping” it
             print(f"[{name}] Detected real Atlas EZO {kind} at 0x{address:02X}")
-            return s
+            return s, kind
         except Exception:
             pass
 
@@ -56,7 +56,7 @@ def discover_sensor(name: str, prefer_hw: bool = True) -> AtlasSensor:
     dummy = DummyAtlas(kind=kind)
     dummy.connect()
     print(f"[{name}] Using DummyAtlas ({kind})")
-    return dummy
+    return dummy, kind
 
 
 # 3) Backwards‐compatible wrappers:

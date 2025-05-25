@@ -11,8 +11,8 @@ class SensorController(QObject):
         self.win = window
 
         for key, slot_or_list in update_slots.items():
-            atlas = discover_sensor(key)
-            print(key)
+            atlas, kind = discover_sensor(key)
+            print(kind)
             worker = AtlasSensorWorker(name=key, sensor=atlas, interval=interval)
             thr    = QThread(self.win)
             worker.moveToThread(thr)
