@@ -229,9 +229,9 @@ class ButtonConnections(QObject):
         self.win.usb_present = present
         self._update_usb_button()
 
-    @pyqtSlot()
-    def on_logs_present(self):
-        self.win.logs_present = True
+    @pyqtSlot(bool)
+    def on_logs_present(self, present):
+        self.win.logs_present = present
         self._update_usb_button()
 
     def _update_usb_button(self):
