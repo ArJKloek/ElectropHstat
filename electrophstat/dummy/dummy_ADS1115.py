@@ -28,10 +28,10 @@ class DummyADS1115(ADCSensor):
         self._t += 1.0
         if channel == 1:
             # sine wave between 1000 and 3000 plus some random noise
-            base = 2000 + 1000 * math.sin(2 * math.pi * 0.05 * self._t)
+            base = 2000 + 1 * math.sin(2 * math.pi * 0.05 * self._t)
             noise = random.uniform(-50, 50)
             val = base + noise
         else:
             val = 0.0
         # emulate dict API
-        return {'r': val}
+        return {'r': int(val)}
