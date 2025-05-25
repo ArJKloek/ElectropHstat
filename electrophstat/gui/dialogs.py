@@ -167,14 +167,14 @@ class SettingsDialog(QDialog):
             
         # read actual checked state, write into config
         self.cfg.pHstat_mode                = int(self.cb_cfg_pHstatmode.currentIndex())
-        self.cfg.pH_target                  = round(self.ds_cfg_pHtarget.Value(), 2)
-        self.cfg.pump_volume_per_cycle_ml   = round(self.ds_cfg_pump_ml.Value(), 3)
-        self.cfg.pump_cycle_duration_s      = round(self.ds_cfg_pump_time.Value(), 2)
-        self.cfg.pump_cooldown_duration_s   = round(self.sp_cfg_cooldown.Value(), 1)
+        self.cfg.pH_target                  = round(self.ds_cfg_pHtarget.value(), 2)
+        self.cfg.pump_volume_per_cycle_ml   = round(self.ds_cfg_pump_ml.value(), 3)
+        self.cfg.pump_cycle_duration_s      = round(self.ds_cfg_pump_time.value(), 2)
+        self.cfg.pump_cooldown_duration_s   = round(self.sp_cfg_cooldown.value(), 1)
        
-        self.cfg.pH_calibration_low         = round(self.ds_cfg_pH_low.Value(), 2)
-        self.cfg.pH_calibration_mid         = round(self.ds_cfg_pH_mid.Value(), 2)
-        self.cfg.pH_calibration_high        = round(self.ds_cfg_pH_high.Value(), 2)
+        self.cfg.pH_calibration_low         = round(self.ds_cfg_pH_low.value(), 2)
+        self.cfg.pH_calibration_mid         = round(self.ds_cfg_pH_mid.value(), 2)
+        self.cfg.pH_calibration_high        = round(self.ds_cfg_pH_high.value(), 2)
 
         self.cfg.enable_psu                 = self.cb_enable_psu.isChecked()
         self.cfg.enable_phstat              = phstat_enabled
