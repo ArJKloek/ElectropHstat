@@ -2,8 +2,7 @@ import sys
 import time
 import os
 import getpass
-from electrophstat.io.usb_monitor import USBWorker
-from electrophstat.gui.dialogs import DatePickerDialog, CalibratepHDialog
+from electrophstat.gui.dialogs import DatePickerDialog
 from electrophstat.connections.main_connections import setup_mainwindow_signals
 from electrophstat.connections.button_connections import ButtonConnections
 from electrophstat.connections.config_connections import init_config
@@ -51,7 +50,7 @@ class MainWindow(QMainWindow):
         init_settings(self) 
         init_adc(self)
         init_usb(self)
-        
+
         self.button_cont = ButtonConnections(self)
         
         init_sensors(self)
