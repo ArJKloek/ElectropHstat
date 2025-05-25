@@ -43,9 +43,9 @@ class MainWindow(QMainWindow):
 
 
         init_variables(self)
+        init_config(self)
         init_graphs(self)
         init_logger(self)
-        init_config(self)
         init_psu(self)
         init_phstat(self)
         init_settings(self) 
