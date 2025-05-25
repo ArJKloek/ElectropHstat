@@ -20,7 +20,7 @@ def discover_power_supply(prefer_hw: bool = True, reset: bool= False):
     dummy.connect()
     return dummy
 
-def discover_adc(prefer_hw: bool = True) -> ADCSensor:
+def discover_adc(prefer_hw: bool = True, channel: int = 1.0) -> ADCSensor:
     """
     Try to instantiate a real ADS1115 and verify it by a quick read.
     If that fails (or prefer_hw=False), return DummyADS1115 instead.
