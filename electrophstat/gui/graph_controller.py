@@ -10,10 +10,10 @@ class GraphController(QObject):
         super().__init__(parent)
         self.tabWidget    = tab_widget
         self.plot_manager = plot_manager
-        self.win          = parent  # assume parent is your MainWindow
-        
+        #self.win          = parent  # assume parent is your MainWindow
+        win               = self.parent()
          # ←—— Read your config flags here —→
-        cfg = self.win.config
+        cfg = win.config
         self.pHstat_enabled    = bool(cfg.enable_phstat)
         self.temp_enabled      = bool(cfg.enable_temp_sensor)
         self.psu_enabled       = bool(cfg.enable_psu)
