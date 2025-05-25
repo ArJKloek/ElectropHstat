@@ -167,7 +167,7 @@ class ButtonConnections(QObject):
 
     
     @pyqtSlot(str, float)
-    def update_gui(self, sensor_type: str, received_data: float):
+    def update_gui(self, sensor_type: str, received_data: float, raw_data: float = None):
         self.win.current_data = received_data
         # overwrite the right channel
         if sensor_type in self.win.valueData:
@@ -179,7 +179,7 @@ class ButtonConnections(QObject):
         elif sensor_type == 'temperature':
             self.win.RTDlabel.setText(f"{received_data:.2f} °C")
         elif sensor_type == 'turbidity':
-            self.win.lb_turbidity.setText(f'{received_data:.4f}')   
+            self.win.lb_turbidity.setText(f'{received_data}')   
         #    self.win.valueData[3] = received_data 
         #elif sensor_type == 4:   
         #    self.win.valueData[4] = received_data
