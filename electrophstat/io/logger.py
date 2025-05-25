@@ -78,9 +78,19 @@ class Logger:
         # 4) write out your zero-point rows (elapsed=0)
         if initial_values:
             for lbl, val in initial_values.items():
-                if lbl in self.files:
-                    self._write_row(lbl, 0.0, val)
+                if lbl not in self.files:
+                    continue
 
+                if lbl == "turbidity":
+                    # val may be a tuple(processed, raw) or a single number
+                    if isinstance(val, tuple):
+                        proc, raw = val
+                    else:
+                        proc, raw = val, 0.0
+                    self._write_double_row(lbl, 0.0, proc, raw)
+                else:
+                    # all other labels stay single‐column
+                    self._write_row(lbl, 0.0, val)
 
     def reset(self) -> None:
         """

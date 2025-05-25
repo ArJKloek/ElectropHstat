@@ -158,7 +158,7 @@ class PlotManager:
         self.update_plot_from_logger(3, curves)
 
     def update_turbidity_plot(self):
-        curves = [{"label": "turbidity", "curve_attr": "turbidity_curve", "pen": "m", "use_right_axis": False}]
+        curves = [{"label": "turbidity", "curve_attr": "turbidity_curve", "pen": "b", "use_right_axis": False}]
         self.update_plot_from_logger(4, curves)
 
     def _scale_graph_fonts(self, widget, label_size, tick_size):
