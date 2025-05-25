@@ -180,6 +180,9 @@ class ButtonConnections(QObject):
             self.win.RTDlabel.setText(f"{received_data:.2f} °C")
         elif sensor_type == 'turbidity':
             self.win.lb_turbidity.setText(f'{received_data}')   
+    
+        if self.win.usb_present:
+            self.win.usb_button.setEnabled(True)
         #    self.win.valueData[3] = received_data 
         #elif sensor_type == 4:   
         #    self.win.valueData[4] = received_data

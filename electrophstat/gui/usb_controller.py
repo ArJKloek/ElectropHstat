@@ -39,6 +39,9 @@ class UsbController(QObject):
         # e.g. you have a QPushButton named usbButton
         #self.win.usbButton.setEnabled(present)
         if present:
+            self.win.usb_present = True
+        
+        if present:
             self.win.statusBar().showMessage(f"USB mounted at {path}")
         else:
             self.win.statusBar().showMessage("USB removed")

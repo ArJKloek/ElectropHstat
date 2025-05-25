@@ -36,5 +36,5 @@ def init_variables(main):
         main.enable_ph_sensor : bool
         main.enable_temp_sensor : bool
         main.enable_turbidity_sensor : bool
-        
+        main.usb_present = False
     
