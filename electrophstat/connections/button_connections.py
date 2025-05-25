@@ -64,10 +64,7 @@ class ButtonConnections(QObject):
         # 3) Status
         self.win.statusBar().showMessage("pH-stat stopped")
     
-    def log_deactive(self):
-        self.win.logging_ctrl.stop()
-
-
+    
     @pyqtSlot()
     def reset_stat(self):
         # 1) Clear any accumulated state
@@ -78,9 +75,8 @@ class ButtonConnections(QObject):
         self.win.stopbutton.setEnabled(False)
         self.win.resetbutton.setEnabled(False)
         # 3) Status
-        self.win.logger.reset()
-        self.win.logging_started = False
-
+        self.win.logging_ctrl.reset()
+        
         self.reset_value_data()
        
         QMessageBox.information(self.win, "Reset", "pH-stat has been reset")
@@ -126,6 +122,10 @@ class ButtonConnections(QObject):
 
         QMessageBox.information(self.win, "Copy complete",
                                 f"Copied:\n{dir_path}\nto\n{folder_path}")
+    
+    def log_deactive(self):
+        self.win.logging_ctrl.stop()
+    
     @pyqtSlot()
     def openCalibratePumpWindow(self):
         self.win.calibrate_pump_window.exec_()
