@@ -37,11 +37,12 @@ class MainWindow(QMainWindow):
     
     def __init__(self):
         super(MainWindow, self).__init__()
-        
+
         uic.loadUi("electrophstat/gui/main_window.ui", self)
 
         init_variables(self)
         init_config(self)
+        print(f'Config loaded'{self.config})
         init_graphs(self)
         init_logger(self)
         init_psu(self)
