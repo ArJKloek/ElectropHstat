@@ -84,7 +84,7 @@ class PlotManager:
         elif plot_index == 3:
             self.update_coulomb_plot()
         elif plot_index ==4:
-            self.update_turibity_plot()
+            self.update_turbidity_plot()
 
     def update_plot_from_logger(self, plot_index, curves, show_right_axis=False):
         widget = self.main.graphWidgets[plot_index]
