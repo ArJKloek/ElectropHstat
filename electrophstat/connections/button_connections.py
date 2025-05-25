@@ -235,4 +235,4 @@ class ButtonConnections(QObject):
         self._update_usb_button()
 
     def _update_usb_button(self):
-        self.win.usbButton.setEnabled(self.win.usb_present and self.win.logs_present)
+        self.win.usb_button.setEnabled(self.win.usb_present and self.win.logs_present)
