@@ -1,4 +1,5 @@
 # electrophstat/gui/phstat_controller.py
+from pathlib import Path
 from PyQt5.QtCore    import QObject, pyqtSlot
 from PyQt5.QtWidgets import QMessageBox, QAction
 import os, re, shutil                      
@@ -23,7 +24,8 @@ class ButtonConnections(QObject):
         self.win.action_datewindow.triggered.connect(self.openDateTimeWindow)
         self.win.usb_ctrl.worker.update_usb.connect(self.on_usb_changed)
         self.win.logging_ctrl.logs_present_signal.connect(self.on_logs_present)
-    
+        self.win.usb_button.clicked.connect(self.usb_copy)
+
     @pyqtSlot()
     def start_stat(self):
         # 1) Kick off your control loop & logging
@@ -84,45 +86,56 @@ class ButtonConnections(QObject):
     
     @pyqtSlot()
     def usb_copy(self):
-        # 1) grab your first log file path
-        logs = getattr(self.win, "Log_file", None)
-        if not logs or not logs[0]:
-            QMessageBox.warning(self.win, "No logs to copy",
-                                "There are no log files available to copy.")
+        # 1) Make sure a USB is actually present
+        if not getattr(self.win, "usb_present", False):
+            QMessageBox.warning(self.win, "No USB Drive",
+                                "No USB storage device detected.\n"
+                                "Please insert a USB stick first.")
             return
 
-        src = logs[0]
-        dir_path = os.path.dirname(src)
-
-        # 2) extract the “DD_MM_YYYY/HH_MM” sub-path via regex
-        match = re.search(r"(\d{2}_\d{2}_\d{4}/\d{2}_\d{2})", src)
-        if not match:
-            QMessageBox.warning(self.win, "Bad log path",
-                                f"Can't parse date/time out of\n{src}")
+        # 2) Grab your logger instance & its log_dir/base_dir
+        logger = getattr(self.win, "logger", None)
+        if logger is None or not hasattr(logger, "log_dir") or not hasattr(logger, "base_dir"):
+            QMessageBox.warning(self.win, "No Logs",
+                                "Logger not initialized or no log directory found.")
             return
-        date_time = match.group(1)
 
-        # 3) figure out where to copy to
-        #    assume your window has `copy_path` pointing at e.g. "/media/usb"
-        base_dir = os.path.join(self.win.copy_path, "Data")
-        folder_path = os.path.join(base_dir, date_time)
+        src_dir = Path(logger.log_dir)
+        base_dir = Path(logger.base_dir)
+        if not src_dir.exists():
+            QMessageBox.warning(self.win, "No Logs",
+                                f"No log directory found at:\n{src_dir}")
+            return
 
-        # 4) make the parent directory if needed
-        os.makedirs(base_dir, exist_ok=True)
-
-        # 5) (re)create the date_time folder
-        if os.path.exists(folder_path):
-            shutil.rmtree(folder_path)
+        # 3) Compute the relative subpath under base_dir
         try:
-            shutil.copytree(dir_path, folder_path)
+            rel = src_dir.relative_to(base_dir)
+        except Exception:
+            # fallback: take just the last two path components (date/time)
+            rel = Path(*src_dir.parts[-2:])
+
+        # 4) Build the destination on the USB
+        usb_mount = Path(self.win.copy_path)
+        dest_base = usb_mount / "Data"
+        dest_dir = dest_base / rel
+
+        # 5) Create parent, and remove any old copy
+        dest_base.mkdir(parents=True, exist_ok=True)
+        if dest_dir.exists():
+            shutil.rmtree(dest_dir)
+
+        # 6) Perform the copy
+        try:
+            shutil.copytree(src_dir, dest_dir)
         except Exception as e:
-            QMessageBox.critical(self.win, "Copy failed",
-                                 f"Could not copy logs:\n{e}")
+            QMessageBox.critical(self.win, "Copy Failed",
+                                f"Could not copy logs from:\n{src_dir}\nto:\n{dest_dir}\n\nError: {e}")
             return
 
-        QMessageBox.information(self.win, "Copy complete",
-                                f"Copied:\n{dir_path}\nto\n{folder_path}")
-    
+        # 7) Inform the user
+        QMessageBox.information(self.win, "Copy Complete",
+                                f"Successfully copied logs to:\n{dest_dir}")
+        
     def log_deactive(self):
         self.win.logging_ctrl.stop()
     
@@ -225,8 +238,9 @@ class ButtonConnections(QObject):
                 self.win.valueData[key] = 0.0
     
     @pyqtSlot(bool, object)
-    def on_usb_changed(self, present):
+    def on_usb_changed(self, present, path):
         self.win.usb_present = present
+        self.win.copy_path = path
         self._update_usb_button()
 
     @pyqtSlot(bool)

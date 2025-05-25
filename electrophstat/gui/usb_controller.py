@@ -30,22 +30,6 @@ class UsbController(QObject):
         # 5) Start monitoring
         self.thread.start()
 
-    @pyqtSlot(bool, object)
-    def on_usb_changed(self, present: bool, path):
-        """
-        Called whenever USB_Worker emits update_usb.
-        Enable or disable the usbButton (or other UI) accordingly.
-        """
-        # e.g. you have a QPushButton named usbButton
-        #self.win.usbButton.setEnabled(present)
-        if present:
-            self.win.usb_present = True
-        
-        if present:
-            self.win.statusBar().showMessage(f"USB mounted at {path}")
-        else:
-            self.win.statusBar().showMessage("USB removed")
-
     def stop(self):
         """Stop the worker thread cleanly."""
         self.worker.is_running = False
