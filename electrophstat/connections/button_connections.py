@@ -133,8 +133,10 @@ class ButtonConnections(QObject):
             return
 
         # 7) Inform the user
-        QMessageBox.information(self.win, "Copy Complete",
-                                f"Successfully copied logs to:\n{dest_dir}")
+        self.win.statusBar().showMessage(
+                f"Logs copied to {dest_dir}", 
+                10_000  # timeout in ms (10 seconds)
+                )
         
     def log_deactive(self):
         self.win.logging_ctrl.stop()
