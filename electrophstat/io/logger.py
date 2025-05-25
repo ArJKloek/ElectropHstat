@@ -196,10 +196,10 @@ class Logger:
         path = self.files[label]
         # format numbers
         if isinstance(value, (int, float)):
-            val_s = locale.format_string("%.3f", value, grouping=True)
+            val_s = locale.format_string("%.3f", value, grouping=False)
         else:
             val_s = str(value)
-        time_s = locale.format_string("%.1f", elapsed, grouping=True)
+        time_s = locale.format_string("%.1f", elapsed, grouping=False)
 
         with open(path, 'a', newline='') as f:
             dict_w = csv.DictWriter(f, fieldnames=['Reaction time (s)', label], delimiter=';')
@@ -215,9 +215,9 @@ class Logger:
         """Write a turbidity row with both processed and raw values."""
         path  = self.files[label]
         # format both numbers
-        proc_s = locale.format_string("%.3f", processed, grouping=True) if isinstance(processed, (int,float)) else str(processed)
-        raw_s  = locale.format_string("%.3f", raw, grouping=True)       if isinstance(raw, (int,float))       else str(raw)
-        time_s = locale.format_string("%.1f", elapsed, grouping=True)
+        proc_s = locale.format_string("%.0f", processed, grouping=False) if isinstance(processed, (int,float)) else str(processed)
+        raw_s  = locale.format_string("%.0f", raw, grouping=False)       if isinstance(raw, (int,float))       else str(raw)
+        time_s = locale.format_string("%.1f", elapsed, grouping=False)
 
         with open(path, 'a', newline='') as f:
             dict_w = csv.DictWriter(f,
