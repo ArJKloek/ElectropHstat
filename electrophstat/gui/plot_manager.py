@@ -93,7 +93,7 @@ class PlotManager:
         for cfg in curves:
             label = cfg["label"]
             #times, values = logger.read(label)
-            
+            print(f'{label}')
             try:
                 data = logger.read(label)
                 if label == 'turbidity':
