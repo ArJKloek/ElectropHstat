@@ -21,7 +21,8 @@ class ButtonConnections(QObject):
         self.win.toggleTempAction.toggled.connect(self.updateCurrentTabPlot)
         self.win.actionCalibrate_pH.triggered.connect(self.openCalibratepHWindow)
         self.win.action_datewindow.triggered.connect(self.openDateTimeWindow)
-
+        self.win.usb_ctrl.worker.update_usb.connect(self.on_usb_changed)
+        self.win.logging_ctrl.logs_present_signal.connect(self.on_logs_present)
     
     @pyqtSlot()
     def start_stat(self):
@@ -183,8 +184,7 @@ class ButtonConnections(QObject):
         elif sensor_type == 'turbidity':
             self.win.lb_turbidity.setText(f'{received_data}')   
     
-        if self.win.usb_present and self.win.logging_started:
-            self.win.usb_button.setEnabled(True)
+        
         #    self.win.valueData[3] = received_data 
         #elif sensor_type == 4:   
         #    self.win.valueData[4] = received_data
@@ -223,3 +223,16 @@ class ButtonConnections(QObject):
             else:
                 # assume numeric
                 self.win.valueData[key] = 0.0
+    
+    @pyqtSlot(bool, object)
+    def on_usb_changed(self, present):
+        self.win.usb_present = present
+        self._update_usb_button()
+
+    @pyqtSlot()
+    def on_logs_present(self):
+        self.win.logs_present = True
+        self._update_usb_button()
+
+    def _update_usb_button(self):
+        self.win.usbButton.setEnabled(self.win.usb_present and self.win.logs_present)

@@ -37,4 +37,4 @@ def init_variables(main):
         main.enable_temp_sensor : bool
         main.enable_turbidity_sensor : bool
         main.usb_present = False
-        main.logging_started = False
+        main.logs_present = False

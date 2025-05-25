@@ -1,11 +1,13 @@
 # electrophstat/gui/logging_controller.py
 
-from PyQt5.QtCore import QObject, QThread, pyqtSlot
+from PyQt5.QtCore import QObject, QThread, pyqtSlot, pyqtSignal
 from electrophstat.workers.logging_worker import LoggingWorker
 from datetime import datetime
 import time
 
 class LoggingController(QObject):
+    logs_present_signal = pyqtSignal(bool)
+
     def __init__(self, window, interval: float = 5.0):
         super().__init__(window)
         self.win = window
@@ -44,6 +46,8 @@ class LoggingController(QObject):
         self.win.destroyed.connect(self.stop)
 
         self._thread.start()
+        self.logs_present_signal.emit(True)
+
 
     @pyqtSlot()
     def stop(self):
@@ -71,7 +75,7 @@ class LoggingController(QObject):
 
         # 3) Clear our active-labels so next start() picks them fresh
         self.active_labels.clear()
-
+        self.logs_present_signal.emit(False)
         print("[LoggingController] logging session has been reset.")
 
     @pyqtSlot(str)
