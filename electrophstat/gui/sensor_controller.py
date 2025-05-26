@@ -1,7 +1,7 @@
 # electrophstat/gui/sensor_controller.py
 
 from PyQt5.QtCore import QObject, QThread, QMetaObject, Qt
-from electrophstat.sensors.atlas_worker import AtlasSensorWorker
+from electrophstat.workers.atlas_worker import AtlasSensorWorker
 from ..dummy.dummy_atlas import DummyAtlas
 from electrophstat.sensors import discover_sensor
 
