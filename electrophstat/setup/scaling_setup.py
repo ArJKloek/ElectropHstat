@@ -60,6 +60,7 @@ def apply_scaling(self):
         
     set_font(self.pHNumber, 25)
     set_font(self.RTDlabel, 18)
+    set_font(self.lb_turbidity, 18)
     set_font(self.phSpin, 10)
     set_font(self.keepSelector, 10)
     set_font(self.voltagelabel, 16)
