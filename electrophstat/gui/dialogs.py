@@ -233,8 +233,8 @@ class CalibrateTurbidityDialog(QDialog):
             symbol='o',
             symbolBrush=pg.mkBrush('r'),
         )
-        self._plot.setLabel('bottom', 'Voltage (V)')
-        self._plot.setLabel('left',   'Turbidity (NTU)')
+        self._plot.setLabel('left', 'Voltage (V)')
+        self._plot.setLabel('bottom',   'Turbidity (NTU)')
         
     def _update_plot(self):
         # grab the six points
@@ -250,14 +250,15 @@ class CalibrateTurbidityDialog(QDialog):
             self.sb_low_NTU.value(),
             self.sb_mid_NTU.value(),
             self.sb_high_NTU.value(),
-            float('inf')  # or some large sentinel you choose
+            #float('inf')  # or some large sentinel you choose
         ]
         # For plotting, replace inf with a large number
-        xs = [v for v in Vs]
-        ys = [n if n != float('inf') else max(n for n in NTUs if n != float('inf'))*1.1 for n in NTUs]
+        #xs = [n if n != float('inf') else max(n for n in NTUs if n != float('inf'))*1.1 for n in NTUs]
+        xs = [n for n in NTUs]    
+        ys = [v for v in Vs]
         self._curve.setData(xs, ys)
-        self._plot.setLabel('bottom', 'Voltage (V)')
-        self._plot.setLabel('left', 'Turbidity (NTU)')
+        self._plot.setLabel('left', 'Voltage (V)')
+        self._plot.setLabel('bottom', 'Turbidity (NTU)')
 
 
     @pyqtSlot()
