@@ -276,6 +276,23 @@ class CalibrateTurbidityDialog(QDialog):
         
         print("Fitted parameters:", self.params)
         print("Fitting errors:", self.errors)
+        Kfast = self.params["KFast"]
+        Kslow = self.params["KSlow"]
+        PercentFast = self.params["PercentFast"]
+        print(f"Percent Fast: {PercentFast:.2f}%, KFast: {Kfast:.4f}, KSlow: {Kslow:.4f}")
+        # generate a smooth X axis  
+        x_model = np.linspace(0, max(self.ds_high_NTU_V.value(), self.ds_inf_NTU_V.value()), 200)
+        # compute the model curve
+        y_model = self.win.model_calculator.predict(x_model)
+        # update the model curve
+        self._curve.setData(x_model, y_model)
+        self._model_curve.setData(x_model, y_model)
+        self._model_curve.setPen(pg.mkPen('g', width=2))  # green for model curve
+        self._model_curve.setSymbol('x')  # optional: show model points as 'x'
+        self._model_curve.setSymbolBrush(pg.mkBrush('g'))  # green for model points
+        self._model_curve.setSymbolSize(5)  # optional: size of model points
+        self._model_curve.setVisible(True)  # make sure the model curve is visible
+
         #Ys = np.array([n if n != float('inf') else max_real*1.1 for n in NTUs])
 
         # only fit on the first four finite points
