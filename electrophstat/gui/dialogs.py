@@ -215,7 +215,7 @@ class CalibrateTurbidityDialog(QDialog):
         ok_btn.setAutoDefault(True)
     #def on_calc_clicked(self):
 
-    def add_plot(self):
+    #def add_plot(self):
         #
 
     @pyqtSlot()
