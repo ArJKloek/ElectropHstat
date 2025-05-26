@@ -2,15 +2,21 @@ from electrophstat.control.pump_control import PumpController
 from electrophstat.connections.pHstat_connections import pHStatConnections
 from electrophstat.gui.phstat_controller import pHStatController
 from electrophstat.gui.dialogs import CalibratePumpDialog
-from electrophstat.dummy.dummy_switcher import MockLib8MosInd
+from electrophstat.hardware import discover_switcher
+#from electrophstat.dummy.dummy_switcher import MockLib8MosInd
 
-lib8mosind = MockLib8MosInd()
+#lib8mosind = MockLib8MosInd()
+
+
 
 def init_phstat(self):
     if self.enable_phstat:
         self.calibrate_pump_dialog = CalibratePumpDialog(float(self.pump_volume_per_cycle_ml), float(self.pump_cycle_duration_s), self)
+        hw = discover_switcher()
+        print(f"Using hardware: {hw}")
+        
         self.pump_ctrl = PumpController(
-                hw=lib8mosind,
+                hw=hw,
                 logger=self.logger,
                 duration_s=float(self.pump_cycle_duration_s),
                 ml_per_cylce = float(self.pump_volume_per_cycle_ml),

@@ -41,3 +41,34 @@ def discover_adc(prefer_hw: bool = True, channel: int = 1.0) -> ADCSensor:
     dummy.connect()
     print("[ADC] Using DummyADS1115")
     return dummy
+
+def discover_switcher(prefer_hw: bool = True):
+    """
+    Try to import and verify the real lib8mosind hardware.
+    If that fails (or prefer_hw=False), return MockLib8MosInd instead.
+    """
+    if prefer_hw:
+        try:
+            from electrophstat.vendor import lib8mosind
+            # Try a harmless hardware check (e.g., read or write)
+            # This assumes you have a check or get function in lib8mosind
+            # For example, try to read from the default address:
+            try:
+                # Replace DEVICE_ADDRESS with the actual address if needed
+                if hasattr(lib8mosind, "check"):
+                    # If check returns True/False, use that
+                    if not lib8mosind.check(None, lib8mosind.DEVICE_ADDRESS):
+                        raise IOError("lib8mosind.check() failed")
+                else:
+                    # Try a harmless read or write as a check
+                    lib8mosind.getWord(None, lib8mosind.DEVICE_ADDRESS, lib8mosind.MOSFET8_INPORT_REG_ADD)
+            except Exception as hw_exc:
+                raise IOError(f"lib8mosind hardware not responding: {hw_exc}")
+            print("[MOSFET] Found real lib8mosind and hardware present")
+            return lib8mosind
+        except Exception as e:
+            print(f"[MOSFET] Real lib8mosind not found or hardware not present ({e}), falling back to MockLib8MosInd")
+
+    from electrophstat.dummy.dummy_switcher import MockLib8MosInd
+    print("[MOSFET] Using MockLib8MosInd")
+    return MockLib8MosInd()
