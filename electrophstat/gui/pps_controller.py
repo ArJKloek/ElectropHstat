@@ -5,6 +5,7 @@ from electrophstat.hardware import discover_power_supply
 from electrophstat.hardware.PPSWorker import PPSWorker
 from electrophstat.control.timer_control import monoTimer
 from electrophstat.dummy.dummy_pps import DummyPPS    
+
 class PPSController(QObject):
     """
     Starts a PPSWorker on its own thread, hooks up all of its signals

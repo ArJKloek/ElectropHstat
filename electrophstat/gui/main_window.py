@@ -98,13 +98,18 @@ class MainWindow(QMainWindow):
         # Stop pHStat worker
         if hasattr(self, "phstat_ctrl"):
             self.phstat_ctrl.stop()
-        ## Stop PSU worker
-        #if hasattr(self, "psu_controller"):
-        #    self.psu_controller.stop()
-        # Stop other workers/timers as needed
-        ##if hasattr(self, "logging_timer"):
-         #   self.logging_timer.stop()
-        # Add more as needed...
+        # Stop PSU worker
+        if hasattr(self, "pps_ctrl"):
+            self.pps_ctrl.stop()
+        # Stop Loggin worker
+        if hasattr(self, "logging_ctrl"):
+            self.logging_ctrl.stop()
+        # Stop USB worker
+        if hasattr(self, "usb_ctrl"):
+            self.usb_ctrl.stop()
+        # Stop Sensor workers
+        if hasattr(self, "sensor_ctrl"):
+            self.sensor_ctrl.stop() 
 
     
     

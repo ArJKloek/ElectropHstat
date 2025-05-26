@@ -9,6 +9,7 @@ class SensorController(QObject):
     def __init__(self, window, update_slots: dict, interval: float = 1.0):
         super().__init__(window)
         self.win = window
+        self._worker_keys = []
 
         for key, slot_or_list in update_slots.items():
             atlas, kind = discover_sensor(key)
@@ -46,3 +47,15 @@ class SensorController(QObject):
 
             setattr(self, f"{key}_worker", worker)
             setattr(self, f"{key}_thread",   thr)
+            self._worker_keys.append(key)
+
+    def stop(self):
+        """Stop all sensor workers and threads cleanly."""
+        for key in self._worker_keys:
+            worker = getattr(self, f"{key}_worker", None)
+            thread = getattr(self, f"{key}_thread", None)
+            if worker is not None:
+                worker.stop()  # Assumes AtlasSensorWorker has a stop() method
+            if thread is not None:
+                thread.quit()
+                thread.wait()
