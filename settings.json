@@ -19,7 +19,7 @@
   "KFast":  0.001656,
   "KSlow":  0.0002231,
   "enable_psu": true,
-  "enable_phstat": false,
+  "enable_phstat": true,
   "enable_ph_sensor": true,
   "enable_temp_senor": true,
   "enable_turbidity_sensor": true
