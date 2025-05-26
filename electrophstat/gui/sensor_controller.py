@@ -60,6 +60,4 @@ class SensorController(QObject):
             if thread is not None:
                 thread.quit()
                 thread.wait()
-            # Move worker back to main thread to avoid deletion in the wrong thread
-            if worker is not None:
-                worker.moveToThread(QThread.currentThread())
+            
