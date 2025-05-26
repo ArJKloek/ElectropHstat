@@ -287,9 +287,9 @@ class CalibrateTurbidityDialog(QDialog):
         # compute the model curve
         y_model = self.win.model_calculator.predict(x_model)
         # update the model curve
-        self._curve.setData(x_model, y_model)
-        #self._model_curve.setData(x_model, y_model)
-        ##self._model_curve.setPen(pg.mkPen('g', width=2))  # green for model curve
+        #self._curve.setData(x_model, y_model)
+        self._model_curve.setData(x_model, y_model)
+        self._model_curve.setPen(pg.mkPen('g', width=2))  # green for model curve
         #self._model_curve.setSymbol('x')  # optional: show model points as 'x'
         #self._model_curve.setSymbolBrush(pg.mkBrush('g'))  # green for model points
         #self._model_curve.setSymbolSize(5)  # optional: size of model points
