@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QDialog, QMessageBox
 from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QTimer
 from PyQt5 import uic
+import pyqtgraph as pg
 import os
 
 class DatePickerDialog(QDialog):
@@ -188,10 +189,10 @@ class CalibrateTurbidityDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent, flags=Qt.WindowCloseButtonHint)
         uic.loadUi("electrophstat/gui/calibrate_NTU_dialog.ui", self)
-
+        win = self.parent()
         # stash your config on the instance
-        self.cfg = self.parent().config
-
+        self.cfg = win.config
+ 
         # Turbidity settings voltage
         self.ds_0_NTU_V.setValue(self.cfg.NTU_V_calibration_0)
         self.ds_low_NTU_V.setValue(self.cfg.NTU_V_calibration_low)
@@ -202,7 +203,7 @@ class CalibrateTurbidityDialog(QDialog):
         self.sb_low_NTU.setValue(self.cfg.NTU_calibration_low)
         self.sb_mid_NTU.setValue(self.cfg.NTU_calibration_mid)
         self.sb_high_NTU.setValue(self.cfg.NTU_calibration_high)
-
+        
 
         # hook up Ok/Cancel
         self.buttonBox.accepted.connect(self.on_ok_clicked)
@@ -214,7 +215,8 @@ class CalibrateTurbidityDialog(QDialog):
         ok_btn.setAutoDefault(True)
     #def on_calc_clicked(self):
 
-
+    def add_plot(self):
+        #
 
     @pyqtSlot()
     def on_ok_clicked(self):
