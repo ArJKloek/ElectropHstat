@@ -204,7 +204,7 @@ class CalibrateTurbidityDialog(QDialog):
         self.sb_mid_NTU.setValue(self.cfg.NTU_calibration_mid)
         self.sb_high_NTU.setValue(self.cfg.NTU_calibration_high)
         
-
+        self.add_plot()
         # hook up Ok/Cancel
         self.buttonBox.accepted.connect(self.on_ok_clicked)
         self.buttonBox.rejected.connect(self.reject)
@@ -220,7 +220,8 @@ class CalibrateTurbidityDialog(QDialog):
         plotWidget = pg.PlotWidget()
         plotWidget.setBackground(backgroundColor)
         self.plotwidget.append(plotWidget)
-        
+
+
     @pyqtSlot()
     def on_ok_clicked(self):
         # read values from the widgets
