@@ -165,13 +165,16 @@ class PlotManager:
         if widget is None:
             return
         style = {'color': 'black', 'font-size': f'{label_size}pt'}
+        # Get the main window number font (fallback to default if not available)
+        try:
+            main_font = self.main.pHNumber.font()
+        except AttributeError:
+            main_font = QFont()
+        main_font.setPointSize(tick_size)
         for axname in ('left','bottom','right'):
             ax = widget.getAxis(axname)
             if not ax: continue
-            old = ax.style.get('tickFont', QFont())
-            f = QFont(old)
-            f.setPointSize(tick_size)
-            ax.setStyle(tickFont=f)
+            ax.setStyle(tickFont=main_font)
             ax.setTextPen(QPen(QColor('black')))
             if axname in ('left','bottom','right') and ax.labelText:
                 ax.setLabel(ax.labelText, **style)
@@ -228,4 +231,3 @@ class PlotManager:
         x = [t/scale for t in times]
         return x, values, time_label
 
-    
