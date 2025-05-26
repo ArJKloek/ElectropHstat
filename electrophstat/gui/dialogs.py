@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QMessageBox
+from PyQt5.QtWidgets import QDialog, QMessageBox, QVBoxLayout
 from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QTimer
 from PyQt5 import uic
 import pyqtgraph as pg
@@ -204,10 +204,7 @@ class CalibrateTurbidityDialog(QDialog):
         self.sb_mid_NTU.setValue(self.cfg.NTU_calibration_mid)
         self.sb_high_NTU.setValue(self.cfg.NTU_calibration_high)
         
-        self._plot = pg.PlotWidget(background=self.palette().color(self.backgroundRole()))
-        self.plotwidget.addWidget(self._plot)
-        self._curve = self._plot.plot(pen='b', symbol='o', symbolBrush='r')
-        
+        self.add_plot
         self._update_plot()
 
         # hook up Ok/Cancel
@@ -218,8 +215,22 @@ class CalibrateTurbidityDialog(QDialog):
         ok_btn = self.buttonBox.button(self.buttonBox.Ok)
         ok_btn.setDefault(True)
         ok_btn.setAutoDefault(True)
+    def add_plot(self):
+        # Create your PlotWidget
+        backgroundColor = self.palette().color(self.backgroundRole())
+        self._plot = pg.PlotWidget()
+        self._plot.setBackground(backgroundColor)
+
+        # Ensure plotwidget has a QVBoxLayout
+        container = self.plotwidget  # this is the placeholder QWidget from .ui
+        layout = container.layout()
+        if layout is None:
+            layout = QVBoxLayout(container)
+            container.setLayout(layout)
+
+        # Now add your plot into that layout
+        layout.addWidget(self._plot)
     
-    #def on_calc_clicked(self):
     def _update_plot(self):
         # grab the six points
         Vs = [
