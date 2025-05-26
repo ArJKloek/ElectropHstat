@@ -205,7 +205,7 @@ class CalibrateTurbidityDialog(QDialog):
         self.sb_high_NTU.setValue(self.cfg.NTU_calibration_high)
         
         self.add_plot
-        #self._update_plot()
+        self._update_plot()
 
         # hook up Ok/Cancel
         self.buttonBox.accepted.connect(self.on_ok_clicked)
