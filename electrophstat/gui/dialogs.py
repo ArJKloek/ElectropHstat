@@ -204,7 +204,12 @@ class CalibrateTurbidityDialog(QDialog):
         self.sb_mid_NTU.setValue(self.cfg.NTU_calibration_mid)
         self.sb_high_NTU.setValue(self.cfg.NTU_calibration_high)
         
-        self.add_plot()
+        self._plot = pg.PlotWidget(background=self.palette().color(self.backgroundRole()))
+        self.plotwidget.addWidget(self._plot)
+        self._curve = self._plot.plot(pen='b', symbol='o', symbolBrush='r')
+        
+        self._update_plot()
+
         # hook up Ok/Cancel
         self.buttonBox.accepted.connect(self.on_ok_clicked)
         self.buttonBox.rejected.connect(self.reject)
@@ -213,13 +218,30 @@ class CalibrateTurbidityDialog(QDialog):
         ok_btn = self.buttonBox.button(self.buttonBox.Ok)
         ok_btn.setDefault(True)
         ok_btn.setAutoDefault(True)
+    
     #def on_calc_clicked(self):
-
-    def add_plot(self):
-        backgroundColor = self.palette().color(self.backgroundRole())
-        plotWidget = pg.PlotWidget()
-        plotWidget.setBackground(backgroundColor)
-        self.plotwidget.addWidget(plotWidget)
+    def _update_plot(self):
+        # grab the six points
+        Vs = [
+            self.ds_0_NTU_V.value(),
+            self.ds_low_NTU_V.value(),
+            self.ds_mid_NTU_V.value(),
+            self.ds_high_NTU_V.value(),
+            self.ds_inf_NTU_V.value()
+        ]
+        NTUs = [
+            0.0,
+            self.sb_low_NTU.value(),
+            self.sb_mid_NTU.value(),
+            self.sb_high_NTU.value(),
+            float('inf')  # or some large sentinel you choose
+        ]
+        # For plotting, replace inf with a large number
+        xs = [v for v in Vs]
+        ys = [n if n != float('inf') else max(n for n in NTUs if n != float('inf'))*1.1 for n in NTUs]
+        self._curve.setData(xs, ys)
+        self._plot.setLabel('bottom', 'Voltage (V)')
+        self._plot.setLabel('left', 'Turbidity (NTU)')
 
 
     @pyqtSlot()
