@@ -220,6 +220,7 @@ class CalibrateTurbidityDialog(QDialog):
         backgroundColor = self.palette().color(self.backgroundRole())
         self._plot = pg.PlotWidget()
         self._plot.setBackground(backgroundColor)
+        self._curve = self._plot.plot(pen='b', symbol='o', symbolBrush='r')
 
         # Ensure plotwidget has a QVBoxLayout
         container = self.plotwidget  # this is the placeholder QWidget from .ui
@@ -230,7 +231,7 @@ class CalibrateTurbidityDialog(QDialog):
 
         # Now add your plot into that layout
         layout.addWidget(self._plot)
-    
+        
     def _update_plot(self):
         # grab the six points
         Vs = [
