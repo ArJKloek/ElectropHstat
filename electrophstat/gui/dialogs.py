@@ -209,7 +209,7 @@ class CalibrateTurbidityDialog(QDialog):
         # hook up Ok/Cancel
         self.buttonBox.accepted.connect(self.on_ok_clicked)
         self.buttonBox.rejected.connect(self.reject)
-
+        self.pb_calc.clicked.connect(self._update_model)
         # make Enter trigger OK
         ok_btn = self.buttonBox.button(self.buttonBox.Ok)
         ok_btn.setDefault(True)
@@ -259,6 +259,34 @@ class CalibrateTurbidityDialog(QDialog):
         self._curve.setData(xs, ys)
         self._plot.setLabel('left', 'Voltage (V)')
         self._plot.setLabel('bottom', 'Turbidity (NTU)')
+
+    def _update_model(self, degree: int = 1):
+        """Fit a degree‐`degree` poly to the calibration points and draw it."""
+        # grab the same data arrays used above:
+        
+        self. params, self.errors = self.model_calculator.fit(
+            xdata=np.array([0.0, self.sb_low_NTU.value(), self.sb_mid_NTU.value(), self.sb_high_NTU.value()]),
+            ydata=np.array([self.ds_0_NTU_V.value(), self.ds_low_NTU_V.value(), self.ds_mid_NTU_V.value(), self.ds_high_NTU_V.value()]),
+            Y0=self.ds_0_NTU_V.value(),
+            Plateau=self.ds_inf_NTU_V.value(),
+            p0=(50.0, 0.001, 0.0001),
+            bounds=([0.0, 0.0, 0.0], [100.0, np.inf, np.inf])
+        )
+        
+        print("Fitted parameters:", self.params)
+        print("Fitting errors:", self.errors)
+        #Ys = np.array([n if n != float('inf') else max_real*1.1 for n in NTUs])
+
+        # only fit on the first four finite points
+        #mask = np.isfinite(Ys)
+        #coeffs = np.polyfit(Vs[mask], Ys[mask], deg=degree)
+
+        # generate a smooth X axis
+        #x_model = np.linspace(Vs.min(), Vs.max(), 200)
+        #y_model = np.polyval(coeffs, x_model)
+
+        # update the model curve
+        #self._model_curve.setData(x_model, y_model)
 
 
     @pyqtSlot()
