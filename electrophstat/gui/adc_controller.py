@@ -38,8 +38,8 @@ class ADCController(QObject):
             #self.win.lcd_adc.display(value)
             value_V = value / 1000.0  # convert mV to V
             ntu = self.win.model_calculator.inverse(value_V, x_min=0, x_max=8000)
-            self.win.button_cont.update_gui("turbidity",ntu)
-            self.win.button_cont.update_gui("turbidity_raw",value)
+            self.win.button_cont.update_gui("turbidity",round(ntu,0))
+            self.win.button_cont.update_gui("turbidity_raw",round(value,0))
             
         except AttributeError:
             pass
