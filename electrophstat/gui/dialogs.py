@@ -215,8 +215,10 @@ class CalibrateTurbidityDialog(QDialog):
         ok_btn.setAutoDefault(True)
     #def on_calc_clicked(self):
 
-    #def add_plot(self):
-        #
+    def add_plot(self):
+        backgroundColor = self.palette().color(self.backgroundRole())
+        self.plotwidget = pg.PlotWidget()
+        self.plotwidget.setBackground(backgroundColor)
 
     @pyqtSlot()
     def on_ok_clicked(self):
