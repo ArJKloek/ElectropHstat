@@ -52,7 +52,6 @@ class SensorController(QObject):
     def stop(self):
         """Stop all sensor workers and threads cleanly."""
         for key in self._worker_keys:
-            print(f"Stopping worker for {key}")
             worker = getattr(self, f"{key}_worker", None)
             thread = getattr(self, f"{key}_thread", None)
             if worker is not None:
