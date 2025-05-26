@@ -1,6 +1,6 @@
 # electrophstat/gui/sensor_controller.py
 
-from PyQt5.QtCore import QObject, QThread
+from PyQt5.QtCore import QObject, QThread, QMetaObject, Qt
 from electrophstat.sensors.atlas_worker import AtlasSensorWorker
 from ..dummy.dummy_atlas import DummyAtlas
 from electrophstat.sensors import discover_sensor
@@ -56,8 +56,12 @@ class SensorController(QObject):
             worker = getattr(self, f"{key}_worker", None)
             thread = getattr(self, f"{key}_thread", None)
             if worker is not None:
-                worker.stop()  # Assumes AtlasSensorWorker has a stop() method
+                # Ensure stop() is called in the worker's thread
+                QMetaObject.invokeMethod(worker, "stop", Qt.BlockingQueuedConnection)
             if thread is not None:
                 thread.quit()
                 thread.wait()
-            
+            # Optionally delete the worker after thread is finished
+            if worker is not None:
+                worker.deleteLater()
+
