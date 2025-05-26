@@ -260,6 +260,8 @@ class CalibrateTurbidityDialog(QDialog):
         self._curve.setData(xs, ys)
         self._plot.setLabel('left', 'Voltage (V)')
         self._plot.setLabel('bottom', 'Turbidity (NTU)')
+        self._plot.setXRange(0, 8000)  # adjust X range
+        self._plot.setYRange(0, 5.5)  # adjust Y range
 
     def _update_model(self, degree: int = 1):
         """Fit a degree‐`degree` poly to the calibration points and draw it."""
