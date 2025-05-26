@@ -235,7 +235,7 @@ class CalibrateTurbidityDialog(QDialog):
         )
         # Create the curve item once and keep it around
         self._curve = self._plot.plot(
-            pen=pg.mkPen('b', width=2),
+            pen=None,
             symbol='o',
             symbolBrush=pg.mkBrush('r'),
         )
