@@ -184,4 +184,39 @@ class SettingsDialog(QDialog):
         # close dialog with Accepted
         self.accept()
         
+class CalibrateTurbidityDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent, flags=Qt.WindowCloseButtonHint)
+        uic.loadUi("electrophstat/gui/calibrate_NTU_dialog.ui", self)
+
+        # stash your config on the instance
+        self.cfg = self.parent().config
+
+        # Turbidity settings voltage
+        self.ds_0_NTU_V.setValue(self.cfg.NTU_V_calibration_0)
+        self.ds_low_NTU_V.setValue(self.cfg.NTU_V_calibration_low)
+        self.ds_mid_NTU_V.setValue(self.cfg.NTU_V_calibration_mid)
+        self.ds_high_NTU_V.setValue(self.cfg.NTU_V_calibration_high)
+        self.ds_inf_NTU_V.setValue(self.cfg.NTU_V_calibration_inf)
+        # Turbidity settings NTU
+        self.sb_low_NTU.setValue(self.cfg.NTU_calibration_low)
+        self.sb_mid_NTU.setValue(self.cfg.NTU_calibration_mid)
+        self.sb_high_NTU.setValue(self.cfg.NTU_calibration_high)
+
+
+        # hook up Ok/Cancel
+        self.buttonBox.accepted.connect(self.on_ok_clicked)
+        self.buttonBox.rejected.connect(self.reject)
+
+        # make Enter trigger OK
+        ok_btn = self.buttonBox.button(self.buttonBox.Ok)
+        ok_btn.setDefault(True)
+        ok_btn.setAutoDefault(True)
     
+    @pyqtSlot()
+    def on_ok_clicked(self):
+        # read values from the widgets
+        # close dialog with Accepted
+        self.accept()
+        
+     

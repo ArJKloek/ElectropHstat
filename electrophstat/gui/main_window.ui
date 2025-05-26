@@ -455,7 +455,7 @@
      </property>
      <addaction name="actionCalibrate_Pump"/>
      <addaction name="actionCalibrate_pH"/>
-     <addaction name="separator"/>
+     <addaction name="actionCalibrate_Turbidity"/>
     </widget>
     <widget class="QMenu" name="menuLog_options">
      <property name="title">
@@ -623,6 +623,11 @@
   <action name="actionSettings">
    <property name="text">
     <string>Startup Settings</string>
+   </property>
+  </action>
+  <action name="actionCalibrate_Turbidity">
+   <property name="text">
+    <string>Calibrate Turbidity</string>
    </property>
   </action>
  </widget>
