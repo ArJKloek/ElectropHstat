@@ -82,14 +82,13 @@ class Logger:
                     continue
 
                 if lbl == "turbidity":
-                    # val may be a tuple(processed, raw) or a single number
-                    if isinstance(val, tuple):
-                        proc, raw = val
-                    else:
-                        proc, raw = val, 0.0
-                    self._write_double_row(lbl, 0.0, proc, raw)
+                    # Try to get both processed and raw values
+                    proc = initial_values.get("turbidity", None)
+                    raw = initial_values.get("turbidity_raw", None)
+                    if proc is not None and raw is not None:
+                        self._write_double_row(lbl, 0.0, proc, raw)
+                    # else: skip writing if either is missing
                 else:
-                    # all other labels stay single‐column
                     self._write_row(lbl, 0.0, val)
 
     def reset(self) -> None:
