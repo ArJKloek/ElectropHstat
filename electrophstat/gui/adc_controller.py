@@ -36,7 +36,10 @@ class ADCController(QObject):
         # e.g. if you have a QLCDNumber named lcd_adc in your UI:
         try:
             #self.win.lcd_adc.display(value)
-            self.win.button_cont.update_gui("turbidity",value)
+            ntu = self.win.model_calculator.inverse(value, x_min=0, x_max=8000)
+            self.win.button_cont.update_gui("turbidity",ntu)
+            self.win.button_cont.update_gui("turbidity_raw",value)
+            
         except AttributeError:
             pass
 

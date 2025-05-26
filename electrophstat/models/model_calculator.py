@@ -99,3 +99,23 @@ class BiExpCalibrator(QObject):
         if not sol.converged:
             raise RuntimeError(f"Root-finding failed for V={V}")
         return sol.root
+    
+    def get_settings(self):
+        """
+        Return a dict of the current fit settings (params, Y0, Plateau).
+        """
+        return {
+            "params": self.params_,
+            "errors": self.errors_,
+            "Y0": self.Y0,
+            "Plateau": self.Plateau,
+        }
+
+    def set_settings(self, settings):
+        """
+        Restore fit settings from a dict (as returned by get_settings).
+        """
+        self.params_ = settings.get("params")
+        self.errors_ = settings.get("errors")
+        self.Y0 = settings.get("Y0")
+        self.Plateau = settings.get("Plateau")
