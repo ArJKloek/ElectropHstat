@@ -13,6 +13,7 @@ class ADCController(QObject):
         self.win = win
 
         hw = discover_adc()
+        print(f"Using ADC hardware: {hw}")
         if isinstance(hw, DummyADS1115):
             # If dummy power supply, color the groupbox orange
             # to indicate that it is a dummy.
