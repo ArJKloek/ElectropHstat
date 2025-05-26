@@ -29,4 +29,5 @@ def init_turbidity(self):
     else:
         self.adc_ctr = None
         self.TurbidityGroup.setVisible(False)
+        self.actionCalibrate_Turbidity.setEnabled(False)
         self.logging_ctrl.disable_logging(['turbidity'])
