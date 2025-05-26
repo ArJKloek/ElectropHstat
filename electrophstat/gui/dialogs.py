@@ -212,7 +212,10 @@ class CalibrateTurbidityDialog(QDialog):
         ok_btn = self.buttonBox.button(self.buttonBox.Ok)
         ok_btn.setDefault(True)
         ok_btn.setAutoDefault(True)
-    
+    #def on_calc_clicked(self):
+
+
+
     @pyqtSlot()
     def on_ok_clicked(self):
         # read values from the widgets
