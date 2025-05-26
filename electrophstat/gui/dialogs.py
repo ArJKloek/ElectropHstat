@@ -204,8 +204,7 @@ class CalibrateTurbidityDialog(QDialog):
         self.sb_mid_NTU.setValue(self.cfg.NTU_calibration_mid)
         self.sb_high_NTU.setValue(self.cfg.NTU_calibration_high)
         
-        self.add_plot
-        self._update_plot()
+        self._init_plot()
 
         # hook up Ok/Cancel
         self.buttonBox.accepted.connect(self.on_ok_clicked)
@@ -215,23 +214,27 @@ class CalibrateTurbidityDialog(QDialog):
         ok_btn = self.buttonBox.button(self.buttonBox.Ok)
         ok_btn.setDefault(True)
         ok_btn.setAutoDefault(True)
-    
-    def add_plot(self):
-        # Create your PlotWidget
-        backgroundColor = self.palette().color(self.backgroundRole())
-        self._plot = pg.PlotWidget()
-        self._plot.setBackground(backgroundColor)
-        self._curve = self._plot.plot(pen='b', symbol='o', symbolBrush='r')
+        
+        self._update_plot()
 
-        # Ensure plotwidget has a QVBoxLayout
-        container = self.plotwidget  # this is the placeholder QWidget from .ui
-        layout = container.layout()
-        if layout is None:
-            layout = QVBoxLayout(container)
-            container.setLayout(layout)
+    def _init_plot(self):
+        # Create a PlotWidget and add it into the placeholder QWidget's layout
+        container = self.plotwidget  # this is your placeholder QWidget
+        layout = container.layout() or QVBoxLayout(container)
+        container.setLayout(layout)
 
-        # Now add your plot into that layout
+        # Create & configure the plot
+        self._plot = pg.PlotWidget(background=self.palette().color(self.backgroundRole()))
         layout.addWidget(self._plot)
+
+        # Create the curve item once and keep it around
+        self._curve = self._plot.plot(
+            pen=pg.mkPen('b', width=2),
+            symbol='o',
+            symbolBrush=pg.mkBrush('r'),
+        )
+        self._plot.setLabel('bottom', 'Voltage (V)')
+        self._plot.setLabel('left',   'Turbidity (NTU)')
         
     def _update_plot(self):
         # grab the six points
