@@ -243,7 +243,7 @@ class CalibrateTurbidityDialog(QDialog):
             self.ds_low_NTU_V.value(),
             self.ds_mid_NTU_V.value(),
             self.ds_high_NTU_V.value(),
-            self.ds_inf_NTU_V.value()
+            #self.ds_inf_NTU_V.value()
         ]
         NTUs = [
             0.0,
