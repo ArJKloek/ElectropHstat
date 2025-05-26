@@ -2,7 +2,7 @@ from PyQt5.QtCore import QObject, QThread, pyqtSlot
 #from electrophstat.workers.adc_worker import ADCWorker
 from ..workers.adc_DFRobot_worker import ADCWorker
 from electrophstat.hardware import discover_adc
-
+from electrophstat.dummy.dummy_ADS1115 import DummyADS1115
 class ADCController(QObject):
     """
     Spins up the ADCWorker and routes its data_ready signal
@@ -13,6 +13,19 @@ class ADCController(QObject):
         self.win = win
 
         hw = discover_adc()
+        if isinstance(hw, DummyADS1115):
+            # If dummy power supply, color the groupbox orange
+            # to indicate that it is a dummy.
+            group_name = "TurbidityGroup"
+            # grab the widget from your MainWindow
+            groupbox = getattr(self, group_name, None)
+            if groupbox is not None:
+                groupbox.setStyleSheet("""
+                    QGroupBox {
+                    border: 2px solid orange;
+                    background-color: #FFF8E1;
+                    }
+                """)
         # 1) prepare worker
         self.worker = ADCWorker(channel=channel, interval=interval, prefer_hw=hw)
 
