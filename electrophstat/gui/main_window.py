@@ -118,6 +118,7 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         # Optionally, you can also use the exitApplication method here
         self.stop_all_workers() 
+        time.sleep(0.5)  # Give some time for workers to stop
         self.exitApplication(event)
     
 
