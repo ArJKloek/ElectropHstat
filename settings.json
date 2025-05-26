@@ -12,7 +12,7 @@
   "NTU_V_calibration_mid": 2.6,
   "NTU_V_calibration_high": 1.65,
   "NTU_V_calibration_inf": 0.05,
-  "NTU_calibration_low:": 1000,
+  "NTU_calibration_low": 1000,
   "NTU_calibration_mid": 2000,
   "NTU_calibration_high": 4000,
   "PercentFast":  11.8892,
