@@ -281,7 +281,7 @@ class CalibrateTurbidityDialog(QDialog):
         PercentFast = self.params["PercentFast"]
         print(f"Percent Fast: {PercentFast:.2f}%, KFast: {Kfast:.4f}, KSlow: {Kslow:.4f}")
         # generate a smooth X axis  
-        x_model = np.linspace(0, max(self.ds_high_NTU_V.value(), self.ds_inf_NTU_V.value()), 200)
+        x_model = np.linspace(0, 8000, 200)
         # compute the model curve
         y_model = self.win.model_calculator.predict(x_model)
         # update the model curve
