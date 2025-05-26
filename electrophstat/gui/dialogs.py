@@ -228,6 +228,11 @@ class CalibrateTurbidityDialog(QDialog):
         self._plot = pg.PlotWidget(background=self.palette().color(self.backgroundRole()))
         layout.addWidget(self._plot)
 
+        # Create the model curve item
+        self._model_curve = self._plot.plot(
+            pen=pg.mkPen('g', width=2),  # green for model curve
+            name='Model Curve'
+        )
         # Create the curve item once and keep it around
         self._curve = self._plot.plot(
             pen=pg.mkPen('b', width=2),
