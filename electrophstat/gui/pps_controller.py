@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMessageBox
 from electrophstat.hardware import discover_power_supply
 from electrophstat.hardware.PPSWorker import PPSWorker
 from electrophstat.control.timer_control import monoTimer
-
+from electrophstat.dummy.dummy_pps import DummyPPS    
 class PPSController(QObject):
     """
     Starts a PPSWorker on its own thread, hooks up all of its signals
@@ -23,6 +23,20 @@ class PPSController(QObject):
     def _setup_worker(self):
         # 1) Probe for a real PPS (or get a DummyPPS)
         port = discover_power_supply(reset=self.reset)
+        if isinstance(port, DummyPPS):
+            # If dummy power supply, color the groupbox orange
+            # to indicate that it is a dummy.
+            group_name = "PowerGroup"
+            # grab the widget from your MainWindow
+            groupbox = getattr(self.win, group_name, None)
+            if groupbox is not None:
+                groupbox.setStyleSheet("""
+                    QGroupBox {
+                    border: 2px solid orange;
+                    background-color: #FFF8E1;
+                    }
+                """)
+        
         self.pps_worker = PPSWorker(port, self.interval, reset=False)
 
         self.connections.set_worker(self.pps_worker)
