@@ -1,6 +1,8 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSlot
 #from electrophstat.workers.adc_worker import ADCWorker
 from ..workers.adc_DFRobot_worker import ADCWorker
+from electrophstat.hardware import discover_adc
+
 class ADCController(QObject):
     """
     Spins up the ADCWorker and routes its data_ready signal
@@ -10,8 +12,9 @@ class ADCController(QObject):
         super().__init__(win)
         self.win = win
 
+        hw = discover_adc()
         # 1) prepare worker
-        self.worker = ADCWorker(channel=channel, interval=interval)
+        self.worker = ADCWorker(channel=channel, interval=interval, prefer_hw=hw)
 
         # 2) move to its own thread
         self.thread = QThread(self.win)

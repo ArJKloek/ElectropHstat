@@ -2,7 +2,6 @@
 
 import time
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
-from electrophstat.hardware import discover_adc
 
 class ADCWorker(QObject):
     data_ready = pyqtSignal(float)
@@ -14,9 +13,10 @@ class ADCWorker(QObject):
         super().__init__()
         self.channel   = channel
         self.interval  = interval
+        self.adc       = prefer_hw
         # use our discovery routine
-        self.adc       = discover_adc(prefer_hw=prefer_hw,
-                                      channel=channel)
+        #self.adc       = discover_adc(prefer_hw=prefer_hw,
+        #                              channel=channel)
         self.is_running = False
 
     @pyqtSlot()
