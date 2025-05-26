@@ -95,6 +95,12 @@ class MainWindow(QMainWindow):
         else:
             event.ignore()
     def stop_all_workers(self):
+        # Stop Graphs
+        if hasattr(self, "graphs_ctrl"):
+            self.graphs_ctrl.stop()
+        # Stop Sensor workers
+        if hasattr(self, "sensor_ctrl"):
+            self.sensor_ctrl.stop() 
         # Stop pHStat worker
         if hasattr(self, "phstat_ctrl"):
             self.phstat_ctrl.stop()
@@ -107,18 +113,13 @@ class MainWindow(QMainWindow):
         # Stop USB worker
         if hasattr(self, "usb_ctrl"):
             self.usb_ctrl.stop()
-        # Stop Sensor workers
-        if hasattr(self, "sensor_ctrl"):
-            self.sensor_ctrl.stop() 
-        # Stop Graphs
-        if hasattr(self, "graphs_ctrl"):
-            self.graphs_ctrl.stop()
+
+        
     
     
     def closeEvent(self, event):
         # Optionally, you can also use the exitApplication method here
         self.stop_all_workers() 
-        time.sleep(0.5)  # Give some time for workers to stop
         self.exitApplication(event)
     
 
