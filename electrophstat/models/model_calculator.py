@@ -1,6 +1,7 @@
 # biexp_calibrator.py
 import numpy as np
 from scipy.optimize import curve_fit, root_scalar
+from PyQt5.QtCore import QObject
 
 class BiExpCalibrator(QObject):
     """
