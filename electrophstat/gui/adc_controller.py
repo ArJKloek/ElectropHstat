@@ -13,13 +13,12 @@ class ADCController(QObject):
         self.win = win
 
         hw = discover_adc()
-        print(f"Using ADC hardware: {hw}")
         if isinstance(hw, DummyADS1115):
             # If dummy power supply, color the groupbox orange
             # to indicate that it is a dummy.
             group_name = "TurbidityGroup"
             # grab the widget from your MainWindow
-            groupbox = getattr(self, group_name, None)
+            groupbox = getattr(self.win, group_name, None)
             if groupbox is not None:
                 groupbox.setStyleSheet("""
                     QGroupBox {
@@ -27,6 +26,7 @@ class ADCController(QObject):
                     background-color: #FFF8E1;
                     }
                 """)
+
         # 1) prepare worker
         self.worker = ADCWorker(channel=channel, interval=interval, prefer_hw=hw)
 
