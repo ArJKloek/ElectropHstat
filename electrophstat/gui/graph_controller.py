@@ -97,3 +97,8 @@ class GraphController(QObject):
         if current is not None:
             self.plot_manager.update(current)
         self.plot_manager.update_all_plots()
+
+    def stop(self):
+        """Stop the update timer cleanly."""
+        if hasattr(self, "_timer") and self._timer.isActive():
+            self._timer.stop()

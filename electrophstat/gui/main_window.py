@@ -110,7 +110,9 @@ class MainWindow(QMainWindow):
         # Stop Sensor workers
         if hasattr(self, "sensor_ctrl"):
             self.sensor_ctrl.stop() 
-
+        # Stop Graphs
+        if hasattr(self, "graphs_ctrl"):
+            self.graphs_ctrl.stop()
     
     
     def closeEvent(self, event):
