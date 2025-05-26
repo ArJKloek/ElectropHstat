@@ -32,6 +32,7 @@ class UsbController(QObject):
 
     def stop(self):
         """Stop the worker thread cleanly."""
-        self.worker.is_running = False
+        if hasattr(self, "worker"):
+            self.worker.stop()  # Properly stop the worker
         self.thread.quit()
         self.thread.wait()
