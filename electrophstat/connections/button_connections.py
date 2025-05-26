@@ -199,7 +199,7 @@ class ButtonConnections(QObject):
         elif sensor_type == 'temperature':
             self.win.RTDlabel.setText(f"{received_data:.2f} °C")
         elif sensor_type == 'turbidity':
-            self.win.lb_turbidity.setText(f'{received_data}')   
+            self.win.lb_turbidity.setText(f'{received_data:.0f} NTU')   
     
         
         #    self.win.valueData[3] = received_data 
