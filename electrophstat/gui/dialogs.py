@@ -217,9 +217,10 @@ class CalibrateTurbidityDialog(QDialog):
 
     def add_plot(self):
         backgroundColor = self.palette().color(self.backgroundRole())
-        self.plotwidget = pg.PlotWidget()
-        self.plotwidget.setBackground(backgroundColor)
-
+        plotWidget = pg.PlotWidget()
+        plotWidget.setBackground(backgroundColor)
+        self.plotwidget.append(plotWidget)
+        
     @pyqtSlot()
     def on_ok_clicked(self):
         # read values from the widgets
