@@ -94,8 +94,23 @@ class MainWindow(QMainWindow):
 
         else:
             event.ignore()
+    def stop_all_workers(self):
+        # Stop pHStat worker
+        if hasattr(self, "phstat_ctrl"):
+            self.phstat_ctrl.stop()
+        ## Stop PSU worker
+        #if hasattr(self, "psu_controller"):
+        #    self.psu_controller.stop()
+        # Stop other workers/timers as needed
+        ##if hasattr(self, "logging_timer"):
+         #   self.logging_timer.stop()
+        # Add more as needed...
+
+    
+    
     def closeEvent(self, event):
         # Optionally, you can also use the exitApplication method here
+        self.stop_all_workers() 
         self.exitApplication(event)
     
-   
+
