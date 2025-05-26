@@ -2,7 +2,7 @@
 import numpy as np
 from scipy.optimize import curve_fit, root_scalar
 
-class BiExpCalibrator:
+class BiExpCalibrator(QObject):
     """
     Bi-exponential calibrator where you supply Y0 and Plateau at fit time.
     
@@ -13,11 +13,12 @@ class BiExpCalibrator:
     
     Only PF (PercentFast), KF (KFast), KS (KSlow) are fitted.
     """
-    def __init__(self):
-        self.Y0 = None
-        self.Plateau = None
-        self.params_ = None
-        self.errors_ = None
+    def __init__(self, window):
+        self.win        = window
+        self.Y0         = None
+        self.Plateau    = None
+        self.params_    = None
+        self.errors_    = None
 
     def _model(self, x, PF, KF, KS):
         span = (self.Y0 - self.Plateau)
