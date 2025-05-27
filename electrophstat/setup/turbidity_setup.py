@@ -6,14 +6,6 @@ def init_turbidity(self):
     
     if self.enable_turbidity_sensor:
         
-        
-        self.model_calculator = BiExpCalibrator(self)
-        self.model_calculator.set_settings(cal_settings)
-        
-        self.turbidity_dialog =  CalibrateTurbidityDialog(self)
-        self.actionCalibrate_Turbidity.triggered.connect(lambda: self.turbidity_dialog.exec_())
-
-        self.adc_ctrl = ADCController(self, channel=1, interval=1.0)
         cal_settings = {
             "params": {
                 "PercentFast": float(self.config.PercentFast),
@@ -24,13 +16,19 @@ def init_turbidity(self):
             "Y0": float(self.config.NTU_V_calibration_0),
             "Plateau": float(self.config.NTU_V_calibration_inf),
         }
+
+        self.model_calculator = BiExpCalibrator(self)
+        self.model_calculator.set_settings(cal_settings)
         
-        
-        
+        self.turbidity_dialog =  CalibrateTurbidityDialog(self)
+        self.actionCalibrate_Turbidity.triggered.connect(lambda: self.turbidity_dialog.exec_())
+
+        self.adc_ctrl = ADCController(self, channel=1, interval=1.0)
        
-        
     else:
         self.adc_ctr = None
+        self.model_calculator = None
+        self.turbidity_dialog = None
         self.TurbidityGroup.setVisible(False)
         self.actionCalibrate_Turbidity.setEnabled(False)
         self.logging_ctrl.disable_logging(['turbidity'])
