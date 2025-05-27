@@ -331,5 +331,8 @@ class CalibrateTurbidityDialog(QDialog):
         # read values from the widgets
         # close dialog with Accepted
         self.accept()
-        
-     
+
+    def update_raw_label(self, value):
+        """Update the raw data label with the latest turbidity_raw value."""
+        self.lb_raw_data.setText(f"{value:.0f} mV")
+

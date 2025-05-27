@@ -6,6 +6,13 @@ def init_turbidity(self):
     
     if self.enable_turbidity_sensor:
         
+        
+        self.model_calculator = BiExpCalibrator(self)
+        self.model_calculator.set_settings(cal_settings)
+        
+        self.turbidity_dialog =  CalibrateTurbidityDialog(self)
+        self.actionCalibrate_Turbidity.triggered.connect(lambda: self.turbidity_dialog.exec_())
+
         self.adc_ctrl = ADCController(self, channel=1, interval=1.0)
         cal_settings = {
             "params": {
@@ -20,12 +27,7 @@ def init_turbidity(self):
         
         
         
-        self.model_calculator = BiExpCalibrator(self)
-        self.model_calculator.set_settings(cal_settings)
-        
-        self.turbidity_dialog =  CalibrateTurbidityDialog(self)
-        self.actionCalibrate_Turbidity.triggered.connect(lambda: self.turbidity_dialog.exec_())
-
+       
         
     else:
         self.adc_ctr = None
