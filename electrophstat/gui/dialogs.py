@@ -280,18 +280,14 @@ class CalibrateTurbidityDialog(QDialog):
     def _init_model(self):
         """Initialize the model curve with the current calibration points."""
         # grab the same data arrays used above:
-        xdata = np.array([0.0, self.sb_low_NTU.value(), self.sb_mid_NTU.value(), self.sb_high_NTU.value()])
-        ydata = np.array([self.sp_0_NTU_V.value(), self.sp_low_NTU_V.value(), self.sp_mid_NTU_V.value(), self.sp_high_NTU_V.value()])
+        x_model = np.linspace(0, 8000, 200)
+        # compute the model curve
+        y_model = self.win.model_calculator.predict(x_model)
+        # update the model curve
+        #self._curve.setData(x_model, y_model)
+        self._model_curve.setData(x_model, y_model)
+        self._model_curve.setPen(pg.mkPen('g', width=2))  
         
-        # Fit the model to these points
-        self.win.model_calculator.fit(
-            xdata=xdata,
-            ydata=ydata,
-            Y0=self.sp_0_NTU_V.value(),
-            Plateau=self.sp_inf_NTU_V.value(),
-            p0=(50.0, 0.001, 0.0001),
-            bounds=([0.0, 0.0, 0.0], [100.0, np.inf, np.inf])
-        )
            
 
     def _update_model(self):
