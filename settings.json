@@ -11,7 +11,7 @@
   "NTU_V_calibration_low": 3350,
   "NTU_V_calibration_mid": 2600,
   "NTU_V_calibration_high": 1650,
-  "NTU_V_calibration_inf": 50,
+  "NTU_V_calibration_inf": 30,
   "NTU_calibration_low": 1000,
   "NTU_calibration_mid": 2000,
   "NTU_calibration_high": 4000,
