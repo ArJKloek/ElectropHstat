@@ -193,13 +193,15 @@ class CalibrateTurbidityDialog(QDialog):
         self.win = self.parent()
         # stash your config on the instance
         self.cfg = self.win.config
- 
+        self.value = self.win.valueData["turbidity_raw"]
+
+        self.lb_raw_data.setText(f"{self.value:.0f} mV")
         # Turbidity settings voltage
-        self.ds_0_NTU_V.setValue(self.cfg.NTU_V_calibration_0)
-        self.ds_low_NTU_V.setValue(self.cfg.NTU_V_calibration_low)
-        self.ds_mid_NTU_V.setValue(self.cfg.NTU_V_calibration_mid)
-        self.ds_high_NTU_V.setValue(self.cfg.NTU_V_calibration_high)
-        self.ds_inf_NTU_V.setValue(self.cfg.NTU_V_calibration_inf)
+        self.sp_0_NTU_V.setValue(self.cfg.NTU_V_calibration_0)
+        self.sp_low_NTU_V.setValue(self.cfg.NTU_V_calibration_low)
+        self.sp_mid_NTU_V.setValue(self.cfg.NTU_V_calibration_mid)
+        self.sp_high_NTU_V.setValue(self.cfg.NTU_V_calibration_high)
+        self.sp_inf_NTU_V.setValue(self.cfg.NTU_V_calibration_inf)
         # Turbidity settings NTU
         self.sb_low_NTU.setValue(self.cfg.NTU_calibration_low)
         self.sb_mid_NTU.setValue(self.cfg.NTU_calibration_mid)
@@ -215,8 +217,15 @@ class CalibrateTurbidityDialog(QDialog):
         ok_btn = self.buttonBox.button(self.buttonBox.Ok)
         ok_btn.setDefault(True)
         ok_btn.setAutoDefault(True)
-        
+
+        #self.pb_add_0.clicked.connect(self._add_0_NTU)
+
         self._update_plot()
+    
+    #def _add_buttons(self, spinbox):
+
+        
+
 
     def _init_plot(self):
         # Create a PlotWidget and add it into the placeholder QWidget's layout
