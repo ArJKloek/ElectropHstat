@@ -13,7 +13,7 @@
 import sys
 sys.path.append('../')
 import time
-
+import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from electrophstat.vendor.DFRobot_ADS1115 import ADS1115
 ADS1115_REG_CONFIG_PGA_6_144V        = 0x00 # 6.144V range = Gain 2/3
