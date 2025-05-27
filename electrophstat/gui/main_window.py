@@ -82,18 +82,8 @@ class MainWindow(QMainWindow):
             else:
                 self.actionFullscreen.setText("Normal")
 
-    def exitApplication(self,event):
-        # Create a confirmation dialog
-        reply = QMessageBox.question(self, 'Exit?',
-                                     "Are you sure you want to quit?",
-                                     QMessageBox.Yes | QMessageBox.No,
-                                     QMessageBox.No)
-
-        if reply == QMessageBox.Yes:  
-            event.accept()  # Accept the close event
-
-        else:
-            event.ignore()
+    
+    
     def stop_all_workers(self):
         # Stop Graphs
         if hasattr(self, "graphs_ctrl"):
@@ -118,8 +108,18 @@ class MainWindow(QMainWindow):
     
     
     def closeEvent(self, event):
-        # Optionally, you can also use the exitApplication method here
-        self.stop_all_workers() 
-        self.exitApplication(event)
-    
+        # Ask for confirmation first
+        reply = QMessageBox.question(
+            self, 'Exit?',
+            "Are you sure you want to quit?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+
+        if reply == QMessageBox.Yes:
+            self.stop_all_workers()
+            event.accept()
+        else:
+            event.ignore()
+
 
