@@ -19,10 +19,11 @@ def init_turbidity(self):
         }
         
         
-        self.turbidity_dialog =  CalibrateTurbidityDialog(self)
         
         self.model_calculator = BiExpCalibrator(self)
         self.model_calculator.set_settings(cal_settings)
+        
+        self.turbidity_dialog =  CalibrateTurbidityDialog(self)
         self.actionCalibrate_Turbidity.triggered.connect(lambda: self.turbidity_dialog.exec_())
 
         
