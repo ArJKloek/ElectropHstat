@@ -283,9 +283,9 @@ class CalibrateTurbidityDialog(QDialog):
         
         self. params, self.errors = self.win.model_calculator.fit(
             xdata=np.array([0.0, self.sb_low_NTU.value(), self.sb_mid_NTU.value(), self.sb_high_NTU.value()]),
-            ydata=np.array([self.ds_0_NTU_V.value(), self.ds_low_NTU_V.value(), self.ds_mid_NTU_V.value(), self.ds_high_NTU_V.value()]),
-            Y0=self.ds_0_NTU_V.value(),
-            Plateau=self.ds_inf_NTU_V.value(),
+            ydata=np.array([self.sp_0_NTU_V.value(), self.sp_low_NTU_V.value(), self.sp_mid_NTU_V.value(), self.sp_high_NTU_V.value()]),
+            Y0=self.sp_0_NTU_V.value(),
+            Plateau=self.sp_inf_NTU_V.value(),
             p0=(50.0, 0.001, 0.0001),
             bounds=([0.0, 0.0, 0.0], [100.0, np.inf, np.inf])
         )
