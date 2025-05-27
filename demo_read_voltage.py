@@ -37,4 +37,4 @@ while True :
     adc2 = ads1115.read_voltage(2)
     time.sleep(0.2)
     adc3 = ads1115.read_voltage(3)
-    print "A0:%dmV A1:%dmV A2:%dmV A3:%dmV"%(adc0['r'],adc1['r'],adc2['r'],adc3['r'])
+    print("A0:%dmV A1:%dmV A2:%dmV A3:%dmV" % (adc0['r'], adc1['r'], adc2['r'], adc3['r']))
