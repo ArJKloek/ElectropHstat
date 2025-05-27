@@ -222,22 +222,21 @@ class CalibrateTurbidityDialog(QDialog):
 
         self._update_plot()
         self._init_model(self.win)
-        self._add_buttons
-        self._add_buttons(names_spinbox=["0", "low", "mid", "high", "inf"])
+        self._add_buttons(buttons=["0", "low", "mid", "high", "inf"])
         
-    def _add_buttons(self, names_spinbox):
+    def _add_buttons(self, buttons=None):
         """Add a button to the dialog for each SpinBox."""
         # Create a button for each SpinBox
-        for name_spinbox in names_spinbox: 
-            button = self.findChild(QPushButton, f"pb_add_{name_spinbox}")
-            if button:
-                button.clicked.connect(lambda: self._copy_data(name_spinbox))
+        for button in buttons: 
+            add_button = self.findChild(QPushButton, f"pb_add_{button}")
+            if add_button:
+                add_button.clicked.connect(lambda: self._copy_data(button))
         
     def _copy_data(self, target):
         """Copy data from one SpinBox to another."""
-        target = self.findChild(QSpinBox, f"sp_{target}_NTU_V")
-        if target:
-            target.setValue(int(self.value))
+        add_target = self.findChild(QSpinBox, f"sp_{target}_NTU_V")
+        if add_target:
+            add_target.setValue(int(self.value))
 
 
     def _init_plot(self):
