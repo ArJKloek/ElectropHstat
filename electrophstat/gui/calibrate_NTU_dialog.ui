@@ -258,7 +258,11 @@
        </widget>
       </item>
       <item row="3" column="2">
-       <widget class="QSpinBox" name="sp_high_NTU_V"/>
+       <widget class="QSpinBox" name="sp_high_NTU_V">
+        <property name="maximum">
+         <number>6000</number>
+        </property>
+       </widget>
       </item>
       <item row="4" column="2">
        <widget class="QSpinBox" name="sp_inf_NTU_V">
