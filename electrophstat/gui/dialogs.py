@@ -221,7 +221,7 @@ class CalibrateTurbidityDialog(QDialog):
         #self.pb_add_0.clicked.connect(self._add_0_NTU)
 
         self._update_plot()
-        self._init_model
+        self._init_model(self.win)
     #def _add_buttons(self, spinbox):
 
         
@@ -277,7 +277,8 @@ class CalibrateTurbidityDialog(QDialog):
         self._plot.setXRange(0, 8000)  # adjust X range
         self._plot.setYRange(0, 5500)  # adjust Y range
 
-    def _init_model(self):
+    def _init_model(self, win):
+        self.win = win  
         """Initialize the model curve with the current calibration points."""
         self.params_ = self.win.model_calculator.get_settings()["params"]
         print("Model parameters:", self.params_)
