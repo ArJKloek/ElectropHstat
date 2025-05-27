@@ -220,7 +220,7 @@ class CalibrateTurbidityDialog(QDialog):
 
         #self.pb_add_0.clicked.connect(self._add_0_NTU)
 
-        self._update_plot()
+        #self._update_plot()
     
     #def _add_buttons(self, spinbox):
 
@@ -254,10 +254,10 @@ class CalibrateTurbidityDialog(QDialog):
     def _update_plot(self):
         # grab the six points
         Vs = [
-            self.ds_0_NTU_V.value(),
-            self.ds_low_NTU_V.value(),
-            self.ds_mid_NTU_V.value(),
-            self.ds_high_NTU_V.value(),
+            self.sp_0_NTU_V.value(),
+            self.sp_low_NTU_V.value(),
+            self.sp_mid_NTU_V.value(),
+            self.sp_high_NTU_V.value(),
             #self.ds_inf_NTU_V.value()
         ]
         NTUs = [
@@ -275,7 +275,7 @@ class CalibrateTurbidityDialog(QDialog):
         self._plot.setLabel('left', 'Voltage (V)')
         self._plot.setLabel('bottom', 'Turbidity (NTU)')
         self._plot.setXRange(0, 8000)  # adjust X range
-        self._plot.setYRange(0, 5.5)  # adjust Y range
+        self._plot.setYRange(0, 5500)  # adjust Y range
 
     def _update_model(self, degree: int = 1):
         """Fit a degree‐`degree` poly to the calibration points and draw it."""
@@ -304,23 +304,7 @@ class CalibrateTurbidityDialog(QDialog):
         #self._curve.setData(x_model, y_model)
         self._model_curve.setData(x_model, y_model)
         self._model_curve.setPen(pg.mkPen('g', width=2))  # green for model curve
-        #self._model_curve.setSymbol('x')  # optional: show model points as 'x'
-        #self._model_curve.setSymbolBrush(pg.mkBrush('g'))  # green for model points
-        #self._model_curve.setSymbolSize(5)  # optional: size of model points
-        #self._model_curve.setVisible(True)  # make sure the model curve is visible
 
-        #Ys = np.array([n if n != float('inf') else max_real*1.1 for n in NTUs])
-
-        # only fit on the first four finite points
-        #mask = np.isfinite(Ys)
-        #coeffs = np.polyfit(Vs[mask], Ys[mask], deg=degree)
-
-        # generate a smooth X axis
-        #x_model = np.linspace(Vs.min(), Vs.max(), 200)
-        #y_model = np.polyval(coeffs, x_model)
-
-        # update the model curve
-        #self._model_curve.setData(x_model, y_model)
 
 
     @pyqtSlot()
