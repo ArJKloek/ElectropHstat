@@ -277,7 +277,7 @@ class CalibrateTurbidityDialog(QDialog):
         self._plot.setXRange(0, 8000)  # adjust X range
         self._plot.setYRange(0, 5500)  # adjust Y range
 
-    def _update_model(self, degree: int = 1):
+    def _update_model(self):
         """Fit a degree‐`degree` poly to the calibration points and draw it."""
         # grab the same data arrays used above:
         
