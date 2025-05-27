@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QMessageBox, QVBoxLayout
+from PyQt5.QtWidgets import QDialog, QMessageBox, QVBoxLayout, QPushButton, QSpinBox, QDoubleSpinBox
 from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QTimer
 from PyQt5 import uic
 import pyqtgraph as pg
@@ -193,7 +193,7 @@ class CalibrateTurbidityDialog(QDialog):
         self.win = self.parent()
         # stash your config on the instance
         self.cfg = self.win.config
-        self.value = self.win.valueData["turbidity_raw"]
+        self.value = 0
 
         self.lb_raw_data.setText(f"{self.value:.0f} mV")
         # Turbidity settings voltage
@@ -222,9 +222,19 @@ class CalibrateTurbidityDialog(QDialog):
 
         self._update_plot()
         self._init_model(self.win)
-    #def _add_buttons(self, spinbox):
-
+    
+    def _add_buttons(self, name_spinbox):
+        """Add a button to the dialog for each SpinBox."""
+        # Create a button for each SpinBox
+        button = self.findChild(QPushButton, f"pb_add_{name_spinbox}")
+        if button:
+            button.clicked.connect(lambda: self._copy_data(name_spinbox))
         
+    def _copy_data(self, target):
+        """Copy data from one SpinBox to another."""
+        target = self.findChild(QSpinBox, f"sp_{target}_NTU_V")
+        if target:
+            target.setValue(int(self.value))
 
 
     def _init_plot(self):
@@ -335,4 +345,4 @@ class CalibrateTurbidityDialog(QDialog):
     def update_raw_label(self, value):
         """Update the raw data label with the latest turbidity_raw value."""
         self.lb_raw_data.setText(f"{value:.0f} mV")
-
+        self.value = value
