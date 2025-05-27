@@ -7,7 +7,7 @@ class ADCWorker(QObject):
     data_ready = pyqtSignal(float)
 
     def __init__(self,
-                 channel:  int   = 1,
+                 channel:  int   = 0,
                  interval: float = 1.0,
                  prefer_hw: bool  = True):
         super().__init__()
@@ -25,7 +25,9 @@ class ADCWorker(QObject):
         while self.is_running:
             try:
                 resp = self.adc.read_voltage(self.channel)
+                print(f'response: {resp}')  
                 raw  = resp.get('r', 0.0)
+                print(f'RAW ADC value: {raw}')
                 self.data_ready.emit(raw)
             except Exception:
                 pass
