@@ -26,7 +26,7 @@ class ADCWorker(QObject):
             try:
                 resp = self.adc.read_voltage(self.channel)
                 print(f'response: {resp}')  
-                raw  = resp.get('r', 0.0)
+                raw  = resp['r']
                 print(f'RAW ADC value: {raw}')
                 self.data_ready.emit(raw)
             except Exception:
