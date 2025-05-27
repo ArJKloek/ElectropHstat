@@ -25,9 +25,7 @@ class ADCWorker(QObject):
         while self.is_running:
             try:
                 resp = self.adc.read_voltage(self.channel)
-                print(f'response: {resp}')  
                 raw  = resp['r']
-                print(f'RAW ADC value: {raw}')
                 self.data_ready.emit(raw)
             except Exception:
                 pass
