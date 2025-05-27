@@ -8,7 +8,7 @@ class ADCController(QObject):
     Spins up the ADCWorker and routes its data_ready signal
     into a slot on the main window.
     """
-    def __init__(self, win, channel:int=1, interval:float=1.0):
+    def __init__(self, win, channel:int=0, interval:float=1.0):
         super().__init__(win)
         self.win = win
 

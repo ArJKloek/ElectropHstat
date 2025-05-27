@@ -23,7 +23,7 @@ def init_turbidity(self):
         self.turbidity_dialog =  CalibrateTurbidityDialog(self)
         self.actionCalibrate_Turbidity.triggered.connect(lambda: self.turbidity_dialog.exec_())
 
-        self.adc_ctrl = ADCController(self, channel=1, interval=1.0)
+        self.adc_ctrl = ADCController(self, channel=0, interval=0.2)
        
     else:
         self.adc_ctr = None

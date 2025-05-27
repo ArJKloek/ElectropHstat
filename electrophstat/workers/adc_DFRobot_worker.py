@@ -8,7 +8,7 @@ class ADCWorker(QObject):
 
     def __init__(self,
                  channel:  int   = 0,
-                 interval: float = 1.0,
+                 interval: float = 0.2,
                  prefer_hw: bool  = True):
         super().__init__()
         self.channel   = channel
