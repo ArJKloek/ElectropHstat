@@ -221,7 +221,7 @@ class CalibrateTurbidityDialog(QDialog):
         #self.pb_add_0.clicked.connect(self._add_0_NTU)
 
         self._update_plot()
-        self._init_model()
+        self._init_model
     #def _add_buttons(self, spinbox):
 
         
