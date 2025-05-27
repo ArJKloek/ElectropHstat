@@ -57,6 +57,7 @@ class ADCController(QObject):
             ntu = self.win.model_calculator.inverse(value, x_min=0, x_max=8000)
             self.win.button_cont.update_gui("turbidity",round(ntu,0))
             self.win.button_cont.update_gui("turbidity_raw",round(value,0))
+            print(f"ADC value: {value} mV, Turbidity: {ntu} NTU")
             self.win.turbidity_dialog.update_turbidity(value)
         except AttributeError:
             pass
