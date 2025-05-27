@@ -279,10 +279,15 @@ class CalibrateTurbidityDialog(QDialog):
 
     def _init_model(self):
         """Initialize the model curve with the current calibration points."""
+        self.params_ = self.win.model_calculator.get_settings()["params"]
+        print("Model parameters:", self.params_)
+        
         # grab the same data arrays used above:
+        
         x_model = np.linspace(0, 8000, 200)
         # compute the model curve
         y_model = self.win.model_calculator.predict(x_model)
+        
         # update the model curve
         #self._curve.setData(x_model, y_model)
         self._model_curve.setData(x_model, y_model)
@@ -303,12 +308,12 @@ class CalibrateTurbidityDialog(QDialog):
             bounds=([0.0, 0.0, 0.0], [100.0, np.inf, np.inf])
         )
         
-        print("Fitted parameters:", self.params)
-        print("Fitting errors:", self.errors)
+        #print("Fitted parameters:", self.params)
+        #print("Fitting errors:", self.errors)
         Kfast = self.params["KFast"]
         Kslow = self.params["KSlow"]
         PercentFast = self.params["PercentFast"]
-        print(f"Percent Fast: {PercentFast:.2f}%, KFast: {Kfast:.4f}, KSlow: {Kslow:.4f}")
+        #print(f"Percent Fast: {PercentFast:.2f}%, KFast: {Kfast:.4f}, KSlow: {Kslow:.4f}")
         # generate a smooth X axis  
         x_model = np.linspace(0, 8000, 200)
         # compute the model curve
