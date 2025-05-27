@@ -28,8 +28,9 @@ def discover_adc(prefer_hw: bool = True, channel: int = 1.0) -> ADCSensor:
     if prefer_hw:
         try:
             adc = ADS1115()  # whatever your real constructor is
-            adc.set_gain(ADS1115_REG_CONFIG_PGA_4_096V)
-            adc.set_addr_ADS1115(ADS1115_IIC_ADDRESS0)
+            adc.set_addr_ADS1115(0x48)
+            #Sets the gain and input voltage range.
+            adc.set_gain(ADS1115_REG_CONFIG_PGA_6_144V) 
             # perform a “ping” read:
             _ = adc.read_voltage(1)
             print("[ADC] Found real ADS1115")
