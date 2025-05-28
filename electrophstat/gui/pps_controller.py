@@ -2,7 +2,7 @@
 from PyQt5.QtCore    import QObject, QTimer, QThread, pyqtSlot
 from PyQt5.QtWidgets import QMessageBox
 from electrophstat.hardware import discover_power_supply
-from electrophstat.hardware.PPSWorker import PPSWorker
+from electrophstat.workers.PPSWorker import PPSWorker
 from electrophstat.control.timer_control import monoTimer
 from electrophstat.dummy.dummy_pps import DummyPPS    
 
@@ -18,6 +18,8 @@ class PPSController(QObject):
         self.interval = interval
         self.reset = reset
         self.coulombs = 0.0
+
+        #1) Create worker & thread but do not start it yet.
         self._setup_worker()
         self.initCoulombTimer()
 
@@ -55,10 +57,19 @@ class PPSController(QObject):
         self.pps_worker.disconnected_signal.connect(self.connections.on_pps_disconnect)
 
         # 4) Start polling
-        self.thread.start()
+        #self.thread.start()
 
         # 5) fire one initial limits‐read so the dials get properly ranged
         self.pps_worker.emit_limits()
+
+    @pyqtSlot()
+    def start_psu_worker(self):
+        """Call this to start the PPSWorker thread."""
+        if not self.thread.isRunning():
+            self.thread.start()
+            print("[PPS] PPSWorker started.")
+        else:
+            print("[PPS] PPSWorker is already running.")    
 
     @pyqtSlot()
     def stop(self):
@@ -78,6 +89,7 @@ class PPSController(QObject):
             print(f"[PPS] Error stopping old PPSWorker: {e}")        
         try:
             self._setup_worker()
+            self.start_psu_worker()
             print("[PPS] Reconnected.")
             self.connections._enable_pps_controls()
             self.win._apply_scaling()
