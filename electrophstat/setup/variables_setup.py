@@ -39,3 +39,9 @@ def init_variables(main):
         main.usb_present = False
         main.logs_present = False
         main.copy_path = ""
+        main.psu_status = False
+        main.phstat_status = False
+        main.ph_sensor_status = False
+        main.temp_sensor_status = False
+        main.turbidity_sensor_status = False
+        
