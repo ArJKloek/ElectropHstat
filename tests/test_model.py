@@ -1,6 +1,8 @@
 import pytest
 import numpy as np
 from electrophstat.models.model_calculator import BiExpCalibrator
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 class DummyWin:
     pass

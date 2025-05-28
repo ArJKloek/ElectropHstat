@@ -26,7 +26,7 @@ class DummyADS1115(ADCSensor):
         """
         # advance time
         self._t += 1.0
-        if channel == 1:
+        if channel == 0:
             # sine wave between 1000 and 3000 plus some random noise
             base = 2000 + 1 * math.sin(2 * math.pi * 0.05 * self._t)
             noise = random.uniform(-2, 2)

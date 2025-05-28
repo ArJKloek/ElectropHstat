@@ -13,8 +13,8 @@ def init_turbidity(self):
                 "KSlow": float(self.config.KSlow),
             },
             "errors": None,  # Optional, unless you store errors
-            "Y0": float(self.config.NTU_V_calibration_0),
-            "Plateau": float(self.config.NTU_V_calibration_inf),
+            "Y0": int(self.config.NTU_mV_calibration_0),
+            "Plateau": int(self.config.NTU_mV_calibration_inf),
         }
 
         self.model_calculator = BiExpCalibrator(self)

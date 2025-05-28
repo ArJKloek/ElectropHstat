@@ -2,8 +2,8 @@
 from __future__ import annotations
 from .voltcraft_pps import VoltcraftPPS
 from ..utils.serial_helpers import find_voltcraft_pps  # your existing finder
-from ..vendor.DFRobot_ADS1115 import ADS1115
 from electrophstat.hardware.interfaces import ADCSensor
+import platform
 
 def discover_power_supply(prefer_hw: bool = True, reset: bool= False):
     port = find_voltcraft_pps() if prefer_hw else None
@@ -25,6 +25,14 @@ def discover_adc(prefer_hw: bool = True, channel: int = 1.0) -> ADCSensor:
     Try to instantiate a real ADS1115 and verify it by a quick read.
     If that fails (or prefer_hw=False), return DummyADS1115 instead.
     """
+    if platform.system().lower() == "windows":
+        from ..dummy.dummy_ADS1115 import DummyADS1115
+        dummy = DummyADS1115()
+        dummy.connect()
+        print("[ADC] Using DummyADS1115 (forced on Windows)")
+        return dummy
+    from ..vendor.DFRobot_ADS1115 import ADS1115
+
     ADS1115_REG_CONFIG_PGA_6_144V        = 0x00 # 6.144V range = Gain 2/3
     ADS1115_REG_CONFIG_PGA_4_096V        = 0x02 # 4.096V range = Gain 1
     ADS1115_REG_CONFIG_PGA_2_048V        = 0x04 # 2.048V range = Gain 2 (default)
@@ -38,7 +46,7 @@ def discover_adc(prefer_hw: bool = True, channel: int = 1.0) -> ADCSensor:
             #Sets the gain and input voltage range.
             adc.set_gain(ADS1115_REG_CONFIG_PGA_6_144V) 
             # perform a “ping” read:
-            _ = adc.read_voltage(1)
+            _ = adc.read_voltage(channel)
             print("[ADC] Found real ADS1115")
             return adc
         except Exception as e:

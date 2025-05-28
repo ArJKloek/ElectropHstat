@@ -8,11 +8,11 @@ class ADCController(QObject):
     Spins up the ADCWorker and routes its data_ready signal
     into a slot on the main window.
     """
-    def __init__(self, win, channel:int=0, interval:float=1.0):
+    def __init__(self, win, channel:int=0, interval:float=0.2):
         super().__init__(win)
         self.win = win
 
-        hw = discover_adc()
+        hw = discover_adc(channel=channel)
         if isinstance(hw, DummyADS1115):
             # If dummy power supply, color the groupbox orange
             # to indicate that it is a dummy.
@@ -45,20 +45,27 @@ class ADCController(QObject):
         self.thread.start()
 
     @pyqtSlot(float)
-    def on_data_ready(self, value: float):
+    def on_data_ready(self, value: int):
         """
-        Received a new reading from channel 1.
+        Received a new reading from channel 0.
         Display it or log it as you wish.
         """
         # e.g. if you have a QLCDNumber named lcd_adc in your UI:
+
         try:
             #self.win.lcd_adc.display(value)
             #value_V = value / 1000.0  # convert mV to V
-            ntu = self.win.model_calculator.inverse(value, x_min=0, x_max=8000)
-            self.win.button_cont.update_gui("turbidity",round(ntu,0))
-            self.win.button_cont.update_gui("turbidity_raw",round(value,0))
+            v_min = self.win.model_calculator.v_min
+            v_max = self.win.model_calculator.v_max
+            if not (v_min <= value <= v_max):
+                ntu = float('inf')  # or np.nan, or show "out of range"
+            else:
+                ntu = self.win.model_calculator.inverse(value, x_min=0, x_max=200000)
+            self.win.button_cont.update_gui("turbidity", round(ntu, 0))
+            self.win.button_cont.update_gui("turbidity_raw", round(value, 0))
             self.win.turbidity_dialog.update_raw_label(value)
-        except AttributeError:
+        except AttributeError as e:
+            print("[ADC] AttributeError:", e)
             pass
 
     def stop(self):

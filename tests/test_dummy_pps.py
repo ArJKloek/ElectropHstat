@@ -1,6 +1,8 @@
 # tests/test_dummy_pps.py
 import pytest
 from electrophstat.dummy.dummy_pps import DummyPPS
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 def test_dummy_pps_basic():
     ps = DummyPPS(); ps.connect()

@@ -49,13 +49,10 @@ class pHStatLoop:
             val = float(pH)
         except (TypeError, ValueError):
             val = self.target_pH
-        if self.select == 1:
-            status = (val > self.target_pH)
+        if self.select == 0:
+            status = (val > self.target_pH)  # "above": status True if pH > target
         else:
-            status = (val < self.target_pH)
-        
+            status = (val < self.target_pH)  # "below": status True if pH < target
         pump_on = status and self.should_start
-       
         return PumpAction(pump_on=pump_on, status=status)
 
-    

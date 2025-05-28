@@ -1,7 +1,11 @@
 from electrophstat.gui.usb_controller import UsbController
-
+import platform
 
 def init_usb(win):
+
+
+    if platform.system().lower() == "windows":
+        return 
 
     win.statusBar().installEventFilter(win)
     win.usb_ctrl =  UsbController(win)

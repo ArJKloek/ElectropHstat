@@ -3,6 +3,7 @@ from pathlib import Path
 from PyQt5.QtCore    import QObject, pyqtSlot, QTimer
 from PyQt5.QtWidgets import QMessageBox, QAction, QLabel
 import os, re, shutil                      
+import platform
 
 class ButtonConnections(QObject):
     """
@@ -22,9 +23,10 @@ class ButtonConnections(QObject):
         self.win.toggleTempAction.toggled.connect(self.updateCurrentTabPlot)
         self.win.actionCalibrate_pH.triggered.connect(self.openCalibratepHWindow)
         self.win.action_datewindow.triggered.connect(self.openDateTimeWindow)
-        self.win.usb_ctrl.worker.update_usb.connect(self.on_usb_changed)
         self.win.logging_ctrl.logs_present_signal.connect(self.on_logs_present)
-        self.win.usb_button.clicked.connect(self.usb_copy)
+        if not platform.system().lower() == "windows":
+            self.win.usb_ctrl.worker.update_usb.connect(self.on_usb_changed)
+            self.win.usb_button.clicked.connect(self.usb_copy)
 
     @pyqtSlot()
     def start_stat(self):

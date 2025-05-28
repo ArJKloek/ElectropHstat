@@ -14,12 +14,15 @@ class BiExpCalibrator(QObject):
     
     Only PF (PercentFast), KF (KFast), KS (KSlow) are fitted.
     """
-    def __init__(self, window):
-        self.win        = window
+    def __init__(self, win=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.win        = win
         self.Y0         = None
         self.Plateau    = None
         self.params_    = None
         self.errors_    = None
+        self.v_min      = None
+        self.v_max      = None
 
     def _model(self, x, PF, KF, KS):
         span = (self.Y0 - self.Plateau)
@@ -72,6 +75,14 @@ class BiExpCalibrator(QObject):
             "KFast":       perr[1],
             "KSlow":       perr[2],
         }
+
+        # Cache model output range for the fit interval
+        x_min, x_max = np.min(xdata), np.max(xdata)
+        v0 = self._model(x_min, *popt)
+        v1 = self._model(x_max, *popt)
+        self.v_min = min(v0, v1)
+        self.v_max = max(v0, v1)
+
         return self.params_, self.errors_
 
     def predict(self, x):
@@ -91,6 +102,8 @@ class BiExpCalibrator(QObject):
         """
         if self.params_ is None:
             raise RuntimeError("Fit model first via .fit()")
+        if not (self.v_min <= V <= self.v_max):
+            raise ValueError(f"Requested voltage {V} is outside the model's output range [{self.v_min}, {self.v_max}]")
         PF = self.params_["PercentFast"]
         KF = self.params_["KFast"]
         KS = self.params_["KSlow"]
@@ -117,5 +130,5 @@ class BiExpCalibrator(QObject):
         """
         self.params_ = settings.get("params")
         self.errors_ = settings.get("errors")
-        self.Y0 = settings.get("Y0")
-        self.Plateau = settings.get("Plateau")
+        self.Y0 = self.v_max = settings.get("Y0")
+        self.Plateau = self.v_min = settings.get("Plateau")

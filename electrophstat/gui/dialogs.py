@@ -124,7 +124,7 @@ class SettingsDialog(QDialog):
         self.ds_cfg_pHtarget.setValue(self.cfg.pH_target)
         self.ds_cfg_pump_ml.setValue(self.cfg.pump_volume_per_cycle_ml)
         self.ds_cfg_pump_time.setValue(self.cfg.pump_cycle_duration_s)
-        self.sp_cfg_cooldown.setValue(self.cfg.pump_cooldown_duration_s)
+        self.sp_cfg_cooldown.setValue(int(self.cfg.pump_cooldown_duration_s))
         
         #pH calibration settings
         self.ds_cfg_pH_low.setValue(self.cfg.pH_calibration_low)
@@ -197,11 +197,11 @@ class CalibrateTurbidityDialog(QDialog):
 
         self.lb_raw_data.setText(f"{self.value:.0f} mV")
         # Turbidity settings voltage
-        self.sp_0_NTU_V.setValue(self.cfg.NTU_V_calibration_0)
-        self.sp_low_NTU_V.setValue(self.cfg.NTU_V_calibration_low)
-        self.sp_mid_NTU_V.setValue(self.cfg.NTU_V_calibration_mid)
-        self.sp_high_NTU_V.setValue(self.cfg.NTU_V_calibration_high)
-        self.sp_inf_NTU_V.setValue(self.cfg.NTU_V_calibration_inf)
+        self.sp_0_NTU_mV.setValue(self.cfg.NTU_mV_calibration_0)
+        self.sp_low_NTU_mV.setValue(self.cfg.NTU_mV_calibration_low)
+        self.sp_mid_NTU_mV.setValue(self.cfg.NTU_mV_calibration_mid)
+        self.sp_high_NTU_mV.setValue(self.cfg.NTU_mV_calibration_high)
+        self.sp_inf_NTU_mV.setValue(self.cfg.NTU_mV_calibration_inf)
         # Turbidity settings NTU
         self.sb_low_NTU.setValue(self.cfg.NTU_calibration_low)
         self.sb_mid_NTU.setValue(self.cfg.NTU_calibration_mid)
@@ -231,7 +231,7 @@ class CalibrateTurbidityDialog(QDialog):
         # Add buttons for each SpinBox        
     def _copy_data(self, target):
         """Copy data from one SpinBox to another."""
-        add_target = self.findChild(QSpinBox, f"sp_{target}_NTU_V")
+        add_target = self.findChild(QSpinBox, f"sp_{target}_NTU_mV")
         if add_target:
             add_target.setValue(int(self.value))
 
@@ -263,10 +263,10 @@ class CalibrateTurbidityDialog(QDialog):
     def _update_plot(self):
         # grab the six points
         Vs = [
-            self.sp_0_NTU_V.value(),
-            self.sp_low_NTU_V.value(),
-            self.sp_mid_NTU_V.value(),
-            self.sp_high_NTU_V.value(),
+            self.sp_0_NTU_mV.value(),
+            self.sp_low_NTU_mV.value(),
+            self.sp_mid_NTU_mV.value(),
+            self.sp_high_NTU_mV.value(),
             #self.ds_inf_NTU_V.value()
         ]
         NTUs = [
@@ -311,9 +311,9 @@ class CalibrateTurbidityDialog(QDialog):
         
         self. params, self.errors = self.win.model_calculator.fit(
             xdata=np.array([0.0, self.sb_low_NTU.value(), self.sb_mid_NTU.value(), self.sb_high_NTU.value()]),
-            ydata=np.array([self.sp_0_NTU_V.value(), self.sp_low_NTU_V.value(), self.sp_mid_NTU_V.value(), self.sp_high_NTU_V.value()]),
-            Y0=self.sp_0_NTU_V.value(),
-            Plateau=self.sp_inf_NTU_V.value(),
+            ydata=np.array([self.sp_0_NTU_mV.value(), self.sp_low_NTU_mV.value(), self.sp_mid_NTU_mV.value(), self.sp_high_NTU_mV.value()]),
+            Y0=self.sp_0_NTU_mV.value(),
+            Plateau=self.sp_inf_NTU_mV.value(),
             p0=(50.0, 0.001, 0.0001),
             bounds=([0.0, 0.0, 0.0], [100.0, np.inf, np.inf])
         )

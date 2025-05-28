@@ -2,17 +2,18 @@ import csv
 import time
 import locale
 from pathlib import Path
-
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 import pytest
 
 # adjust this import if your Logger lives elsewhere
 from electrophstat.io.logger import Logger
 
 def test_logger_writes_multiple_files_into_repo_results(tmp_path, monkeypatch):
-    # 1) Monkey‐patch time.time to simulate three 1s‐apart entries:
+    # 1) Monkey‐patch time.monotonic to simulate three 1s‐apart entries:
     #    First call in __init__ → 1000.0, then each .log() → +1s
     times = [1000.0, 1001.0, 1002.0, 1003.0, 1004.0, 1005.0, 1006.0, 1007.0]
-    monkeypatch.setattr(time, "time", lambda: times.pop(0))
+    monkeypatch.setattr(time, "monotonic", lambda: times.pop(0))
     # 2) No‐op locale so decimal = "."
     monkeypatch.setattr(locale, "setlocale", lambda *a, **k: None)
 
@@ -25,7 +26,7 @@ def test_logger_writes_multiple_files_into_repo_results(tmp_path, monkeypatch):
     labels  = ["pH"]
     columns = ["pH"]
     logger = Logger(base_dir=results_dir, labels=labels, column_names=columns)
-
+    logger.start_session()  
     # 5) After init, its log_dir should be <repo>/tests/results/<date>/<time>
     assert logger.log_dir.exists() and logger.log_dir.is_dir()
     assert results_dir in logger.log_dir.parents
