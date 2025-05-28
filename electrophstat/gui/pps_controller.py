@@ -84,7 +84,8 @@ class PPSController(QObject):
         #self.thread.start()
 
         # 5) fire one initial limits‐read so the dials get properly ranged
-        self.pps_worker.emit_limits()
+        if self.psu_status == "connected_on":
+            self.pps_worker.emit_limits()
 
     @pyqtSlot()
     def start_psu_worker(self):
