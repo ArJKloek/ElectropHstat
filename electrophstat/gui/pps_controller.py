@@ -68,6 +68,10 @@ class PPSController(QObject):
         self.pps_worker.moveToThread(self.thread)
         self.thread.started.connect(self.pps_worker.run)
 
+        if self.psu_status == "connected_on":
+            self.start_psu_worker()
+
+
         # 3) Hook all signals back to window methods and the pps_connections
         self.pps_worker.voltage_signal.connect(self.connections.update_pps_voltage)
         self.pps_worker.current_signal.connect(self.connections.update_pps_current)
