@@ -26,7 +26,7 @@ class PPSController(QObject):
     def _setup_worker(self):
         # 1) Probe for a real PPS (or get a DummyPPS)
         #status, port = discover_power_supply(reset=self.reset)
-        status, obj = discover_power_supply(reset=self.reset))
+        status, obj = discover_power_supply(reset=self.reset)
         if status == "not_connected":
             print("No power supply detected.")
         elif status == "connected_off":
