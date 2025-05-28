@@ -1,21 +1,28 @@
 # test_psu_comm.py
 import time
 import serial
-from electrophstat.vendor.pps import PPS
 
 PORT = "/dev/ttyUSB0"  # Change if needed
+BAUD = 9600
+
+def send_cmd(ser, cmd):
+    ser.write((cmd + "\r").encode())
+    time.sleep(0.1)
+    resp = b""
+    while ser.in_waiting:
+        resp += ser.read(ser.in_waiting)
+        time.sleep(0.05)
+    return resp
 
 def main():
-    print("=== PSU Command Test ===")
+    print("=== RAW PSU Command Test ===")
     try:
-        psu = PPS(port=PORT, debug=True)
-        commands = ["GMAX", "GOVP", "GOCP", "GETS", "GOUT", "GOUTV", "GOUTC", "GSTAT", "GIDN"]
-        for cmd in commands:
-            try:
-                resp = psu._query(cmd)
-                print(f"[{cmd}] -> {resp!r}")
-            except Exception as e:
-                print(f"[{cmd}] ERROR: {e}")
+        with serial.Serial(PORT, BAUD, timeout=1) as ser:
+            commands = ["GMAX", "GOVP", "GOCP", "GETS", "GOUT", "GOUTV", "GOUTC", "GSTAT", "GIDN"]
+            for cmd in commands:
+                print(f"Sending: {cmd}")
+                resp = send_cmd(ser, cmd)
+                print(f"Response: {resp!r}")
     except Exception as e:
         print(f"[ERROR] {e}")
 
