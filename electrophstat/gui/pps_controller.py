@@ -25,7 +25,20 @@ class PPSController(QObject):
 
     def _setup_worker(self):
         # 1) Probe for a real PPS (or get a DummyPPS)
-        port = discover_power_supply(reset=self.reset)
+        #status, port = discover_power_supply(reset=self.reset)
+        status, obj = discover_power_supply(reset=self.reset))
+        if status == "not_connected":
+            print("No power supply detected.")
+        elif status == "connected_off":
+            print("Power supply detected (USB), but not responding. Is it turned ON?")
+        elif status == "connected_on":
+            print("Power supply connected and ready!")
+            port = obj  # This is your VoltcraftPPS instance
+        
+        
+        
+        
+        
         if isinstance(port, DummyPPS):
             # If dummy power supply, color the groupbox orange
             # to indicate that it is a dummy.
