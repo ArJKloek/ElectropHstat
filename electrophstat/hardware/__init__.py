@@ -4,21 +4,43 @@ from .voltcraft_pps import VoltcraftPPS
 from ..utils.serial_helpers import find_voltcraft_pps  # your existing finder
 from electrophstat.hardware.interfaces import ADCSensor
 import platform
+import serial
+import time
 
-def discover_power_supply(prefer_hw: bool = True, reset: bool= False):
+def discover_power_supply(prefer_hw: bool = True, reset: bool = False):
+    from ..dummy.dummy_pps import DummyPPS
     port = find_voltcraft_pps() if prefer_hw else None
-    if port:
-        print("[DEBUG] Found real PPS at", port)
+
+    if not port:
+        print("[DEBUG] No PPS port found (not connected)")
+        return "not_connected", DummyPPS
+
+    print("[DEBUG] Found PPS port at", port)
+    # Try to open the port and send a command
+    try:
+        with serial.Serial(port, timeout=1) as ser:
+            ser.write(b"GMAX\r")
+            time.sleep(0.2)
+            resp = b""
+            while ser.in_waiting:
+                resp += ser.read(ser.in_waiting)
+                time.sleep(0.05)
+            if not resp:
+                print("[DEBUG] PPS port found, but no response (likely OFF)")
+                return "connected_off", port
+    except serial.SerialException as e:
+        print(f"[DEBUG] PPS port error: {e}")
+        return "not_connected", None
+
+    # If we get here, the port is present and PPS is responding
+    try:
         ps = VoltcraftPPS(port, reset=reset)
         ps.connect()
-        return ps
-    # fallback
-    print("[DEBUG] Using dummy PPS")
-    from ..dummy.dummy_pps import DummyPPS
-
-    dummy = DummyPPS()
-    dummy.connect()
-    return dummy
+        print("[DEBUG] PPS connected and responding")
+        return "connected_on", ps
+    except Exception as e:
+        print(f"[DEBUG] PPS port present but not responding ({e})")
+        return "connected_off", port
 
 def discover_adc(prefer_hw: bool = True, channel: int = 1.0) -> ADCSensor:
     """
