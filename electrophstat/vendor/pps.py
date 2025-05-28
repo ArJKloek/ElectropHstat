@@ -156,7 +156,9 @@ class PPS:
             if b"".join(b[-3:]) == b"OK\r":
                 break
         self._debug("\n")
-        return (b"".join(b[:-4])).decode()
+        response = (b"".join(b[:-4])).decode()
+        print(f"[PPS] Serial response to '{cmd}': {response!r}")  # <-- Add this line
+        return response
 
     def limits(self) -> tuple[float, float]:
         """get maximum voltage and current from PS"""
