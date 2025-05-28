@@ -70,7 +70,8 @@ class PPSController(QObject):
 
         if self.psu_status == "connected_on":
             self.start_psu_worker()
-
+        elif self.psu_status == "connected_off":
+            self.win.pps_connections._disable_pps_controls()
 
         # 3) Hook all signals back to window methods and the pps_connections
         self.pps_worker.voltage_signal.connect(self.connections.update_pps_voltage)
