@@ -116,7 +116,7 @@ class PPSController(QObject):
             self.start_psu_worker()
             print("[PPS] Reconnected.")
             self.connections._enable_pps_controls()
-            self.win._apply_scaling()
+            self.win.apply_scaling()
         except Exception as e:
             print(f"[PPS] Reconnect failed: {e}")
     
