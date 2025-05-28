@@ -157,7 +157,6 @@ class PPS:
                 break
         self._debug("\n")
         response = (b"".join(b[:-4])).decode()
-        print(f"[PPS] Serial response to '{cmd}': {response!r}")  # <-- Add this line
         return response
 
     def limits(self) -> tuple[float, float]:
