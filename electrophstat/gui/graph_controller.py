@@ -18,7 +18,8 @@ class GraphController(QObject):
         self.temp_enabled      = bool(cfg.enable_temp_sensor)
         self.psu_enabled       = bool(cfg.enable_psu)
         self.turbidity_enabled = bool(cfg.enable_turbidity_sensor)
-
+        self.ph_enabled = True   # or from config
+        self.temp_enabled = bool(cfg.enable_temp_sensor)
         # 1) Build all four tabs (but don't add them yet)
         self._build_all_tabs()
 
@@ -87,6 +88,30 @@ class GraphController(QObject):
         self.turbidity_enabled = on
         self.refresh_tabs()
 
+    def set_ph_enabled(self, on: bool):
+        self.ph_enabled = on
+        self._update_ph_temp_tab()
+
+    def set_temp_enabled(self, on: bool):
+        self.temp_enabled = on
+        self.win.toggleTempAction.setChecked(on)
+        self._update_ph_temp_tab()
+
+    def _update_ph_temp_tab(self):
+        # Hide/show the pH/Temp tab depending on both flags
+        show_tab = self.ph_enabled or self.temp_enabled
+        # Remove the tab if present
+        for i, (title, widget) in enumerate(self._all_tabs):
+            if title == "pH/Temp":
+                tab_index = self.tabWidget.indexOf(widget)
+                if not show_tab and tab_index != -1:
+                    self.tabWidget.removeTab(tab_index)
+                elif show_tab and tab_index == -1:
+                    self.tabWidget.addTab(widget, title)
+                # Update the plot curves
+                self.plot_manager.update_dual_plot()
+                break
+    
     @pyqtSlot()
     def _on_timeout(self):
         # your existing update logic

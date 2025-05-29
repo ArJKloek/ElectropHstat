@@ -19,7 +19,7 @@ class SensorController(QObject):
 
             # If dummy color groupbox
             # color the box if we're using the dummy
-            if isinstance(atlas, DummyAtlas):
+            if isinstance(atlas, DummyAtlas) and self.win.debug_mode == True:
                 group_name = f"{kind}Group"
                 # grab the widget from your MainWindow
                 groupbox = getattr(self.win, group_name, None)
@@ -30,7 +30,25 @@ class SensorController(QObject):
                         background-color: #FFF8E1;
                         }
                     """)
-            
+            else:
+                # If real power supply, color the groupbox green
+                group_name = f"{kind}Group"
+                groupbox = getattr(self.win, group_name, None)
+                if groupbox is not None:
+                    groupbox.setTitle(f"⚠️ {kind} sensor not found")
+                    setattr(self, f"{key}_worker", None)
+                    label_name = f"{kind}Label"
+                    print(f"Disabling {label_name} label")
+                    label = getattr(self.win, label_name, None)
+                    if label is not None:
+                        label.setText(f"xx")
+                        label.setEnabled(False)
+                    self.win.logging_ctrl.disable_logging([key])
+                    if key == "temperature":
+                        self.win.graph_ctrl.set_temp_enabled(False)
+                continue    
+               
+
             # normalize to a list
             if callable(slot_or_list):
                 slots = [slot_or_list]

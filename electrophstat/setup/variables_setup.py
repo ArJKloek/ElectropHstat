@@ -44,4 +44,5 @@ def init_variables(main):
         main.ph_sensor_status = False
         main.temp_sensor_status = False
         main.turbidity_sensor_status = False
+        main.debug_mode = False
         

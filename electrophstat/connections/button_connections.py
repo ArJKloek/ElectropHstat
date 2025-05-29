@@ -33,7 +33,8 @@ class ButtonConnections(QObject):
         # 1) Kick off your control loop & logging
         #self.win.control_loop.should_start = True
         #self.win.logging_timer.start()
-        if self.win.toggle_pH_control and self.win.enable_phstat:
+        if self.win.toggle_pH_control and self.win.enable_phstat and self.win.phstat_ctrl is not None:
+            # Start the pH-stat worker
             self.win.phstat_ctrl.on_pumpToggle(True)
         # 2) UI tweaks
         self.win.startbutton.setEnabled(False)
@@ -62,7 +63,7 @@ class ButtonConnections(QObject):
             self.win.pps_ctrl.coulombClock.stop()
             self.win.pps_ctrl.coulombTimer.stop()
         #2) Logging and pH pump logic stop
-        if self.win.toggle_pH_control and self.win.enable_phstat:
+        if self.win.toggle_pH_control and self.win.enable_phstat and self.win.phstat_ctrl is not None:
             self.win.phstat_ctrl.on_pumpToggle(False)
         self.log_deactive()
         # 3) Status
@@ -197,9 +198,9 @@ class ButtonConnections(QObject):
         else:
             return  # unknown sensor, ignore
         if sensor_type == 'pH':
-            self.win.pHNumber.setText(f'{str("pH {:.2f}".format(received_data))}')
+            self.win.pHLabel.setText(f'{str("pH {:.2f}".format(received_data))}')
         elif sensor_type == 'temperature':
-            self.win.RTDlabel.setText(f"{received_data:.2f} °C")
+            self.win.RTDLabel.setText(f"{received_data:.2f} °C")
         elif sensor_type == 'turbidity':
             self.win.lb_turbidity.setText(f'{received_data:.0f} NTU')   
     

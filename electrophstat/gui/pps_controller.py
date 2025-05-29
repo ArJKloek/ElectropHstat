@@ -1,6 +1,6 @@
 # electrophstat/gui/pps_controller.py
 from PyQt5.QtCore    import QObject, QTimer, QThread, pyqtSlot
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QLabel, QGridLayout
 from electrophstat.hardware import discover_power_supply
 from electrophstat.workers.PPSWorker import PPSWorker
 from electrophstat.control.timer_control import monoTimer
@@ -43,9 +43,7 @@ class PPSController(QObject):
             port = None
         
         
-        
-        
-        if isinstance(port, DummyPPS) or status == "not_connected":
+        if isinstance(port, DummyPPS) and self.win.debug_mode == True:
             # If dummy power supply, color the groupbox orange
             # to indicate that it is a dummy.
             group_name = "PowerGroup"
@@ -58,7 +56,19 @@ class PPSController(QObject):
                     background-color: #FFF8E1;
                     }
                 """)
-        
+        else:
+            # If real power supply, color the groupbox green
+            group_name = "PowerGroup"
+            groupbox = getattr(self.win, group_name, None)
+            if groupbox is not None:
+                groupbox.setTitle("⚠️ Power Supply not found")
+                self.pps_worker = None
+                self.win.pps_connections._disable_pps_controls()
+                self.win.reconnect_pps_action.setEnabled(False)
+                self.win.logging_ctrl.disable_logging(['voltage', 'current', 'coulomb'])
+                self.win.graph_ctrl.set_psu_enabled(False)
+            return
+        print(f"[PPS] Using port: {port}") 
         self.pps_worker = PPSWorker(port, self.interval, reset=False)
 
         self.connections.set_worker(self.pps_worker)
@@ -70,8 +80,10 @@ class PPSController(QObject):
 
         if self.psu_status == "connected_on":
             self.start_psu_worker()
+        elif self.psu_status == "not_connected" and self.win.debug_mode == True:
+            self.start_psu_worker()
         elif self.psu_status == "connected_off":
-            self.win.pps_connections._disable_pps_controls()
+            self.win.pps_connections._disabe_pps_controls()
 
         # 3) Hook all signals back to window methods and the pps_connections
         self.pps_worker.voltage_signal.connect(self.connections.update_pps_voltage)
@@ -86,6 +98,9 @@ class PPSController(QObject):
         # 5) fire one initial limits‐read so the dials get properly ranged
         if self.psu_status == "connected_on":
             self.pps_worker.emit_limits()
+        elif self.psu_status == "not_connected" and self.win.debug_mode == True:
+            self.pps_worker.emit_limits()
+
 
     @pyqtSlot()
     def start_psu_worker(self):

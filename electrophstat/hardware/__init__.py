@@ -13,7 +13,7 @@ def discover_power_supply(prefer_hw: bool = True, reset: bool = False):
 
     if not port:
         print("[DEBUG] No PPS port found (not connected)")
-        return "not_connected", DummyPPS
+        return "not_connected", DummyPPS()
 
     print("[DEBUG] Found PPS port at", port)
     # Try to open the port and send a command

@@ -96,7 +96,8 @@ class MainWindow(QMainWindow):
             self.phstat_ctrl.stop()
         # Stop PSU worker
         if hasattr(self, "pps_ctrl"):
-            self.pps_ctrl.stop()
+            if self.pps_ctrl.pps_worker is not None:
+                self.pps_ctrl.stop()
         # Stop Loggin worker
         if hasattr(self, "logging_ctrl"):
             self.logging_ctrl.stop()

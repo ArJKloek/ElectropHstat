@@ -40,6 +40,9 @@ def apply_scaling(self):
     powerButton_width = int(60 * scale)
     powerButton_height = int(40 * scale)
     self.powerButton.setFixedSize(powerButton_width, powerButton_height)
+    modeButton_width = int(40 * scale)
+    modeButton_height = int(60 * scale)
+    self.modeToggle.setFixedSize(modeButton_width, modeButton_height)
         
 
     usb_button_size = int(60 * scale)
@@ -58,14 +61,14 @@ def apply_scaling(self):
             font.setPointSizeF(base_size * scale)
             widget.setFont(font)
         
-    set_font(self.pHNumber, 25)
-    set_font(self.RTDlabel, 18)
+    set_font(self.pHLabel, 25)
+    set_font(self.RTDLabel, 18)
     set_font(self.lb_turbidity, 18)
     set_font(self.phSpin, 10)
     set_font(self.keepSelector, 10)
-    set_font(self.voltagelabel, 16)
-    set_font(self.currentlabel, 16)
-    set_font(self.modelabel, 16)
+    set_font(self.voltagelabel, 14)
+    set_font(self.currentlabel, 14)
+    set_font(self.modelabel, 14)
     #set_font(self.voltageDiallabel, 10)
     # Update Start button stylesheet with dynamic font size
     start_style = f"""

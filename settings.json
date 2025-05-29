@@ -22,5 +22,22 @@
   "enable_phstat": true,
   "enable_ph_sensor": true,
   "enable_temp_senor": true,
-  "enable_turbidity_sensor": true
+  "enable_turbidity_sensor": true,
+  "debug_mode": true,
+  "sensors": {
+    "ph_sensor": {
+      "present": true,
+      "address": "0x63",
+      "kind": "pH",
+      "calibration": {
+        "low": 4.01,
+        "mid": 7.0,
+        "high": 10.0
+      }
+    },
+    "temp_sensor": {
+      "address": "0x66",
+      "kind": "RTD"
+    }
+  }
 }

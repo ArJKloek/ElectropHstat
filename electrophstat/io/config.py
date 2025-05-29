@@ -32,9 +32,11 @@ class Config:
         self.path.write_text(json.dumps(self._data, indent=2))
 
     def __getitem__(self, key: str) -> Any:
-        if key in self._data:
-            return self._data[key]
-        return self.defaults.get(key)
+        value = self._data[key] if key in self._data else self.defaults.get(key)
+        if isinstance(value, dict):
+            # Wrap nested dicts as Config for dot notation
+            return Config(None, value)
+        return value
 
     def __setitem__(self, key: str, value: Any) -> None:
         self._data[key] = value
@@ -42,10 +44,14 @@ class Config:
 
     def __getattr__(self, name: str) -> Any:
         if name in self._data:
-            return self._data[name]
-        if name in self.defaults:
-            return self.defaults[name]
-        raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
+            value = self._data[name]
+        elif name in self.defaults:
+            value = self.defaults[name]
+        else:
+            raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
+        if isinstance(value, dict):
+            return Config(None, value)
+        return value
 
     def __setattr__(self, name: str, value: Any) -> None:
         if name in ('path', 'defaults', '_data'):

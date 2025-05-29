@@ -12,8 +12,10 @@ from electrophstat.dummy.dummy_switcher import MockLib8MosInd
 def init_phstat(self):
     if self.enable_phstat:
         self.calibrate_pump_dialog = CalibratePumpDialog(float(self.pump_volume_per_cycle_ml), float(self.pump_cycle_duration_s), self)
+        
         hw = discover_switcher()
-        if isinstance(hw, MockLib8MosInd):
+        
+        if isinstance(hw, MockLib8MosInd)  and self.debug_mode == True:
             # If dummy power supply, color the groupbox orange
             # to indicate that it is a dummy.
             group_name = "pHstatGroup"
@@ -26,6 +28,24 @@ def init_phstat(self):
                     background-color: #FFF8E1;
                     }
                 """)
+        else:
+            # If real power supply, color the groupbox green
+            group_name = "pHstatGroup"
+            groupbox = getattr(self, group_name, None)
+            if groupbox is not None:
+                groupbox.setTitle("⚠️ Switcher not found")
+                self.calibrate_pump_dialog = None
+                self.pump_ctrl = None
+                self.pHstat_cont = None
+                self.phstat_ctrl = None
+                #self.pHstatGroup.setVisible(False)
+                self.keepSelector.setEnabled(False) 
+                self.phSpin.setEnabled(False)   
+                self.graph_ctrl.set_pHstat_enabled(False)
+                self.logging_ctrl.disable_logging(['pump'])
+                self.toggle_pH_control.setEnabled(False)
+            return
+    
                
         self.pump_ctrl = PumpController(
                 hw=hw,

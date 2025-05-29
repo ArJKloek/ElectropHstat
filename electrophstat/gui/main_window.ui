@@ -97,7 +97,7 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
-        <widget class="QLabel" name="pHNumber">
+        <widget class="QLabel" name="pHLabel">
          <property name="statusTip">
           <string>pH measured</string>
          </property>
@@ -189,7 +189,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="RTDlabel">
+        <widget class="QLabel" name="RTDLabel">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -242,16 +242,6 @@
          </property>
          <property name="text">
           <string>0.0 A</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="voltagelabel">
-         <property name="statusTip">
-          <string>Voltage measured</string>
-         </property>
-         <property name="text">
-          <string>12 V</string>
          </property>
         </widget>
        </item>
@@ -365,6 +355,23 @@
          </property>
          <property name="text">
           <string>Set</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="voltagelabel">
+         <property name="statusTip">
+          <string>Voltage measured</string>
+         </property>
+         <property name="text">
+          <string>12 V</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="ModeButton" name="modeToggle">
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>
@@ -645,6 +652,11 @@
   <customwidget>
    <class>DialWithLabel</class>
    <extends>QDial</extends>
+   <header>electrophstat/gui/widgets</header>
+  </customwidget>
+  <customwidget>
+   <class>ModeButton</class>
+   <extends>QCheckBox</extends>
    <header>electrophstat/gui/widgets</header>
   </customwidget>
  </customwidgets>

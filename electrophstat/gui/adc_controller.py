@@ -13,7 +13,7 @@ class ADCController(QObject):
         self.win = win
 
         hw = discover_adc(channel=channel)
-        if isinstance(hw, DummyADS1115):
+        if isinstance(hw, DummyADS1115) and self.win.debug_mode == True:
             # If dummy power supply, color the groupbox orange
             # to indicate that it is a dummy.
             group_name = "TurbidityGroup"
@@ -26,7 +26,21 @@ class ADCController(QObject):
                     background-color: #FFF8E1;
                     }
                 """)
-
+        else:
+            # If real power supply, color the groupbox green
+            group_name = "TurbidityGroup"
+            groupbox = getattr(self.win, group_name, None)
+            if groupbox is not None:
+                groupbox.setTitle("⚠️ Turbidity ADC not found")
+                self.worker = None
+                self.win.lb_turbidity.setText("xxxx NTU")
+                #self.win.lb_turbidity.setStyleSheet("color: grey;")
+                self.win.lb_turbidity.setEnabled(False)
+                self.win.graph_ctrl.set_turbidity_enabled(False)
+                self.win.logging_ctrl.disable_logging(['turbidity', 'turbidity_raw'])
+                
+            return
+        
         # 1) prepare worker
         self.worker = ADCWorker(channel=channel, interval=interval, prefer_hw=hw)
 

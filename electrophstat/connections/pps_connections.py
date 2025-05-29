@@ -18,6 +18,7 @@ class PPSConnections(QObject):
     def set_worker(self, worker):
         self.pps_worker = worker
     
+   
     @pyqtSlot()
     def reconnect_PSU(self):
         self.win.pps_ctrl.reconnect_psu()
@@ -50,8 +51,15 @@ class PPSConnections(QObject):
         if not self.pps_worker:
             print("[WARNING] PPS worker not initialized.")
             return
-        voltage = self.win.voltageDial.value() / 10.0
-        current = self.win.currentDial.value() / 10.0
+        if not self.win.modeToggle.isChecked():
+                   
+            voltage = self.win.voltageDial.value() / 10.0
+            current = self.win.currentDial.maximum() / 10.0
+        else:
+            current = self.win.currentDial.value() / 10.0
+            voltage = self.win.voltageDial.maximum() / 10.0
+
+        #current = self.win.currentDial.value() / 10.0
         self.pps_worker.set_voltage(voltage)
         self.pps_worker.set_current(current)
 
@@ -101,11 +109,11 @@ class PPSConnections(QObject):
         """Gray-out all PPS widgets and make them inert."""
         gray = "color: gray;"
         for lbl in (self.win.voltagelabel, self.win.currentlabel, self.win.modelabel):
-            lbl.setText("N/A" if lbl is self.win.modelabel else lbl.text().split()[0] + ": N/A")
-            lbl.setStyleSheet(gray)
+            lbl.setText("xx") 
+            lbl.setDisabled(True)
 
         for w in (self.win.voltageDial, self.win.currentDial,
-                self.win.setButton, self.win.powerButton):
+                self.win.setButton, self.win.powerButton, self.win.modeToggle):
             w.setDisabled(True)
         self.win.reconnect_pps_action.setEnabled(True)
 
@@ -114,9 +122,9 @@ class PPSConnections(QObject):
     def _enable_pps_controls(self):
         """Undo the gray-out – called after handle_pps_limits()."""
         for lbl in (self.win.voltagelabel, self.win.currentlabel, self.win.modelabel):
-            lbl.setStyleSheet("color: black;")
+            lbl.setEnabled(True)
         for w in (self.win.voltageDial, self.win.currentDial,
-                self.win.setButton, self.win.powerButton):
+                self.win.setButton, self.win.powerButton, self.win.modeToggle):
             w.setEnabled(True)
         self.win.reconnect_pps_action.setEnabled(False)
 
@@ -137,4 +145,3 @@ class PPSConnections(QObject):
             self.win.graph_ctrl.set_psu_enabled(False)
             self.win.PowerGroup.setVisible(False)
 
-     

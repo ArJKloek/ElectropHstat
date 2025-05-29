@@ -134,7 +134,8 @@ class PlotManager:
             setattr(self.main, cfg["curve_attr"], curve)
 
         # show/hide right axis
-        widget.showAxis('right' if show_right_axis else 'left')
+        widget.showAxis('right', show_right_axis)
+        #widget.showAxis('right' if show_right_axis else 'left')
 
     def update_pump_plot(self):
         curves = [{"label": "volume", "curve_attr": "pump_curve", "pen": "r", "use_right_axis": False}]
@@ -161,13 +162,14 @@ class PlotManager:
         curves = [{"label": "turbidity", "curve_attr": "turbidity_curve", "pen": "b", "use_right_axis": False}]
         self.update_plot_from_logger(4, curves)
 
+    
     def _scale_graph_fonts(self, widget, label_size, tick_size):
         if widget is None:
             return
         style = {'color': 'black', 'font-size': f'{label_size}pt'}
         # Get the main window number font (fallback to default if not available)
         try:
-            main_font = self.main.pHNumber.font()
+            main_font = self.main.pHLabel.font()
         except AttributeError:
             main_font = QFont()
         main_font.setPointSize(tick_size)
@@ -207,7 +209,7 @@ class PlotManager:
                 curves           = cfgs,
                 show_right_axis  = show_right
             )
-
+    
     @staticmethod
     def scale_time_data(times, values, max_points=1000):
         """
@@ -231,3 +233,4 @@ class PlotManager:
         x = [t/scale for t in times]
         return x, values, time_label
 
+    

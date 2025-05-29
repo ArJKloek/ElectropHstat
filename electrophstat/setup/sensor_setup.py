@@ -18,7 +18,8 @@ def init_sensors(self):
 
     self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
     
-    if self.enable_ph_sensor:
+    
+    if self.enable_ph_sensor and self.sensor_ctrl.pH_worker is not None:
         self.pH_calibrate_dialog = CalibratepHDialog(float(self.pH_calibration_low),float(self.pH_calibration_mid),float(self.pH_calibration_high),self)
         pH_worker = self.sensor_ctrl.pH_worker
         # connect your dialog
