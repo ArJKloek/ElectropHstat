@@ -15,7 +15,7 @@ class PlotManager:
             # label: (plot_index, curve_attr, pen, use_right_axis)
             "pump":         (0, "pump_curve",       "r", False),
             "pH":           (1, "ph_curve",         "k", False),
-            "temperature":  (1, "temp_curve",       "b", True),
+            "RTD":          (1, "temp_curve",       "b", True),
             "voltage":      (2, "volt_curve",       "g", False),
             "current":      (2, "amp_curve",        "b", True),
             "coulomb":      (3, "coulomb_curve",    "m", False),

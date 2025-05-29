@@ -23,7 +23,7 @@ class Logger:
     ):
         """
         base_dir: parent folder under which we’ll make date/time subfolders
-        labels: list of log identifiers, e.g. ["pH", "temperature", "volume"]
+        labels: list of log identifiers, e.g. ["pH", "RTD", "volume"]
         column_names: matching human-readable column names, e.g. ["pH", "°C", "mL"]
         """
         # store parameters
