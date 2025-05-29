@@ -30,7 +30,7 @@ class SensorController(QObject):
                         background-color: #FFF8E1;
                         }
                     """)
-            else:
+            elif isinstance(atlas, DummyAtlas) and self.win.debug_mode == False:
                 # If real power supply, color the groupbox green
                 group_name = f"{kind}Group"
                 groupbox = getattr(self.win, group_name, None)
