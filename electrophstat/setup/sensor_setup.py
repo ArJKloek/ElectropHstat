@@ -7,7 +7,7 @@ def init_sensors(self):
     slots = {}
     for sensor_name, sensor_info in self.config.sensors.items():
         if sensor_info.get('enable'):
-            address = sensor_info.get('address')
+            address = int(sensor_info.get('address'),0)
             slots[sensor_info.get('name')] = [self.button_cont.update_gui]
         else:
             self.logging_ctrl.disable_logging([sensor_info.get('name')])

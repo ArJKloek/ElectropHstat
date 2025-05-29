@@ -132,7 +132,7 @@ def discover_switcher(prefer_hw: bool = True):
 
 from ..hardware.interfaces import AtlasSensor
 
-def discover_sensor(name: str, address: str, prefer_hw: bool = True) -> AtlasSensor:
+def discover_sensor(name: str, address: int, prefer_hw: bool = True) -> AtlasSensor:
     """
     Generic discovery of an Atlas sensor by its registry key.
     Falls back to DummyAtlas if hardware probe fails.
