@@ -6,7 +6,7 @@ from ..dummy.dummy_atlas import DummyAtlas
 from electrophstat.hardware import discover_sensor
 
 class SensorController(QObject):
-    def __init__(self, window, update_slots: dict, address: str, interval: float = 1.0):
+    def __init__(self, window, update_slots: dict, interval: float = 1.0):
         super().__init__(window)
         self.win = window
         self._worker_keys = []
