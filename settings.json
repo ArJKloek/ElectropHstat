@@ -23,7 +23,7 @@
   "enable_ph_sensor": true,
   "enable_temp_senor": true,
   "enable_turbidity_sensor": true,
-  "debug_mode": true,
+  "debug_mode": false,
   "sensors": {
     "ph_sensor": {
       "present": true,
