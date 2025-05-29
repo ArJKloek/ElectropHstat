@@ -41,7 +41,7 @@ def init_phstat(self):
                 #self.pHstatGroup.setVisible(False)
                 self.keepSelector.setEnabled(False) 
                 self.phSpin.setEnabled(False)  
-                self.actionCalibratePump.setEnabled(False) 
+                self.actionCalibrate_Pump.setEnabled(False) 
                 self.graph_ctrl.set_pHstat_enabled(False)
                 self.logging_ctrl.disable_logging(['pump'])
                 self.toggle_pH_control.setEnabled(False)
