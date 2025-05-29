@@ -143,7 +143,7 @@ class PlotManager:
 
     def update_dual_plot(self):
         curves = [{"label": "ph", "curve_attr": "ph_curve", "pen": "k", "use_right_axis": False}]
-        if self.main.toggleTempAction.isChecked():
+        if self.main.toggleTempAction.isChecked() or self.config.atlas.RTD.enabled:
             curves.append({"label": "temperature", "curve_attr": "temp_curve", "pen": "b", "use_right_axis": True})
         self.update_plot_from_logger(1, curves, show_right_axis=self.main.toggleTempAction.isChecked())
 
