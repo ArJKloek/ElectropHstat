@@ -133,8 +133,8 @@ class SettingsDialog(QDialog):
         #Control and sensor enable / Restart needed
         self.cb_enable_psu.setChecked(self.cfg.enable_psu)
         self.cb_enable_phstat.setChecked(self.cfg.enable_phstat)
-        self.cb_enable_ph_sensor.setChecked(self.cfg.enable_ph_sensor)
-        self.cb_enable_temp_sensor.setChecked(self.cfg.enable_temp_sensor)
+        self.cb_enable_ph_sensor.setChecked(self.cfg.atlas.pH.enable)
+        self.cb_enable_temp_sensor.setChecked(self.cfg.atlas.RTD.enable)
         self.cb_enable_turbidity_sensor.setChecked(self.cfg.enable_turbidity_sensor)
 
         # hook up Ok/Cancel
@@ -180,8 +180,8 @@ class SettingsDialog(QDialog):
 
         self.cfg.enable_psu                 = self.cb_enable_psu.isChecked()
         self.cfg.enable_phstat              = phstat_enabled
-        self.cfg.enable_ph_sensor           = ph_sensor_enabled
-        self.cfg.enable_temp_sensor         = self.cb_enable_temp_sensor.isChecked()
+        self.cfg.atlas.pH.enable            = ph_sensor_enabled
+        self.cfg.atlas.RTD.enable           = self.cb_enable_temp_sensor.isChecked()
         self.cfg.enable_turbidity_sensor    = self.cb_enable_turbidity_sensor.isChecked()
         # close dialog with Accepted
         self.accept()

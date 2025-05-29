@@ -20,13 +20,10 @@
   "KSlow": 0.00023,
   "enable_psu": true,
   "enable_phstat": true,
-  "enable_ph_sensor": true,
-  "enable_temp_senor": true,
   "enable_turbidity_sensor": true,
   "debug_mode": false,
-  "sensors": {
-    "ph_sensor": {
-      "present": true,
+  "atlas": {
+    "pH": {
       "enable": true,
       "address": "0x63",
       "name": "pH",
@@ -36,8 +33,7 @@
         "high": 10.0
       }
     },
-    "temperature_sensor": {
-      "present": true, 
+    "RTD": {
       "enable": true,
       "address": "0x66",
       "name": "RTD"
