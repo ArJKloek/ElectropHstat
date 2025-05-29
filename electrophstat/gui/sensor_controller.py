@@ -11,7 +11,11 @@ class SensorController(QObject):
         self.win = window
         self._worker_keys = []
 
-        for key, slot_or_list in update_slots.items():
+        for sensor_name, slot_info in update_slots.items():
+            update_slot_list = slot_info["update_slots"]
+            address = slot_info["address"]
+            key = slot_info.get("sensor_key", sensor_name)
+            # Now pass the correct address for each sensor
             atlas = discover_sensor(key, address=address)
             worker = AtlasSensorWorker(name=key, sensor=atlas, interval=interval)
             thr    = QThread(self.win)
@@ -50,10 +54,10 @@ class SensorController(QObject):
                
 
             # normalize to a list
-            if callable(slot_or_list):
-                slots = [slot_or_list]
+            if callable(update_slot_list):
+                slots = [update_slot_list]
             else:
-                slots = list(slot_or_list)
+                slots = list(update_slot_list)
 
             # connect each slot
             for slot in slots:

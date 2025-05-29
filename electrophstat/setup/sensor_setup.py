@@ -7,13 +7,17 @@ def init_sensors(self):
     slots = {}
     for sensor_name, sensor_info in self.config.sensors.items():
         if sensor_info.get('enable'):
-            address = int(sensor_info.get('address'),0)
-            slots[sensor_info.get('name')] = [self.button_cont.update_gui]
+            #slots[sensor_info.get('name')] = [self.button_cont.update_gui]
+            slots[sensor_info.get('name')] = {
+                "update_slots": [self.button_cont.update_gui],
+                "address": int(sensor_info.get('address'),0),
+                "sensor_key": sensor_name
+            }
         else:
             self.logging_ctrl.disable_logging([sensor_info.get('name')])
             continue
 
-    self.sensor_ctrl = SensorController(self, update_slots=slots, address=address, interval=1.0)
+    self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
     
     
     if self.enable_ph_sensor and self.sensor_ctrl.pH_worker is not None:
