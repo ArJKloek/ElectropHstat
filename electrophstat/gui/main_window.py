@@ -93,7 +93,8 @@ class MainWindow(QMainWindow):
             self.sensor_ctrl.stop() 
         # Stop pHStat worker
         if hasattr(self, "phstat_ctrl"):
-            self.phstat_ctrl.stop()
+            if self.phstat_ctrl is not None:
+                self.phstat_ctrl.stop()
         # Stop PSU worker
         if hasattr(self, "pps_ctrl"):
             if self.pps_ctrl.pps_worker is not None:

@@ -4,15 +4,19 @@ from pathlib import Path
 from typing import Any, Dict, Union
 
 class Config:
-    def __init__(self, path: Union[str, Path], defaults: Dict[str, Any]):
-        super().__setattr__('path', Path(path))
+    def __init__(self, path: Union[str, Path, None], defaults: Dict[str, Any]):
+        if path is not None:
+            super().__setattr__('path', Path(path))
+        else:
+            super().__setattr__('path', None)
         super().__setattr__('defaults', defaults.copy())
         super().__setattr__('_data', {})  # only explicit overrides
-        self.load()
+        if path is not None:
+            self.load()
 
     def load(self) -> None:
         """Read disk (if exists) and merge over defaults. Prints errors if parse fails."""
-        if not self.path.exists():
+        if self.path is None or not self.path.exists():
             print(f"Config file not found at {self.path}, using defaults.")
             return
         try:
@@ -25,8 +29,8 @@ class Config:
             print(f"Error loading config from {self.path}: {e}")
         
     def save(self) -> None:
-        # Skip writing when _data is empty
-        if not self._data:
+        # Skip writing when _data is empty or path is None
+        if self.path is None or not self._data:
             return
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.path.write_text(json.dumps(self._data, indent=2))
@@ -59,3 +63,22 @@ class Config:
         else:
             self._data[name] = value
             self.save()
+
+    def items(self):
+        # Allow iteration like a dict
+        keys = set(self.defaults) | set(self._data)
+        for key in keys:
+            yield key, self[key]
+
+    def keys(self):
+        return set(self.defaults) | set(self._data)
+
+    def values(self):
+        for key in self.keys():
+            yield self[key]
+
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default

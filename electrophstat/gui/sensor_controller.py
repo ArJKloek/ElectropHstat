@@ -3,16 +3,16 @@
 from PyQt5.QtCore import QObject, QThread, QMetaObject, Qt
 from electrophstat.workers.atlas_worker import AtlasSensorWorker
 from ..dummy.dummy_atlas import DummyAtlas
-from electrophstat.sensors import discover_sensor
+from electrophstat.hardware import discover_sensor
 
 class SensorController(QObject):
-    def __init__(self, window, update_slots: dict, interval: float = 1.0):
+    def __init__(self, window, update_slots: dict, address: str, interval: float = 1.0):
         super().__init__(window)
         self.win = window
         self._worker_keys = []
 
         for key, slot_or_list in update_slots.items():
-            atlas, kind = discover_sensor(key)
+            atlas = discover_sensor(key, address=address)
             worker = AtlasSensorWorker(name=key, sensor=atlas, interval=interval)
             thr    = QThread(self.win)
             worker.moveToThread(thr)
@@ -20,7 +20,7 @@ class SensorController(QObject):
             # If dummy color groupbox
             # color the box if we're using the dummy
             if isinstance(atlas, DummyAtlas) and self.win.debug_mode == True:
-                group_name = f"{kind}Group"
+                group_name = f"{key}Group"
                 # grab the widget from your MainWindow
                 groupbox = getattr(self.win, group_name, None)
                 if groupbox is not None:
@@ -32,19 +32,19 @@ class SensorController(QObject):
                     """)
             elif isinstance(atlas, DummyAtlas) and self.win.debug_mode == False:
                 # If real power supply, color the groupbox green
-                group_name = f"{kind}Group"
+                group_name = f"{key}Group"
                 groupbox = getattr(self.win, group_name, None)
                 if groupbox is not None:
-                    groupbox.setTitle(f"⚠️ {kind} sensor not found")
+                    groupbox.setTitle(f"⚠️ {key} sensor not found")
                     setattr(self, f"{key}_worker", None)
-                    label_name = f"{kind}Label"
+                    label_name = f"{key}Label"
                     print(f"Disabling {label_name} label")
                     label = getattr(self.win, label_name, None)
                     if label is not None:
                         label.setText(f"xx")
                         label.setEnabled(False)
                     self.win.logging_ctrl.disable_logging([key])
-                    if key == "temperature":
+                    if key == "RTD":
                         self.win.graph_ctrl.set_temp_enabled(False)
                 continue    
                

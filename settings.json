@@ -27,17 +27,20 @@
   "sensors": {
     "ph_sensor": {
       "present": true,
+      "enable": true,
       "address": "0x63",
-      "kind": "pH",
+      "name": "pH",
       "calibration": {
         "low": 4.01,
         "mid": 7.0,
         "high": 10.0
       }
     },
-    "temp_sensor": {
+    "temperature_sensor": {
+      "present": true, 
+      "enable": true,
       "address": "0x66",
-      "kind": "RTD"
+      "name": "RTD"
     }
   }
 }

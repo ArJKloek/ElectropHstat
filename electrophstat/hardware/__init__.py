@@ -1,6 +1,7 @@
 # electrophstat/hardware/__init__.py
 from __future__ import annotations
 from .voltcraft_pps import VoltcraftPPS
+from typing import Dict
 from ..utils.serial_helpers import find_voltcraft_pps  # your existing finder
 from electrophstat.hardware.interfaces import ADCSensor
 import platform
@@ -110,3 +111,60 @@ def discover_switcher(prefer_hw: bool = True):
     from electrophstat.dummy.dummy_switcher import MockLib8MosInd
     print("[MOSFET] Using MockLib8MosInd")
     return MockLib8MosInd()
+
+
+# 1) A simple registry: name -> (address, kind)
+#_SENSOR_REGISTRY: Dict[str, Dict[str, object]] = {}
+
+#def register_sensor(name: str, address: int, kind: str) -> None:
+#    """
+#    Register a new Atlas‐I2C sensor type.
+
+#      name:    logical key, e.g. "ph", "temp", "orp"
+#      address: I2C address (e.g. 0x63)
+#      kind:    the string AtlasI2C expects (e.g. "pH", "RTD", "ORP")
+#    """
+#    _SENSOR_REGISTRY[name] = {"address": address, "kind": kind}
+
+# 2) Pre-register the defaults:
+#register_sensor("pH",   address=0x63, kind="pH")
+#register_sensor("temperature", address=0x66, kind="RTD")
+
+from ..hardware.interfaces import AtlasSensor
+
+def discover_sensor(name: str, address: str, prefer_hw: bool = True) -> AtlasSensor:
+    """
+    Generic discovery of an Atlas sensor by its registry key.
+    Falls back to DummyAtlas if hardware probe fails.
+    """
+    #cfg = _SENSOR_REGISTRY.get(name)
+    #if cfg is None:
+    #    raise KeyError(f"No sensor registered under name {name!r}")
+
+    #address = address
+    #kind    = 
+
+    if prefer_hw:
+        try:
+            from ..vendor.atlas_i2c import AtlasI2C
+
+            s = AtlasI2C(address=address, kind=name)
+            s.read()  # “ping” it
+            print(f"[{name}] Detected real Atlas EZO {name} at 0x{address:02X}")
+            return s
+        except Exception:
+            pass
+    from ..dummy.dummy_atlas import DummyAtlas
+    # fallback to dummy
+    dummy = DummyAtlas(kind=name)
+    dummy.connect()
+    print(f"[{name}] Using DummyAtlas ({name})")
+    return dummy
+
+
+# 3) Backwards‐compatible wrappers:
+#def discover_ph_sensor(prefer_hw: bool = True) -> AtlasSensor:
+#    return discover_sensor("ph", prefer_hw)
+
+#def discover_temp_sensor(prefer_hw: bool = True) -> AtlasSensor:
+#    return discover_sensor("temp", prefer_hw)

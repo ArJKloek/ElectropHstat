@@ -45,6 +45,9 @@ def init_config(self):
     self.enable_turbidity_sensor        = bool(self.config.enable_turbidity_sensor)
     self.debug_mode                     = bool(self.config.debug_mode)
 
+    # Assuming cfg is your Config instance and supports dict access
+   
+    # ...and so on
     # 4) hook UI elements → config so that any user change persists
     #self.keepSelector.currentIndexChanged.connect(self._on_mode_change)
     #self.phSpin.valueChanged.connect(self._on_target_pH_change)

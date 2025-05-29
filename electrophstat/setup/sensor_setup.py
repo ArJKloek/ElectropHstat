@@ -5,18 +5,15 @@ def init_sensors(self):
 
     
     slots = {}
+    for sensor_name, sensor_info in self.config.sensors.items():
+        if sensor_info.get('enable'):
+            address = sensor_info.get('address')
+            slots[sensor_info.get('name')] = [self.button_cont.update_gui]
+        else:
+            self.logging_ctrl.disable_logging([sensor_info.get('name')])
+            continue
 
-    if self.enable_ph_sensor:
-        slots["pH"] = [ self.button_cont.update_gui ]
-    else:
-        self.logging_ctrl.disable_logging(['pH'])
-
-    if self.enable_temp_sensor:
-        slots["temperature"] = [ self.button_cont.update_gui ]
-    else:
-        self.logging_ctrl.disable_logging(['temperature'])
-
-    self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
+    self.sensor_ctrl = SensorController(self, update_slots=slots, address=address, interval=1.0)
     
     
     if self.enable_ph_sensor and self.sensor_ctrl.pH_worker is not None:
