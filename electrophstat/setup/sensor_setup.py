@@ -30,7 +30,7 @@ def init_sensors(self):
     else:
         self.pH_calibrate_dialog = None
         
-    self.plot_manager.update_dual_plotgraph()
+    self.plot_manager.update_dual_plot()
   
     
     
