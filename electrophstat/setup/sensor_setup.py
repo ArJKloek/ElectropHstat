@@ -11,7 +11,7 @@ def init_sensors(self):
             slots[sensor_info.get('name')] = {
                 "update_slots": [self.button_cont.update_gui],
                 "address": int(sensor_info.get('address'),0),
-                "sensor_key": sensor_name
+                "sensor_key": sensor_info.get('name')
             }
         else:
             self.logging_ctrl.disable_logging([sensor_info.get('name')])
