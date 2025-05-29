@@ -15,6 +15,11 @@ def init_sensors(self):
             }
         else:
             self.logging_ctrl.disable_logging([atlas_info.get('name')])
+            # Disable the groupbox if sensor is not enabled
+            groupbox_name = f"{atlas_info.get('name')}Group"
+            groupbox = getattr(self, groupbox_name, None)
+            if groupbox is not None:
+                groupbox.setVisible(False)
             continue
 
     self.sensor_ctrl = SensorController(self, update_slots=slots, interval=1.0)
@@ -29,8 +34,7 @@ def init_sensors(self):
             )
     else:
         self.pH_calibrate_dialog = None
-        
+        self.actionCalibrate_pH.setEnabled(False)
+
     self.plot_manager.update_dual_plot()
-  
-    
-    
+
