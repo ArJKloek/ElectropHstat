@@ -199,7 +199,7 @@ class ButtonConnections(QObject):
             return  # unknown sensor, ignore
         if sensor_type == 'pH':
             self.win.pHLabel.setText(f'{str("pH {:.2f}".format(received_data))}')
-        elif sensor_type == 'temperature':
+        elif sensor_type == 'RTD':
             self.win.RTDLabel.setText(f"{received_data:.2f} °C")
         elif sensor_type == 'turbidity':
             self.win.lb_turbidity.setText(f'{received_data:.0f} NTU')   

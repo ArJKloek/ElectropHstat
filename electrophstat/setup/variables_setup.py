@@ -9,7 +9,7 @@ def init_variables(main):
         main.valueData = {
             "pump":             0.0,
             "pH":               0.0,
-            "temperature":      0.0,
+            "RTD":              0.0,
             "voltage":          0.0,
             "current":          0.0,
             "coulomb":          0.0,

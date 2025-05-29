@@ -10,7 +10,7 @@ def init_logger(win):
         
     win.logger = Logger(
         base_dir=LOG_BASE,
-        labels=["pump","pH", "temperature","voltage","current", "coulomb", "turbidity"],
+        labels=["pump","pH", "RTD", "voltage", "current", "coulomb", "turbidity"],
         column_names = ["Pumped (ml)", "pH", "Temperature (°C)", "Voltage (V)", "Current (A)", "Coulomb (C)", "Turbidity"]
 
     )
