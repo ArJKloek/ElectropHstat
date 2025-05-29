@@ -142,11 +142,12 @@ class PlotManager:
         self.update_plot_from_logger(0, curves)
 
     def update_dual_plot(self):
-        print(f'RTD enabled: {self.main.config.atlas.RTD.enable}')
         curves = [{"label": "ph", "curve_attr": "ph_curve", "pen": "k", "use_right_axis": False}]
-        if self.main.toggleTempAction.isChecked() or self.main.config.atlas.RTD.enable:
+        # Only show temperature if BOTH config and toggle are True
+        show_temp = self.main.toggleTempAction.isChecked() and self.main.config.atlas.RTD.enable
+        if show_temp:
             curves.append({"label": "temperature", "curve_attr": "temp_curve", "pen": "b", "use_right_axis": True})
-        self.update_plot_from_logger(1, curves, show_right_axis=self.main.toggleTempAction.isChecked())
+        self.update_plot_from_logger(1, curves, show_right_axis=show_temp)
 
     def update_power_plot(self):
         curves = [
@@ -234,4 +235,3 @@ class PlotManager:
         x = [t/scale for t in times]
         return x, values, time_label
 
-    
