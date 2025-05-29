@@ -56,7 +56,7 @@ class PPSController(QObject):
                     background-color: #FFF8E1;
                     }
                 """)
-        else:
+        elif isinstance(port, DummyPPS) and self.win.debug_mode == False:
             # If real power supply, color the groupbox green
             group_name = "PowerGroup"
             groupbox = getattr(self.win, group_name, None)
@@ -65,10 +65,11 @@ class PPSController(QObject):
                 self.pps_worker = None
                 self.win.pps_connections._disable_pps_controls()
                 self.win.reconnect_pps_action.setEnabled(False)
+                self.win.actionEnable_PSU_control.setEnabled(False)
                 self.win.logging_ctrl.disable_logging(['voltage', 'current', 'coulomb'])
                 self.win.graph_ctrl.set_psu_enabled(False)
             return
-        print(f"[PPS] Using port: {port}") 
+        
         self.pps_worker = PPSWorker(port, self.interval, reset=False)
 
         self.connections.set_worker(self.pps_worker)
