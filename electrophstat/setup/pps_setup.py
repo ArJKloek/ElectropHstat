@@ -30,6 +30,7 @@ def init_psu(win):
         win.pps_ctrl = None
         win.PowerGroup.setVisible(False)
         win.graph_ctrl.set_psu_enabled(False)
+        win.actionEnable_PSU_control.setEnabled(False)
         # disable PSU logging
         win.logging_ctrl.disable_logging(['voltage', 'current', 'coulomb'])
 
