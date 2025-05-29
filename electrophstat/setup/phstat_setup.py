@@ -28,7 +28,7 @@ def init_phstat(self):
                     background-color: #FFF8E1;
                     }
                 """)
-        else:
+        elif isinstance(hw, MockLib8MosInd) and self.debug_mode == False:
             # If real power supply, color the groupbox green
             group_name = "pHstatGroup"
             groupbox = getattr(self, group_name, None)
@@ -40,7 +40,8 @@ def init_phstat(self):
                 self.phstat_ctrl = None
                 #self.pHstatGroup.setVisible(False)
                 self.keepSelector.setEnabled(False) 
-                self.phSpin.setEnabled(False)   
+                self.phSpin.setEnabled(False)  
+                self.actionCalibratePump.setEnabled(False) 
                 self.graph_ctrl.set_pHstat_enabled(False)
                 self.logging_ctrl.disable_logging(['pump'])
                 self.toggle_pH_control.setEnabled(False)

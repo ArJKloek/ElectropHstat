@@ -26,7 +26,7 @@ class ADCController(QObject):
                     background-color: #FFF8E1;
                     }
                 """)
-        else:
+        elif isinstance(hw, DummyADS1115) and self.win.debug_mode == False:
             # If real power supply, color the groupbox green
             group_name = "TurbidityGroup"
             groupbox = getattr(self.win, group_name, None)
@@ -36,6 +36,7 @@ class ADCController(QObject):
                 self.win.lb_turbidity.setText("xxxx NTU")
                 #self.win.lb_turbidity.setStyleSheet("color: grey;")
                 self.win.lb_turbidity.setEnabled(False)
+                self.win.actionCalibrate_Turbidity.setEnabled(False)
                 self.win.graph_ctrl.set_turbidity_enabled(False)
                 self.win.logging_ctrl.disable_logging(['turbidity', 'turbidity_raw'])
                 
