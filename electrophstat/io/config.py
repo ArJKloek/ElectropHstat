@@ -4,13 +4,15 @@ from pathlib import Path
 from typing import Any, Dict, Union
 
 class Config:
-    def __init__(self, path: Union[str, Path, None], defaults: Dict[str, Any]):
+    def __init__(self, path: Union[str, Path, None], defaults: Dict[str, Any], parent=None, parent_key=None):
         if path is not None:
             super().__setattr__('path', Path(path))
         else:
             super().__setattr__('path', None)
         super().__setattr__('defaults', defaults.copy())
-        super().__setattr__('_data', {})  # only explicit overrides
+        super().__setattr__('_data', {})
+        super().__setattr__('_parent', parent)
+        super().__setattr__('_parent_key', parent_key)
         if path is not None:
             self.load()
 
@@ -38,13 +40,12 @@ class Config:
     def __getitem__(self, key: str) -> Any:
         value = self._data[key] if key in self._data else self.defaults.get(key)
         if isinstance(value, dict):
-            # Wrap nested dicts as Config for dot notation
-            return Config(None, value)
+            return Config(None, value, parent=self, parent_key=key)
         return value
 
     def __setitem__(self, key: str, value: Any) -> None:
         self._data[key] = value
-        self.save()
+        self._bubble_save()
 
     def __getattr__(self, name: str) -> Any:
         if name in self._data:
@@ -54,15 +55,33 @@ class Config:
         else:
             raise AttributeError(f"{type(self).__name__!r} has no attribute {name!r}")
         if isinstance(value, dict):
-            return Config(None, value)
+            return Config(None, value, parent=self, parent_key=name)
         return value
 
     def __setattr__(self, name: str, value: Any) -> None:
-        if name in ('path', 'defaults', '_data'):
+        if name in ('path', 'defaults', '_data', '_parent', '_parent_key'):
             super().__setattr__(name, value)
         else:
             self._data[name] = value
+            self._bubble_save()
+
+    def _bubble_save(self):
+        # Propagate changes up to the root config and save
+        if self._parent is not None and self._parent_key is not None:
+            # Update parent with our current state
+            self._parent._data[self._parent_key] = self._asdict()
+            self._parent._bubble_save()
+        else:
             self.save()
+
+    def _asdict(self):
+        # Recursively convert to dict for saving
+        result = self.defaults.copy()
+        result.update(self._data)
+        for k, v in result.items():
+            if isinstance(v, Config):
+                result[k] = v._asdict()
+        return result
 
     def items(self):
         # Allow iteration like a dict
