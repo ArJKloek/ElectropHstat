@@ -54,7 +54,6 @@ class GraphController(QObject):
             self.tabWidget.removeTab(self.tabWidget.count()-1)
 
             self._all_tabs.append((title, tw))
-            self._update_ph_temp_tab()
             
     def refresh_tabs(self):
         # 1) clear out everything
