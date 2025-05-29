@@ -15,11 +15,10 @@ class GraphController(QObject):
         # ←—— Read your config flags here —→
         cfg = self.win.config
         self.pHstat_enabled    = bool(cfg.enable_phstat)
-        self.temp_enabled      = bool(cfg.enable_temp_sensor)
+        self.temp_enabled      = bool(cfg.atlas.RTD.enable)
         self.psu_enabled       = bool(cfg.enable_psu)
         self.turbidity_enabled = bool(cfg.enable_turbidity_sensor)
-        self.ph_enabled = True   # or from config
-        self.temp_enabled = bool(cfg.enable_temp_sensor)
+        self.ph_enabled        = bool(cfg.atlas.pH.enable)   # or from config
         # 1) Build all four tabs (but don't add them yet)
         self._build_all_tabs()
 

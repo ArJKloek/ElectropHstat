@@ -47,13 +47,3 @@ def init_config(self):
     #self.keepSelector.currentIndexChanged.connect(self._on_mode_change)
     #self.phSpin.valueChanged.connect(self._on_target_pH_change)
     # …and similarly for any other controls you want to persist…
-
-@pyqtSlot(int)
-def _on_mode_change(self, idx: int):
-    self.pHstat_mode = idx
-    self.config.pHstat_mode = idx  # auto‐saves
-
-@pyqtSlot(float)
-def _on_target_pH_change(self, val: float):
-    self.pH_target = val
-    self.config.pH_target = val       # auto‐saves
