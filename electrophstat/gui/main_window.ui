@@ -77,12 +77,12 @@
          </property>
          <item>
           <property name="text">
-           <string>Keep above</string>
+           <string>Keep below</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Keep below</string>
+           <string>Keep above</string>
           </property>
          </item>
         </widget>
