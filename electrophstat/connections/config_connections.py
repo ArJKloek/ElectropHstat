@@ -11,34 +11,77 @@ def init_config(self):
     
     cfg_path = REPO_ROOT / "settings.json"
     DEFAULT_CONFIG = {
-        "pHstat_mode":           0,
-        "pH_target":                 7.00,
-        "pump_volume_per_cycle_ml":  0.0,
-        "pump_cycle_duration_s":     1.0,
-        "pump_cooldown_duration_s":  0.0,
-        "pH_calibration_low":        4.00,
-        "pH_calibration_mid":        7.00,
-        "pH_calibration_high":       10.00,
-        "enable_psu":               True,
-        "enable_phstat":            True,
-        "enable_turbidity_sensor":  True
+        "pHstat": {
+            "enable": True,
+            "target": 7.00,
+            "mode": 0,
+            "pump": {
+                "volume": 0.0,
+                "cycle": 1.0,
+                "cooldown": 0.0
+            }
+        },
+        "psu": {
+            "enable": True
+        },
+        "debug_mode": True,
+        "atlas": {
+            "pH": {
+                "enable": True,
+                "address": "0x63",
+                "name": "pH",
+                "calibration": {
+                    "low": 4.00,
+                    "mid": 7.00,
+                    "high": 10.00
+                }
+            },
+            "RTD": {
+                "enable": True,
+                "address": "0x66",
+                "name": "RTD"
+            }
+        },
+        "sensors": {
+            "turbidity": {
+                "enable": True,
+                "model": {
+                    "PercentFast": 9.1,
+                    "KFast": 0.002,
+                    "KSlow": 0.00023
+                },
+                "calibration": {
+                    "NTU": {
+                        "low": 1000,
+                        "mid": 2000,
+                        "high": 4000
+                    },
+                    "mV": {
+                        "zero": 4800,
+                        "low": 3350,
+                        "mid": 2600,
+                        "high": 1650,
+                        "inf": 30
+                    }
+                }
+            }
+        }
     }
 
     # 2) instantiate & merge any on‐disk overrides
     self.config = Config(cfg_path, DEFAULT_CONFIG)
-
     # 3) pull them into window attributes
-    self.pHstat_mode                    = int(self.config.pHstat_mode)
-    self.pH_target                      = float(self.config.pH_target)
-    self.pump_volume_per_cycle_ml       = float(self.config.pump_volume_per_cycle_ml)
-    self.pump_cycle_duration_s          = float(self.config.pump_cycle_duration_s)
-    self.pump_cooldown_duration_s       = float(self.config.pump_cooldown_duration_s)
-    self.pH_calibration_low             = float(self.config.pH_calibration_low)
-    self.pH_calibration_mid             = float(self.config.pH_calibration_mid)
-    self.pH_calibration_high            = float(self.config.pH_calibration_high)
-    self.enable_psu                     = bool(self.config.enable_psu)
-    self.enable_phstat                  = bool(self.config.enable_phstat)
-    self.enable_turbidity_sensor        = bool(self.config.enable_turbidity_sensor)
+    self.pHstat_mode                    = int(self.config.pHstat.mode)
+    self.pH_target                      = float(self.config.pHstat.target)
+    self.pump_volume_per_cycle_ml       = float(self.config.pHstat.pump.volume)
+    self.pump_cycle_duration_s          = float(self.config.pHstat.pump.cycle)
+    self.pump_cooldown_duration_s       = float(self.config.pHstat.pump.cooldown)
+    self.pH_calibration_low             = float(self.config.atlas.pH.calibration.low)
+    self.pH_calibration_mid             = float(self.config.atlas.pH.calibration.mid)
+    self.pH_calibration_high            = float(self.config.atlas.pH.calibration.high)
+    self.enable_psu                     = bool(self.config.psu.enable)
+    self.enable_phstat                  = bool(self.config.pHstat.enable)
+    self.enable_turbidity_sensor        = bool(self.config.sensors.turbidity.enable)
     self.debug_mode                     = bool(self.config.debug_mode)
 
     # Assuming cfg is your Config instance and supports dict access

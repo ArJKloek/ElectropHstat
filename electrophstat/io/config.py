@@ -31,11 +31,12 @@ class Config:
             print(f"Error loading config from {self.path}: {e}")
         
     def save(self) -> None:
-        # Skip writing when _data is empty or path is None
-        if self.path is None or not self._data:
+        if self.path is None:
             return
+        # Always save the full merged config
+        full_config = self._asdict()
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.path.write_text(json.dumps(self._data, indent=2))
+        self.path.write_text(json.dumps(full_config, indent=2))
 
     def __getitem__(self, key: str) -> Any:
         value = self._data[key] if key in self._data else self.defaults.get(key)

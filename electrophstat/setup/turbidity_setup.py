@@ -5,16 +5,16 @@ from electrophstat.models.model_calculator import BiExpCalibrator
 def init_turbidity(self):
     
     if self.enable_turbidity_sensor:
-        
+        cfg = self.config 
         cal_settings = {
             "params": {
-                "PercentFast": float(self.config.PercentFast),
-                "KFast": float(self.config.KFast),
-                "KSlow": float(self.config.KSlow),
+                "PercentFast": float(cfg.sensors.turbidity.model.PercentFast),
+                "KFast": float(cfg.sensors.turbidity.model.KFast),
+                "KSlow": float(cfg.sensors.turbidity.model.KSlow),
             },
             "errors": None,  # Optional, unless you store errors
-            "Y0": int(self.config.NTU_mV_calibration_0),
-            "Plateau": int(self.config.NTU_mV_calibration_inf),
+            "Y0": int(cfg.sensors.turbidity.calibration.mV.zero),
+            "Plateau": int(cfg.sensors.turbidity.calibration.mV.inf),
         }
 
         self.model_calculator = BiExpCalibrator(self)

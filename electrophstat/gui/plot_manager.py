@@ -8,6 +8,7 @@ from datetime import datetime
 class PlotManager:
     def __init__(self, main):
         self.main = main
+        self.cfg = main.config
         self.labelStyle = {'color': 'black', 'font-size': '11pt'}
         self.plotColors = ['r', 'g', 'b', 'm', 'c', 'y']
         # in PlotManager.__init__
@@ -144,7 +145,7 @@ class PlotManager:
     def update_dual_plot(self):
         curves = [{"label": "ph", "curve_attr": "ph_curve", "pen": "k", "use_right_axis": False}]
         # Only show temperature if BOTH config and toggle are True
-        show_temp = self.main.toggleTempAction.isChecked() and self.main.config.atlas.RTD.enable
+        show_temp = self.main.toggleTempAction.isChecked() and self.cfg.atlas.RTD.enable
         if show_temp:
             curves.append({"label": "temperature", "curve_attr": "temp_curve", "pen": "b", "use_right_axis": True})
         self.update_plot_from_logger(1, curves, show_right_axis=show_temp)

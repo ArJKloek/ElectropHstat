@@ -52,12 +52,23 @@ def setup_mainwindow_signals(win):
         act.setCheckable(True)   # make it checkable
         lg.addAction(act)        # add it to the exclusive group
 
-    # 3) Pick a default
-    win.action30_sec.setChecked(True)
+    # Map interval to QAction name
+    interval_to_action = {
+        5: "action5_sec",
+        30: "action30_sec",
+        60: "action1_min",
+        300: "action5_min"
+    }
+    interval = getattr(win.config.logger, "interval", 30)
+    action_name = interval_to_action.get(interval, "action30_sec")
+    action = getattr(win, action_name, None)
+    if action:
+        action.setChecked(True)
+    else:
+        win.action30_sec.setChecked(True)
 
     # 4) Connect the group's triggered signal back to the window's slot
     lg.triggered.connect(win.button_cont.on_log_option_changed)
-
     
 def find_data_directory() -> Path:
     """
@@ -80,5 +91,4 @@ def find_data_directory() -> Path:
         log_base  = repo_root / "ElectroPHData"
 
     log_base.mkdir(parents=True, exist_ok=True)
-    return log_base  
-    
+    return log_base

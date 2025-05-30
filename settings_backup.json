@@ -67,12 +67,13 @@
     "column_names": [
       "Pumped (ml)",
       "pH",
-      "Temperature (\u00b0C)",
+      "Temperature (\u00c2\u00b0C)",
       "Voltage (V)",
       "Current (A)",
       "Coulomb (C)",
       "Turbidity"
     ],
-    "interval": 60
+    "interval": 60,
+    "max_size": 30000
   }
 }

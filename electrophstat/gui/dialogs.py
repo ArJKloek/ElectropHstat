@@ -79,7 +79,7 @@ class CalibratepHDialog(QDialog):
     def __init__(self, lowpH: float, midpH: float, highpH: float, parent=None):
         super().__init__(parent, flags=Qt.WindowCloseButtonHint)
         uic.loadUi("electrophstat/gui/calibrate_ph_dialog.ui", self)
-
+        
         # initialize values
         self.sbLowPH.setValue(lowpH)
         self.sbMidPH.setValue(midpH)
@@ -97,11 +97,12 @@ class CalibratepHDialog(QDialog):
 
         # update the JSON‐backed setting immediately
         if calibrationType == "low":
-            cfg.pH_calibration_low = round(pH,2)
+            cfg.atlas.pH.calibration.low = round(pH,2)
+
         elif calibrationType == "mid":
-            cfg.pH_calibration_mid = round(pH,2)
+            cfg.atlas.pH.calibration.mid = round(pH,2)
         else:  # "high"
-            cfg.pH_calibration_high = round(pH,2)
+            cfg.atlas.pH.calibration.high = round(pH,2)
 
         data = [self.sbLowPH.value(),
                 self.sbMidPH.value(),
@@ -120,22 +121,22 @@ class SettingsDialog(QDialog):
         self.cfg = self.parent().config
 
         # pHstat settings
-        self.cb_cfg_pHstatmode.setCurrentIndex(self.cfg.pHstat_mode)
-        self.ds_cfg_pHtarget.setValue(self.cfg.pH_target)
-        self.ds_cfg_pump_ml.setValue(self.cfg.pump_volume_per_cycle_ml)
-        self.ds_cfg_pump_time.setValue(self.cfg.pump_cycle_duration_s)
-        self.sp_cfg_cooldown.setValue(int(self.cfg.pump_cooldown_duration_s))
+        self.cb_cfg_pHstatmode.setCurrentIndex(self.cfg.pHstat.mode)
+        self.ds_cfg_pHtarget.setValue(self.cfg.pHstat.target)
+        self.ds_cfg_pump_ml.setValue(self.cfg.pHstat.pump.volume)
+        self.ds_cfg_pump_time.setValue(self.cfg.pHstat.pump.cycle)
+        self.sp_cfg_cooldown.setValue(int(self.cfg.pHstat.pump.cooldown))
         
         #pH calibration settings
-        self.ds_cfg_pH_low.setValue(self.cfg.pH_calibration_low)
-        self.ds_cfg_pH_mid.setValue(self.cfg.pH_calibration_mid)
-        self.ds_cfg_pH_high.setValue(self.cfg.pH_calibration_high)
+        self.ds_cfg_pH_low.setValue(self.cfg.atlas.pH.calibration.low)
+        self.ds_cfg_pH_mid.setValue(self.cfg.atlas.pH.calibration.mid)
+        self.ds_cfg_pH_high.setValue(self.cfg.atlas.pH.calibration.high)
         #Control and sensor enable / Restart needed
-        self.cb_enable_psu.setChecked(self.cfg.enable_psu)
-        self.cb_enable_phstat.setChecked(self.cfg.enable_phstat)
+        self.cb_enable_psu.setChecked(self.cfg.psu.enable)
+        self.cb_enable_phstat.setChecked(self.cfg.pHstat.enable)
         self.cb_enable_ph_sensor.setChecked(self.cfg.atlas.pH.enable)
         self.cb_enable_temp_sensor.setChecked(self.cfg.atlas.RTD.enable)
-        self.cb_enable_turbidity_sensor.setChecked(self.cfg.enable_turbidity_sensor)
+        self.cb_enable_turbidity_sensor.setChecked(self.cfg.sensors.turbidity.enable)
 
         # hook up Ok/Cancel
         self.buttonBox.accepted.connect(self.on_ok_clicked)
@@ -168,21 +169,21 @@ class SettingsDialog(QDialog):
             self.cb_enable_ph_sensor.setChecked(True)
             
         # read actual checked state, write into config
-        self.cfg.pHstat_mode                = int(self.cb_cfg_pHstatmode.currentIndex())
-        self.cfg.pH_target                  = round(self.ds_cfg_pHtarget.value(), 2)
-        self.cfg.pump_volume_per_cycle_ml   = round(self.ds_cfg_pump_ml.value(), 3)
-        self.cfg.pump_cycle_duration_s      = round(self.ds_cfg_pump_time.value(), 2)
-        self.cfg.pump_cooldown_duration_s   = round(self.sp_cfg_cooldown.value(), 1)
+        self.cfg.pHstat.mode                = int(self.cb_cfg_pHstatmode.currentIndex())
+        self.cfg.pHstat.target              = round(self.ds_cfg_pHtarget.value(), 2)
+        self.cfg.pHstat.pump.volume         = round(self.ds_cfg_pump_ml.value(), 3)
+        self.cfg.pHstat.pump.cycle          = round(self.ds_cfg_pump_time.value(), 2)
+        self.cfg.pHstat.pump.cooldown       = round(self.sp_cfg_cooldown.value(), 1)
        
-        self.cfg.pH_calibration_low         = round(self.ds_cfg_pH_low.value(), 2)
-        self.cfg.pH_calibration_mid         = round(self.ds_cfg_pH_mid.value(), 2)
-        self.cfg.pH_calibration_high        = round(self.ds_cfg_pH_high.value(), 2)
+        self.cfg.atlas.pH.calibration.low   = round(self.ds_cfg_pH_low.value(), 2)
+        self.cfg.atlas.pH.calibration.mid   = round(self.ds_cfg_pH_mid.value(), 2)
+        self.cfg.atlas.pH.calibration.high  = round(self.ds_cfg_pH_high.value(), 2)
 
-        self.cfg.enable_psu                 = self.cb_enable_psu.isChecked()
-        self.cfg.enable_phstat              = phstat_enabled
+        self.cfg.psu.enable                 = self.cb_enable_psu.isChecked()
+        self.cfg.pHstat.enable              = phstat_enabled
         self.cfg.atlas.pH.enable            = ph_sensor_enabled
         self.cfg.atlas.RTD.enable           = self.cb_enable_temp_sensor.isChecked()
-        self.cfg.enable_turbidity_sensor    = self.cb_enable_turbidity_sensor.isChecked()
+        self.cfg.sensors.turbidity.enable   = self.cb_enable_turbidity_sensor.isChecked()
         # close dialog with Accepted
         self.accept()
         
@@ -197,15 +198,15 @@ class CalibrateTurbidityDialog(QDialog):
 
         self.lb_raw_data.setText(f"{self.value:.0f} mV")
         # Turbidity settings voltage
-        self.sp_0_NTU_mV.setValue(self.cfg.NTU_mV_calibration_0)
-        self.sp_low_NTU_mV.setValue(self.cfg.NTU_mV_calibration_low)
-        self.sp_mid_NTU_mV.setValue(self.cfg.NTU_mV_calibration_mid)
-        self.sp_high_NTU_mV.setValue(self.cfg.NTU_mV_calibration_high)
-        self.sp_inf_NTU_mV.setValue(self.cfg.NTU_mV_calibration_inf)
+        self.sp_zero_NTU_mV.setValue(self.cfg.sensors.turbidity.calibration.mV.zero)
+        self.sp_low_NTU_mV.setValue(self.cfg.sensors.turbidity.calibration.mV.low)
+        self.sp_mid_NTU_mV.setValue(self.cfg.sensors.turbidity.calibration.mV.mid)
+        self.sp_high_NTU_mV.setValue(self.cfg.sensors.turbidity.calibration.mV.high)
+        self.sp_inf_NTU_mV.setValue(self.cfg.sensors.turbidity.calibration.mV.inf)
         # Turbidity settings NTU
-        self.sb_low_NTU.setValue(self.cfg.NTU_calibration_low)
-        self.sb_mid_NTU.setValue(self.cfg.NTU_calibration_mid)
-        self.sb_high_NTU.setValue(self.cfg.NTU_calibration_high)
+        self.sb_low_NTU.setValue(self.cfg.sensors.turbidity.calibration.NTU.low)
+        self.sb_mid_NTU.setValue(self.cfg.sensors.turbidity.calibration.NTU.mid)
+        self.sb_high_NTU.setValue(self.cfg.sensors.turbidity.calibration.NTU.high)
         
         self._init_plot()
 
@@ -222,13 +223,43 @@ class CalibrateTurbidityDialog(QDialog):
 
         self._update_plot()
         self._init_model(self.win)
-        self.pb_add_0.clicked.connect(lambda: self._copy_data("0"))
+        self.pb_add_zero.clicked.connect(lambda: self._copy_data("zero"))
         self.pb_add_low.clicked.connect(lambda: self._copy_data("low"))
         self.pb_add_mid.clicked.connect(lambda: self._copy_data("mid"))
         self.pb_add_high.clicked.connect(lambda: self._copy_data("high"))
         self.pb_add_inf.clicked.connect(lambda: self._copy_data("inf"))
+        self.sp_zero_NTU_mV.valueChanged.connect(self._update_plot)
+        self.sp_low_NTU_mV.valueChanged.connect(self._update_plot)
+        self.sp_mid_NTU_mV.valueChanged.connect(self._update_plot)
+        self.sp_high_NTU_mV.valueChanged.connect(self._update_plot)
+        self.sp_inf_NTU_mV.valueChanged.connect(self._update_plot)
+        self.sb_low_NTU.valueChanged.connect(self._update_plot)
+        self.sb_mid_NTU.valueChanged.connect(self._update_plot)
+        self.sb_high_NTU.valueChanged.connect(self._update_plot)
+
 
         # Add buttons for each SpinBox        
+        self._original_calibration = {
+            "mV": {
+                "zero": self.cfg.sensors.turbidity.calibration.mV.zero,
+                "low": self.cfg.sensors.turbidity.calibration.mV.low,
+                "mid": self.cfg.sensors.turbidity.calibration.mV.mid,
+                "high": self.cfg.sensors.turbidity.calibration.mV.high,
+                "inf": self.cfg.sensors.turbidity.calibration.mV.inf,
+            },
+            "NTU": {
+                "low": self.cfg.sensors.turbidity.calibration.NTU.low,
+                "mid": self.cfg.sensors.turbidity.calibration.NTU.mid,
+                "high": self.cfg.sensors.turbidity.calibration.NTU.high,
+            },
+            "model_settings": self.win.model_calculator.get_settings()
+        }
+
+    def reject(self):
+        # Restore model parameters
+        self.win.model_calculator.set_settings(self._original_calibration["model_settings"])
+        super().reject()
+
     def _copy_data(self, target):
         """Copy data from one SpinBox to another."""
         add_target = self.findChild(QSpinBox, f"sp_{target}_NTU_mV")
@@ -263,7 +294,7 @@ class CalibrateTurbidityDialog(QDialog):
     def _update_plot(self):
         # grab the six points
         Vs = [
-            self.sp_0_NTU_mV.value(),
+            self.sp_zero_NTU_mV.value(),
             self.sp_low_NTU_mV.value(),
             self.sp_mid_NTU_mV.value(),
             self.sp_high_NTU_mV.value(),
@@ -311,8 +342,8 @@ class CalibrateTurbidityDialog(QDialog):
         
         self. params, self.errors = self.win.model_calculator.fit(
             xdata=np.array([0.0, self.sb_low_NTU.value(), self.sb_mid_NTU.value(), self.sb_high_NTU.value()]),
-            ydata=np.array([self.sp_0_NTU_mV.value(), self.sp_low_NTU_mV.value(), self.sp_mid_NTU_mV.value(), self.sp_high_NTU_mV.value()]),
-            Y0=self.sp_0_NTU_mV.value(),
+            ydata=np.array([self.sp_zero_NTU_mV.value(), self.sp_low_NTU_mV.value(), self.sp_mid_NTU_mV.value(), self.sp_high_NTU_mV.value()]),
+            Y0=self.sp_zero_NTU_mV.value(),
             Plateau=self.sp_inf_NTU_mV.value(),
             p0=(50.0, 0.001, 0.0001),
             bounds=([0.0, 0.0, 0.0], [100.0, np.inf, np.inf])
@@ -339,6 +370,15 @@ class CalibrateTurbidityDialog(QDialog):
     def on_ok_clicked(self):
         # read values from the widgets
         # close dialog with Accepted
+        self.cfg.sensors.turbidity.calibration.mV.zero = self.sp_zero_NTU_mV.value()
+        self.cfg.sensors.turbidity.calibration.mV.low = self.sp_low_NTU_mV.value()
+        self.cfg.sensors.turbidity.calibration.mV.mid = self.sp_mid_NTU_mV.value()
+        self.cfg.sensors.turbidity.calibration.mV.high = self.sp_high_NTU_mV.value()
+        self.cfg.sensors.turbidity.calibration.mV.inf = self.sp_inf_NTU_mV.value()
+        self.cfg.sensors.turbidity.calibration.NTU.low = self.sb_low_NTU.value()
+        self.cfg.sensors.turbidity.calibration.NTU.mid = self.sb_mid_NTU.value()
+        self.cfg.sensors.turbidity.calibration.NTU.high = self.sb_high_NTU.value()
+
         self.accept()
 
     def update_raw_label(self, value):

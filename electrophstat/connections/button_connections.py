@@ -187,7 +187,7 @@ class ButtonConnections(QObject):
             print("New log interval:", interval)
             # … apply interval to your logging timer …
         self.win.logging_ctrl.set_interval(int(interval))
-
+        self.win.config.logger.interval = int(interval)
     
     @pyqtSlot(str, float)
     def update_gui(self, sensor_type: str, received_data: float, raw_data: float = None):

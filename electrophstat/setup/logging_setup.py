@@ -10,9 +10,10 @@ def init_logger(win):
         
     win.logger = Logger(
         base_dir=LOG_BASE,
-        labels=["pump","pH", "RTD", "voltage", "current", "coulomb", "turbidity"],
-        column_names = ["Pumped (ml)", "pH", "Temperature (°C)", "Voltage (V)", "Current (A)", "Coulomb (C)", "Turbidity"]
-
+        #labels=["pump","pH", "RTD", "voltage", "current", "coulomb", "turbidity"],
+        labels = win.config.logger.labels,
+        column_names = win.config.logger.column_names
+       
     )
-    win.logging_ctrl = LoggingController(win, interval=5.0)
+    win.logging_ctrl = LoggingController(win, interval=win.config.logger.interval)
     win.logging_ctrl.active_labels = set(win.logger.labels)
