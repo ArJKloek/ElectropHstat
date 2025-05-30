@@ -17,6 +17,8 @@ class pHStatConnections(QObject):
         # Pump calibration
         self.win.actionCalibrate_Pump.triggered.connect(self.openCalibratePumpWindow)
         # update the loop whenever the user flips the selector
+        self.keepSelector.setCurrentIndex(self.config.pHstat.mode)
+        self.win.phSpin.setValue(self.config.pHstat.target)
         
     @pyqtSlot(int)
     def handle_select(self, select):
