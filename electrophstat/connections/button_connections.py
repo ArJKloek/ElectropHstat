@@ -59,15 +59,25 @@ class ButtonConnections(QObject):
         self.win.startbutton.setEnabled(True)
         self.win.stopbutton.setEnabled(False)
         self.win.resetbutton.setEnabled(True)
+        # 2) Logging and pH pump logic stop
+        print("Stopping timers...")
         if self.win.enable_psu:
             self.win.pps_ctrl.coulombClock.stop()
             self.win.pps_ctrl.coulombTimer.stop()
-        #2) Logging and pH pump logic stop
+        print("Stopped timers.")
+
+        print("Stopping pH-stat logic...")
         if self.win.toggle_pH_control and self.win.enable_phstat and self.win.phstat_ctrl is not None:
             self.win.phstat_ctrl.on_pumpToggle(False)
+        print("Stopped pH-stat logic.")
+
+        print("Deactivating log...")
         self.log_deactive()
-        # 3) Status
+        print("Log deactivated.")
+
+        print("Updating status bar...")
         self.win.statusBar().showMessage("pH-stat stopped")
+        print("Done.")
     
     
     @pyqtSlot()

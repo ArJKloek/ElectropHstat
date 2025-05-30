@@ -18,8 +18,8 @@ class LoggingWorker(QObject):
     @pyqtSlot()
     def run(self):
         self.running = True
-        time.sleep(self.interval)
         while self.running:
+            start = time.time()
             try:
                 # log every channel currently in logger.files
                 labels = getattr(self, "active_labels", self.logger.files.keys())
@@ -38,7 +38,12 @@ class LoggingWorker(QObject):
                             self.logger.log(label, val)
             except Exception as e:
                 self.error.emit(str(e))
-            time.sleep(self.interval)
+            # Sleep in small increments to allow quick stopping
+            elapsed = time.time() - start
+            remaining = self.interval - elapsed
+            while self.running and remaining > 0:
+                time.sleep(min(0.1, remaining))
+                remaining -= 0.1
 
     @pyqtSlot()
     def stop(self):

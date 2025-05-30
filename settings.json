@@ -2,11 +2,11 @@
   "pHstat": {
     "enable": true,
     "target": 7.0,
-    "mode": 0,
+    "mode": 1,
     "pump": {
-      "volume": 0.0,
-      "cycle": 1.0,
-      "cooldown": 0
+      "volume": 0.098,
+      "cycle": 0.2,
+      "cooldown": 5
     }
   },
   "psu": {
