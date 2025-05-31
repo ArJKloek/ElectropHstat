@@ -26,18 +26,22 @@ class PPSController(QObject):
     def _setup_worker(self):
         # 1) Probe for a real PPS (or get a DummyPPS)
         #status, port = discover_power_supply(reset=self.reset)
-        status, obj = discover_power_supply(reset=self.reset)
-        self.psu_status = status # Store the status for later use
+        psu_debug = getattr(self.win.config.psu, 'debug', False)
         
+        if psu_debug:
+            port = DummyPPS()
+            status = "not connected"  # Simulate a disconnected state for debugging
+            print("Debug mode: Using DummyPPS for testing.")
+        else:
+            status, obj = discover_power_supply(reset=self.reset)
+            self.psu_status = status # Store the status for later use
+            port = obj  # This is the actual port or DummyPPS instance
         if status == "not_connected":
             print("No power supply detected.")
-            port = obj  
         elif status == "connected_off":
             print("Power supply detected (USB), but not responding. Is it turned ON?")
-            port = obj  # This is your VoltcraftPPS instance
         elif status == "connected_on":
             print("Power supply connected and ready!")
-            port = obj  # This is your VoltcraftPPS instance
         else:
             print(f"Unexpected status: {status}")
             port = None

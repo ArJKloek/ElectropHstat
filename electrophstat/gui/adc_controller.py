@@ -12,7 +12,13 @@ class ADCController(QObject):
         super().__init__(win)
         self.win = win
 
-        hw = discover_adc(channel=channel)
+        adc_debug = getattr(self.win.config.sensors.turbidity, 'debug', False)
+        if adc_debug:
+            # If debug mode, use a DummyADS1115
+            hw = DummyADS1115(channel=channel)
+            print("Debug mode: Using DummyADS1115 for testing.")
+        else:
+            hw = discover_adc(channel=channel)
         if isinstance(hw, DummyADS1115) and self.win.debug_mode == True:
             # If dummy power supply, color the groupbox orange
             # to indicate that it is a dummy.

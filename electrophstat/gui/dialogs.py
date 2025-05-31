@@ -137,6 +137,14 @@ class SettingsDialog(QDialog):
         self.cb_enable_ph_sensor.setChecked(self.cfg.atlas.pH.enable)
         self.cb_enable_temp_sensor.setChecked(self.cfg.atlas.RTD.enable)
         self.cb_enable_turbidity_sensor.setChecked(self.cfg.sensors.turbidity.enable)
+        # hookup the debug mode checkbox
+        self.cb_debug_mode.setChecked(self.cfg.debug_mode)
+        self.cb_debug_PSU.setChecked(self.cfg.psu.debug)
+        self.cb_debug_pHstat.setChecked(self.cfg.pHstat.debug)
+        self.cb_debug_pH.setChecked(self.cfg.atlas.pH.debug)
+        self.cb_debug_RTD.setChecked(self.cfg.atlas.RTD.debug)
+        self.cb_debug_turbidity.setChecked(self.cfg.sensors.turbidity.debug)
+
 
         # hook up Ok/Cancel
         self.buttonBox.accepted.connect(self.on_ok_clicked)
@@ -184,6 +192,13 @@ class SettingsDialog(QDialog):
         self.cfg.atlas.pH.enable            = ph_sensor_enabled
         self.cfg.atlas.RTD.enable           = self.cb_enable_temp_sensor.isChecked()
         self.cfg.sensors.turbidity.enable   = self.cb_enable_turbidity_sensor.isChecked()
+        
+        self.cfg.debug_mode = self.cb_debug_mode.isChecked()
+        self.cfg.psu.debug = self.cb_debug_PSU.isChecked()
+        self.cfg.pHstat.debug = self.cb_debug_pHstat.isChecked()
+        self.cfg.atlas.pH.debug = self.cb_debug_pH.isChecked()
+        self.cfg.atlas.RTD.debug = self.cb_debug_RTD.isChecked()
+        self.cfg.sensors.turbidity.debug = self.cb_debug_turbidity.isChecked()
         # close dialog with Accepted
         self.accept()
         

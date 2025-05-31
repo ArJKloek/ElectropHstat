@@ -13,7 +13,12 @@ def init_phstat(self):
     if self.enable_phstat:
         self.calibrate_pump_dialog = CalibratePumpDialog(float(self.pump_volume_per_cycle_ml), float(self.pump_cycle_duration_s), self)
         
-        hw = discover_switcher()
+        switcher_debug = getattr(self.config.pHstat, "debug", False)
+        if switcher_debug:
+            hw = MockLib8MosInd()
+            print("Debug mode for switcher: using MockLib8MosInd.")
+        else:
+            hw = discover_switcher()
         
         if isinstance(hw, MockLib8MosInd)  and self.debug_mode == True:
             # If dummy power supply, color the groupbox orange
