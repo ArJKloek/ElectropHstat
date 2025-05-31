@@ -12,32 +12,36 @@ def init_config(self):
     cfg_path = REPO_ROOT / "settings.json"
     DEFAULT_CONFIG = {
         "pHstat": {
+            "target": 7.0,
+            "debug": False,
+            "mode": 1,
             "enable": True,
-            "target": 7.00,
-            "mode": 0,
             "pump": {
-                "volume": 0.0,
-                "cycle": 1.0,
-                "cooldown": 0.0
+                "volume": 0.098,
+                "cycle": 0.2,
+                "cooldown": 5
             }
         },
         "psu": {
-            "enable": True
+            "enable": True,
+            "debug": False
         },
-        "debug_mode": True,
+        "debug_mode": False,
         "atlas": {
             "pH": {
                 "enable": True,
+                "debug": False,
                 "address": "0x63",
                 "name": "pH",
                 "calibration": {
-                    "low": 4.00,
-                    "mid": 7.00,
-                    "high": 10.00
+                    "low": 4.0,
+                    "mid": 7.0,
+                    "high": 10.0
                 }
             },
             "RTD": {
                 "enable": True,
+                "debug": False,
                 "address": "0x66",
                 "name": "RTD"
             }
@@ -45,6 +49,7 @@ def init_config(self):
         "sensors": {
             "turbidity": {
                 "enable": True,
+                "debug": False,
                 "model": {
                     "PercentFast": 9.1,
                     "KFast": 0.002,
@@ -65,6 +70,27 @@ def init_config(self):
                     }
                 }
             }
+        },
+        "logger": {
+            "labels": [
+                "pump",
+                "pH",
+                "RTD",
+                "voltage",
+                "current",
+                "coulomb",
+                "turbidity"
+            ],
+            "column_names": [
+                "Pumped (ml)",
+                "pH",
+                "Temperature (°C)",
+                "Voltage (V)",
+                "Current (A)",
+                "Coulomb (C)",
+                "Turbidity"
+            ],
+            "interval": 60
         }
     }
 
