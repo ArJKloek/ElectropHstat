@@ -12,7 +12,7 @@
   },
   "psu": {
     "enable": true,
-    "debug": false,
+    "debug": false
   },
   "debug_mode": true,
   "atlas": {
@@ -37,7 +37,7 @@
   "sensors": {
     "turbidity": {
       "enable": true,
-      "debug": false,	
+      "debug": false,
       "model": {
         "PercentFast": 9.1,
         "KFast": 0.002,

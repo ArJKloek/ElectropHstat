@@ -109,7 +109,7 @@ def init_config(self):
     self.enable_phstat                  = bool(self.config.pHstat.enable)
     self.enable_turbidity_sensor        = bool(self.config.sensors.turbidity.enable)
     self.debug_mode                     = bool(self.config.debug_mode)
-
+    print(f"Debug mode is set to {self.debug_mode}")
     # Assuming cfg is your Config instance and supports dict access
     # ...and so on
     # 4) hook UI elements → config so that any user change persists

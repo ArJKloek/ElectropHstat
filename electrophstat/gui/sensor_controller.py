@@ -24,7 +24,7 @@ class SensorController(QObject):
             
             # Now pass the correct address for each sensor
             if debug_flag:
-                atlas = DummyAtlas(address=address, name=key)
+                atlas = DummyAtlas(address=address, kind=key)
             else:    
                 atlas = discover_sensor(key, address=address)
             worker = AtlasSensorWorker(name=key, sensor=atlas, interval=interval)
