@@ -15,8 +15,18 @@ class SensorController(QObject):
             update_slot_list = slot_info["update_slots"]
             address = slot_info["address"]
             key = slot_info.get("sensor_key", sensor_name)
+            
+            debug_flag = False
+            try:
+                debug_flag = getattr(self.win.config.atlas[key], 'debug', False)
+            except Exception:
+                pass
+            
             # Now pass the correct address for each sensor
-            atlas = discover_sensor(key, address=address)
+            if debug_flag:
+                atlas = DummyAtlas(address=address, name=key)
+            else:    
+                atlas = discover_sensor(key, address=address)
             worker = AtlasSensorWorker(name=key, sensor=atlas, interval=interval)
             thr    = QThread(self.win)
             worker.moveToThread(thr)

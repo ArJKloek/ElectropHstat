@@ -20,15 +20,17 @@ class DummyADS1115(ADCSensor):
 
     def read_voltage(self, channel: int) -> dict:
         """
-        Simulate a voltage reading for `channel`. Only channel 1 varies,
-        everything else returns 0.0.
+        Simulate a voltage reading for `channel`. Only channel 0 varies
+        as a sine wave with a 3-hour period, everything else returns 0.0.
         Returns a dict with key 'r' to mimic the real API.
         """
-        # advance time
+        # advance time (assuming 1 second per call)
         self._t += 1.0
         if channel == 0:
+            # 3-hour period = 10,800 seconds
+            period = 10800
             # sine wave between 1000 and 3000 plus some random noise
-            base = 2000 + 1 * math.sin(2 * math.pi * 0.05 * self._t)
+            base = 2000 + 1000 * math.sin(2 * math.pi * (self._t / period))
             noise = random.uniform(-2, 2)
             val = base + noise
         else:

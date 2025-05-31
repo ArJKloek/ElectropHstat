@@ -1,6 +1,7 @@
 {
   "pHstat": {
     "enable": true,
+    "debug": false,
     "target": 7.0,
     "mode": 1,
     "pump": {
@@ -10,12 +11,14 @@
     }
   },
   "psu": {
-    "enable": true
+    "enable": true,
+    "debug": false,
   },
   "debug_mode": true,
   "atlas": {
     "pH": {
       "enable": true,
+      "debug": true,
       "address": "0x63",
       "name": "pH",
       "calibration": {
@@ -26,6 +29,7 @@
     },
     "RTD": {
       "enable": true,
+      "debug": false,
       "address": "0x66",
       "name": "RTD"
     }
@@ -33,6 +37,7 @@
   "sensors": {
     "turbidity": {
       "enable": true,
+      "debug": false,	
       "model": {
         "PercentFast": 9.1,
         "KFast": 0.002,

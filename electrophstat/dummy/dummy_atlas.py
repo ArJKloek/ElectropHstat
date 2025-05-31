@@ -1,4 +1,5 @@
 from __future__ import annotations
+import math
 import random
 from typing import Optional
 
@@ -8,7 +9,7 @@ from ..hardware.interfaces import AtlasSensor
 class DummyAtlas(AtlasSensor):
     """
     Fake Atlas I²C sensor.
-    • `read()` returns a value that slowly wanders ±2 %.
+    • `read()` returns a value that slowly wanders ±2 % or follows a sine wave.
     • `.calibrate(mode, value)` actually stores low/mid/high.
     • `.clear_cal()` resets stored calibration.
     """
@@ -24,6 +25,7 @@ class DummyAtlas(AtlasSensor):
             "mid":  None,
             "high": None
         }
+        self._t = 0.0  # time counter for sine wave
 
     # life-cycle ---------------------------------------------------
     def connect(self) -> None:         pass
@@ -33,10 +35,16 @@ class DummyAtlas(AtlasSensor):
 
     # measurement --------------------------------------------------
     def read(self) -> float:
-        # wander around whichever calibration point is “active”
-        base = self._value
-        jitter = 1 + random.uniform(-0.02, 0.02)    # ±2 %
-        self._value = base * jitter
+        # Sine wave: 3-hour period, amplitude 1, offset depends on kind
+        self._t += 1.0  # increment time (simulate 1 second per call)
+        period = 10800  # 3 hours in seconds
+        if self.kind == "pH":
+            base = 7.0 + 1.0 * math.sin(2 * math.pi * (self._t / period))  # pH oscillates 6-8
+        else:
+            base = 25.0 + 5.0 * math.sin(2 * math.pi * (self._t / period)) # temp oscillates 20-30
+        noise = random.uniform(-0.02, 0.02) * base
+        value = base + noise
+        self._value = value
         return round(self._value, 3)
 
     # helpers ------------------------------------------------------
@@ -48,6 +56,7 @@ class DummyAtlas(AtlasSensor):
             self._cal[k] = None
         # reset reading value to neutral
         self._value = 7.00 if self.kind == "pH" else 0.0
+        self._t = 0.0
 
     def calibrate(self, mode: str, value: float) -> None:
         """
