@@ -93,7 +93,9 @@ class ButtonConnections(QObject):
         self.win.logging_ctrl.reset()
         
         self.reset_value_data()
-       
+        if hasattr(self.win, "plot_manager"):
+            self.win.plot_manager.clear_all()  # <-- Add this line
+    
         QMessageBox.information(self.win, "Reset", "pH-stat has been reset")
     
     

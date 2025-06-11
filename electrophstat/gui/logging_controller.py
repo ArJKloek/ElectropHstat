@@ -74,7 +74,7 @@ class LoggingController(QObject):
             print(f"[LoggingController] error resetting logger: {e}")
 
         # 3) Clear our active-labels so next start() picks them fresh
-        self.active_labels.clear()
+        #self.active_labels.clear()
         self.logs_present_signal.emit(False)
         print("[LoggingController] logging session has been reset.")
 
