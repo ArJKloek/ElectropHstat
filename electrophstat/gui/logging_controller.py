@@ -26,6 +26,7 @@ class LoggingController(QObject):
         # Kick off a new session on the Logger
         # We pass initial_values=self.win.valueData so each CSV
         # gets a zero‐point row automatically.
+        print("active_labels:", self.active_labels)
         self.win.logger.start_session(
             active_labels   = list(self.active_labels),
             initial_values  = self.win.valueData
