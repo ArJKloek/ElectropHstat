@@ -38,12 +38,14 @@ class LoggingWorker(QObject):
                             self.logger.log(label, val)
             except Exception as e:
                 self.error.emit(str(e))
-            # Sleep in small increments to allow quick stopping
-            elapsed = time.time() - start
-            remaining = self.interval - elapsed
-            while self.running and remaining > 0:
+            # Sleep in small increments to allow quick stopping and interval changes
+            while self.running:
+                elapsed = time.time() - start
+                current_interval = self.interval  # Always get the latest interval
+                remaining = current_interval - elapsed
+                if remaining <= 0:
+                    break
                 time.sleep(min(0.1, remaining))
-                remaining -= 0.1
 
     @pyqtSlot()
     def stop(self):
