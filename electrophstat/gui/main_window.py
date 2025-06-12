@@ -45,6 +45,8 @@ class MainWindow(QMainWindow):
         init_config(self)
         init_graphs(self)
         init_logger(self)
+        print(f"Logger initialized with labels: {self.logger.labels}")
+
         init_psu(self)
         init_phstat(self)
         init_settings(self) 

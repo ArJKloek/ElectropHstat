@@ -15,6 +15,5 @@ def init_logger(win):
         column_names = win.config.logger.column_names
        
     )
-    print(f"Logger initialized with labels: {win.config.logger.labels}")
     win.logging_ctrl = LoggingController(win, interval=win.config.logger.interval)
     win.logging_ctrl.active_labels = set(win.logger.labels)
