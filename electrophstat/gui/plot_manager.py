@@ -236,3 +236,12 @@ class PlotManager:
         x = [t/scale for t in times]
         return x, values, time_label
 
+    def clear_all(self):
+        """
+        Remove all curves from all plot widgets and reset axes.
+        """
+        for plot_widget in getattr(self.main, "graphWidgets", []):
+            plot_widget.clear()
+            # Optionally, reset axis labels to default
+            plot_widget.setLabel('bottom', 'Time (s)', **self.labelStyle)
+
