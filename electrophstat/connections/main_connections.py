@@ -16,16 +16,27 @@ def is_raspberry_pi() -> bool:
         return False
 
     # Most Pis report an 'arm' machine type
-    if not platform.machine().startswith("arm"):
+    if not (platform.machine().startswith("arm") or platform.machine().startswith("aarch64")):
         return False
 
     model_path = Path("/proc/device-tree/model")
     if model_path.exists():
         try:
             content = model_path.read_text(errors="ignore")
-            return "Raspberry Pi" in content
+            if "Raspberry Pi" in content:
+                return True
         except Exception:
-            return False
+            pass
+
+    # Fallback: check /proc/cpuinfo for 'Raspberry Pi'
+    cpuinfo = Path("/proc/cpuinfo")
+    if cpuinfo.exists():
+        try:
+            content = cpuinfo.read_text(errors="ignore")
+            if "Raspberry Pi" in content:
+                return True
+        except Exception:
+            pass
 
     return False
 
