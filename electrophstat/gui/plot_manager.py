@@ -238,10 +238,15 @@ class PlotManager:
 
     def clear_all(self):
         """
-        Remove all curves from all plot widgets and reset axes.
+        Remove all curves from all plot widgets and reset axes (left and right).
         """
+        # Clear left axes (main plot widgets)
         for plot_widget in getattr(self.main, "graphWidgets", []):
             plot_widget.clear()
-            # Optionally, reset axis labels to default
             plot_widget.setLabel('bottom', 'Time (s)', **self.labelStyle)
+
+        # Clear right axes (ViewBoxes)
+        for right_vb in getattr(self.main, "rightViewBoxes", {}).values():
+            for item in list(right_vb.addedItems):
+                right_vb.removeItem(item)
 
