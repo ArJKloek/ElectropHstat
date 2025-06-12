@@ -17,22 +17,38 @@ class LoggingController(QObject):
         self.active_labels = set()
 
     def start(self):
+        # If worker is already running, do nothing
         if self._thread is not None:
             return
 
-        # Capture which labels we want to log right now
-        #self.active_labels = set(self.win.logger.labels)
+        # If a session already exists (log_dir is not None), just restart the worker
+        if self.win.logger.log_dir is not None and self._worker is None:
+            print("Restarting logging worker in existing session.")
+            self._worker = LoggingWorker(
+                logger     = self.win.logger,
+                value_data = self.win.valueData,
+                interval   = self.interval
+            )
+            self._worker.active_labels = self.active_labels
 
-        # Kick off a new session on the Logger
-        # We pass initial_values=self.win.valueData so each CSV
-        # gets a zero‐point row automatically.
-        print("active_labels:", self.active_labels)
+            self._thread = QThread(self.win)
+            self._worker.moveToThread(self._thread)
+            self._thread.started.connect(self._worker.run)
+            self._worker.error.connect(self._on_error)
+            self.win.destroyed.connect(self.stop)
+
+            self._thread.start()
+            self.logs_present_signal.emit(True)
+            return
+
+        # Otherwise, start a new session as usual
+        print("Starting new logging session.")
+        self.active_labels = set(self.win.config.logger.labels)
         self.win.logger.start_session(
             active_labels   = list(self.active_labels),
             initial_values  = self.win.valueData
         )
 
-        # Create your worker + thread
         self._worker = LoggingWorker(
             logger     = self.win.logger,
             value_data = self.win.valueData,
