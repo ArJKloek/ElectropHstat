@@ -1,7 +1,7 @@
 # electrophstat/gui/phstat_controller.py
 from pathlib import Path
 from PyQt5.QtCore    import QObject, pyqtSlot, QTimer
-from PyQt5.QtWidgets import QMessageBox, QAction, QLabel
+from PyQt5.QtWidgets import QMessageBox, QAction, QLabel, QInputDialog
 import os, re, shutil                      
 import platform
 
@@ -188,16 +188,28 @@ class ButtonConnections(QObject):
     @pyqtSlot(QAction)
     def on_log_option_changed(self, action):
         """action.objectName() tells us which interval to use."""
-        ms_map = {
-            "action5_sec":  5,
-            "action30_sec": 30,
-            "action1_min": 60,
-            "action5_min":  300,
-        }
-        interval = ms_map.get(action.objectName())
-        if interval is not None:
-            print("New log interval:", interval)
-            # … apply interval to your logging timer …
+        if action.objectName() == "actionCustom_log_interval":
+            interval, accepted = QInputDialog.getInt(
+                self.win,
+                "Custom log interval",
+                "Log every (seconds):",
+                self.win.config.logger.interval,
+                1,
+            )
+            if not accepted:
+                return
+        else:
+            interval_map = {
+                "action5_sec": 5,
+                "action30_sec": 30,
+                "action1_min": 60,
+                "action5_min": 300,
+            }
+            interval = interval_map.get(action.objectName())
+            if interval is None:
+                return
+
+        print("New log interval:", interval)
         self.win.logging_ctrl.set_interval(int(interval))
         self.win.config.logger.interval = int(interval)
     
