@@ -52,7 +52,7 @@ def setup_mainwindow_signals(win):
 
     # 2) Grab each QAction by the objectName you set in Designer
     for act_name in (
-        "action5_sec",
+        "action15_sec",
         "action30_sec",
         "action1_min",
         "action5_min",

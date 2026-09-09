@@ -200,7 +200,7 @@ class ButtonConnections(QObject):
                 return
         else:
             interval_map = {
-                "action5_sec": 5,
+                "action15_sec": 15,
                 "action30_sec": 30,
                 "action1_min": 60,
                 "action5_min": 300,
