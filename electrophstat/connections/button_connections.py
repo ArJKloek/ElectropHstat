@@ -1,6 +1,6 @@
 # electrophstat/gui/phstat_controller.py
 from pathlib import Path
-from PyQt5.QtCore    import QObject, pyqtSlot, QTimer
+from PyQt5.QtCore    import QObject, pyqtSlot, QTimer, QDateTime
 from PyQt5.QtWidgets import QMessageBox, QAction, QLabel, QInputDialog
 import os, re, shutil                      
 import platform
@@ -170,7 +170,7 @@ class ButtonConnections(QObject):
     def toggle_fullscreen(self):
         if self.win.isFullScreen():
             self.win.showNormal()
-            self.win.actionFullscreen.setText("Fullscreen on")
+            self.win.actionFullscreen.setText("on")
         else:
             self.win.showFullScreen()
             self.win.actionFullscreen.setText("Fullscreen off")
@@ -241,6 +241,7 @@ class ButtonConnections(QObject):
 
     @pyqtSlot() 
     def openDateTimeWindow(self):
+        self.win.date_time_dialog.dateTimeEdit.setDateTime(QDateTime.currentDateTime())
         self.win.date_time_dialog.exec_()
 
     @pyqtSlot(bool)
