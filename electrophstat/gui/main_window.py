@@ -27,7 +27,7 @@ if sys.platform.startswith(("linux", "darwin")):
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
-from PyQt5.QtCore import pyqtSignal, QSize, QEvent
+from PyQt5.QtCore import pyqtSignal, QSize, QEvent, QTimer
 
 #import lib8mosind
 
@@ -58,7 +58,8 @@ class MainWindow(QMainWindow):
         self.date_time_dialog = DatePickerDialog()
         # 2) Now wire up every signal/slot in one place
         setup_mainwindow_signals(self)
-        
+
+        QTimer.singleShot(0, self.button_cont.openDateTimeWindow)
 
         self.show()
         apply_scaling(self)
