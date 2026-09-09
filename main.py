@@ -8,7 +8,7 @@ def main():
     #print("Available styles:", QStyleFactory.keys())
     app.setStyle(QStyleFactory.create("Fusion"))  # ✅ This line forces a style that respects stylesheets
     window = MainWindow()
-    window.show()
+    window.showFullScreen()
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
