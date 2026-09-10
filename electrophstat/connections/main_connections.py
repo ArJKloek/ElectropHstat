@@ -65,7 +65,6 @@ def setup_mainwindow_signals(win):
 
     # Map interval to QAction name
     interval_to_action = {
-        5: "action15_sec",
         15: "action15_sec",
         30: "action30_sec",
         60: "action1_min",
